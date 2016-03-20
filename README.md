@@ -1,1 +1,1 @@
-# android-udacity-capstone-project
+# Capstone Project
