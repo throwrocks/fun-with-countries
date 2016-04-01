@@ -24,23 +24,7 @@ public class CountriesListActivity extends AppCompatActivity implements Countrie
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        //Stetho.initializeWithDefaults(this);
 
-        // Get all the countries in a cursor
-        mCursor = this.getContentResolver().query(
-                Contract.CountryEntry.buildCountries(),
-                null,
-                null,
-                null,
-                null);
-        //Log.e(LOG_TAG, "getItemCount -> " + mCursor.getCount());
-
-        // If the Cursor is null, or it doesn't contain 247 records
-        // create a DataFetch Async task and execute it
-        if ( mCursor == null || mCursor.getCount() != 247) {
-            FetchTask fetchData = new FetchTask(this);
-            fetchData.execute();
-        }
 
         setContentView(R.layout.activity_countries_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
