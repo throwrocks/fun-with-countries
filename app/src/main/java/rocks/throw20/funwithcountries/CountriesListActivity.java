@@ -42,7 +42,7 @@ public class CountriesListActivity extends AppCompatActivity implements Countrie
             fetchData.execute();
         }
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_countries_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

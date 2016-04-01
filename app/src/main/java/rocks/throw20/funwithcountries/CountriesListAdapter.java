@@ -59,7 +59,7 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             //Log.e(LOG_TAG, "onCreateViewHolder -> " + true);
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.fragment_countries, parent, false);
+                    .inflate(R.layout.fragment_country, parent, false);
             return new ViewHolder(view);
         }
 

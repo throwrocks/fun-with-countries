@@ -9,11 +9,56 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".CountriesListActivity"
+    tools:context="rocks.throw20.funwithcountries.Data.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/game_mode_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="@string/title_select_game_mode"
+        android:textSize="@dimen/subheading_text"
+        />
+
+    <Button
+        android:id="@+id/button_fun_with_capitals"
+        android:layout_below="@+id/game_mode_title"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_mode_capitals"
+        />
+
+    <Button
+        android:id="@+id/button_fun_with_flags"
+        android:layout_below="@+id/button_fun_with_capitals"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_mode_flags"
+        />
+
+    <Button
+        android:id="@+id/button_fun_with_regions"
+        android:layout_below="@+id/button_fun_with_flags"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_mode_subregion"
+        />
+
+    <Button
+        android:id="@+id/button_randomize"
+        android:layout_below="@+id/button_fun_with_regions"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_mode_randomize"
+        />
+
+    <Button
+        android:id="@+id/button_share"
+        android:layout_below="@+id/button_randomize"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/buton_share_this_app"
+        />
+
+
 </RelativeLayout>

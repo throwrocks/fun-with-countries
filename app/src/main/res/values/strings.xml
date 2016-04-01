@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">Fun with Countries</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+
+
+
+    <!--Game Mode Button Labels-->
+    <string name="title_select_game_mode">Select your Game Mode</string>
+    <string name="button_game_mode_capitals">Learn the Capitals</string>
+    <string name="button_game_mode_flags">Guess the Flags</string>
+    <string name="button_game_mode_subregion">Discover the Subregions</string>
+    <string name="button_game_mode_randomize">Randomize</string>
+    <string name="buton_share_this_app">Share this App</string>
+
+
+
 </resources>
