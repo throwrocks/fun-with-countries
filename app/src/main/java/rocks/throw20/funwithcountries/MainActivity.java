@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public void showQuestion(){
         Log.e(LOG_TAG, "showQuestion " + true);
         Question newQuestions = new Question(this);
-        newQuestions.getQuestion();
+        newQuestions.getQuestion("");
     }
 
 }

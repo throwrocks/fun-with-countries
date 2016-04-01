@@ -27,7 +27,7 @@ public class Question {
      * This method builds a question using the database
      * @return contentValues
      */
-    public ContentValues getQuestion(){
+    public ContentValues getQuestion(String gameMode){
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
         mCursor = util.getAllCountries();
@@ -38,16 +38,29 @@ public class Question {
             int cursorSize = mCursor.getCount();
             Log.e(LOG_TAG, "cursor size " + cursorSize);
 
-            //Get four random, unique numbers
+            //--------------------------------------------------------------------------------------
+            // Get the question and the correct answer
+            //--------------------------------------------------------------------------------------
+
             mCursor.moveToFirst();
             int randomInt1 = util.getRandomInt(cursorSize,null);
             Log.e(LOG_TAG, "randomInt1 " + randomInt1);
             exclude[0] = randomInt1;
             Log.e(LOG_TAG, "exclude[0] " + exclude[0]);
             mCursor.move(randomInt1);
-            contentValues.put("country_name", mCursor.getString(Contract.CountryEntry.indexCountryName));
-            contentValues.put("country_capital_answer", mCursor.getString(Contract.CountryEntry.indexCountryCapital));
-            contentValues.put("country_capital_choice_1", mCursor.getString(Contract.CountryEntry.indexCountryCapital));
+
+            String countryName = mCursor.getString(Contract.CountryEntry.indexCountryName);
+            String countrCapital = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+
+            String questionText = "What is the capital of " + countryName + "?";
+            String answerText = "The the capital of " + countryName + " is " + countrCapital;
+
+            contentValues.put("country_question_name", countryName);
+            contentValues.put("country_capital_question", questionText);
+            contentValues.put("country_capital_answer", answerText);
+
+            // Build the multiple choices, include the correct answer
+            contentValues.put("country_capital_choice_1", countrCapital);
 
             int randomInt2 = util.getRandomInt(cursorSize,exclude);
             Log.e(LOG_TAG, "randomInt2 " + randomInt2);
@@ -76,6 +89,17 @@ public class Question {
         }
         return null;
 
+    }
+
+    /**
+     * buildQuestions
+     * This method will build the question and answers based on the game mode
+     * @param gameMode the game mode (capitals, flags, subregions, randomize)
+     * @return a set of ContentValues with the question/answer data
+     */
+
+    private ContentValues buildQuestion(String gameMode ){
+        return null;
     }
 
 }

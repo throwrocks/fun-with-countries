@@ -40,6 +40,7 @@ public class Utilities {
     /**
      * getRandomInt
      * @param max the max int
+     * @param exclude an array of ints to exclude so to avoid repetitions
      * @return the random int
      */
     public int getRandomInt(int max, int[] exclude) {
@@ -53,6 +54,9 @@ public class Utilities {
                 int e = exclude[i];
                 boolean test = e == n;
                 Log.e(LOG_TAG, "test " + test);
+                if ( test ){
+                    getRandomInt(max, exclude);
+                }
             }
     }
 
