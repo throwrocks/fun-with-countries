@@ -66,11 +66,11 @@ public class Utilities {
         if ( n == max ){ n = n - 1;}
 
         if ( exclude != null ){
-            Log.e(LOG_TAG, "exclude length " + exclude.length);
+            //Log.e(LOG_TAG, "exclude length " + exclude.length);
             for (int i = 0; i < exclude.length; i++) {
                 int e = exclude[i];
                 boolean test = e == n;
-                Log.e(LOG_TAG, "test " + test);
+                //Log.e(LOG_TAG, "test " + test);
                 if ( test ){
                     getRandomInt(max, exclude);
                 }

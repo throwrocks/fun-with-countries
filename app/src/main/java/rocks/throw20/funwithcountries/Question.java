@@ -42,7 +42,7 @@ public class Question {
         // Only run if the cursor is not null
         if ( mCursor != null) {
             int cursorSize = mCursor.getCount();
-            Log.e(LOG_TAG, "cursor size " + cursorSize);
+            //Log.e(LOG_TAG, "cursor size " + cursorSize);
 
             // Get the first country. Our question and answer will be based on it.
             mCursor.moveToFirst();

@@ -31,29 +31,28 @@ public class GameActivityFragment extends Fragment{
         super.onCreate(savedInstanceState);
     }
 
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "container " + container);
-
+        Log.e(LOG_TAG, "getArguments " + getArguments());
         rootView = inflater.inflate(R.layout.fragment_game, container, false);
-        nextQuestion(rootView, getArguments());
 
-        Button actionAnswerView = (Button) rootView.findViewById(R.id.action_answer);
-        actionAnswerView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                answerQuestion();
-            }
-        });
+            nextQuestion(rootView, getArguments());
+            Button actionAnswerView = (Button) rootView.findViewById(R.id.action_answer);
+            actionAnswerView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    answerQuestion();
+                }
+            });
 
-        final Button nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
-        nextQuestionView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                nextQuestion(rootView,getArguments());
-            }
-        });
+            final Button nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
+            nextQuestionView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    nextQuestion(rootView, getArguments());
+                }
+            });
+
         return rootView;
     }
 
@@ -78,12 +77,8 @@ public class GameActivityFragment extends Fragment{
         boolean evaluateAnswer = selectedAnswer.equals(currentAnswer);
 
         CharSequence text;
-        if ( evaluateAnswer ){
-            text = "Correct";
-        }
-        else{
-            text = "Incorrect";
-        }
+        if ( evaluateAnswer ){text = "Correct";}
+        else{text = "Incorrect";}
 
         Context context = this.getContext();
         int duration = Toast.LENGTH_SHORT;
@@ -107,19 +102,52 @@ public class GameActivityFragment extends Fragment{
     private void nextQuestion(final View rootView, Bundle args){
         String gameMode = getArguments().getString("gameMode");
         String gameTitle = getArguments().getString("gameTile");
+        Log.e(LOG_TAG, "args " + args);
 
-        Question questionObj = new Question(this.getContext());
-        ContentValues contentValues = questionObj.getQuestion(gameMode);
+        String countryName;
+        String countryCapital;
+        String question;
+        String answer;
+        String choice1;
+        String choice2;
+        String choice3;
+        String choice4;
+        Log.e(LOG_TAG, "args.size " + args.size());
+        if ( args.size() == 2) {
+            // Get a new question
+            Question questionObj = new Question(this.getContext());
+            ContentValues contentValues = questionObj.getQuestion(gameMode);
+            // Set the question variables
+            countryName = contentValues.getAsString("country_name");
+            countryCapital = contentValues.getAsString("country_capital");
+            question = contentValues.getAsString("question");
+            answer = contentValues.getAsString("answer");
+            choice1 = contentValues.getAsString("choice1");
+            choice2 = contentValues.getAsString("choice2");
+            choice3 = contentValues.getAsString("choice3");
+            choice4 = contentValues.getAsString("choice4");
+            // Stored them in the bundle
+            args.putString("country_name",countryName);
+            args.putString("country_capital",countryCapital);
+            args.putString("question",question);
+            args.putString("answer",answer);
+            args.putString("choice1",choice1);
+            args.putString("choice2",choice2);
+            args.putString("choice3",choice3);
+            args.putString("choice4",choice4);
+        }
+        else{
+            countryName = args.getString("country_name");
+            countryCapital = args.getString("country_capital");
+            question = args.getString("question");
+            answer = args.getString("answer");
+            choice1 = args.getString("choice1");
+            choice2 = args.getString("choice2");
+            choice3 = args.getString("choice3");
+            choice4 = args.getString("choice4");
+        }
 
-        String countryName = contentValues.getAsString("country_name");
-        String countryCapital = contentValues.getAsString("country_capital");
 
-        String question = contentValues.getAsString("question");
-        String answer = contentValues.getAsString("answer");
-        String choice1 = contentValues.getAsString("choice1");
-        String choice2 = contentValues.getAsString("choice2");
-        String choice3 = contentValues.getAsString("choice3");
-        String choice4 = contentValues.getAsString("choice4");
 
         // Save the current answer
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
