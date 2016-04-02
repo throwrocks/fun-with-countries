@@ -45,12 +45,19 @@ public class GameActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Log.e(LOG_TAG, "args " + args);
-        GameActivityFragment gameActivityFragment = new GameActivityFragment();
-        gameActivityFragment.setArguments(args);
 
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.game_frame, gameActivityFragment)
-                .commit();
+        if (savedInstanceState == null) {
+            GameActivityFragment gameActivityFragment = new GameActivityFragment();
+            gameActivityFragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.game_frame, gameActivityFragment, "gameFragment")
+                    .commit();
+        }
+        else {
+            GameActivityFragment gameActivityFragment = (GameActivityFragment) getSupportFragmentManager().findFragmentByTag("gameFragment");
+        }
+
+
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
