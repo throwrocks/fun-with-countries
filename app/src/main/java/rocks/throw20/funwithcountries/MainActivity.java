@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import rocks.throw20.funwithcountries.Data.Contract;
 import rocks.throw20.funwithcountries.Data.FetchTask;
@@ -41,9 +42,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Set the buttons OnClickListeners
         final Button button = (Button) findViewById(R.id.button_fun_with_capitals);
+
+        final Intent intent = new Intent(this, GameActivity.class);
+
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                showQuestion();
+                intent.putExtra("gameMode", "capitals");
+                intent.putExtra("gameTitle", "Learn the Capitals");
+                startActivity(intent);
+
+
             }
         });
 
