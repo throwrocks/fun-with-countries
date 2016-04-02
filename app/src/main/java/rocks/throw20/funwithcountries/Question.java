@@ -28,65 +28,72 @@ public class Question {
      * @return contentValues
      */
     public ContentValues getQuestion(String gameMode){
+        // Create a Utilities Object so we can run the randomInt and shuffleArray utility methods.
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
-        mCursor = util.getAllCountries();
-        int exclude[] = new int[]{0,0,0};
-
+        mCursor = util.getAllCountriesWithCapitals();
+        // The exclude array is used to store the position of the country records that have already
+        // been used. It's passed to the getRandomInt method to make sure it doesn't return a
+        // repeated int, and therefore we end up repeating countries for the choices
+        int exclude[] = new int[3];
+        // The choices variable is used to store the multiple choices. It's then passed to the
+        // shuffleArray function so the choices are displayed in random order on our views.
+        String choices[] = new String[4];
+        // Only run if the cursor is not null
         if ( mCursor != null) {
-
             int cursorSize = mCursor.getCount();
             Log.e(LOG_TAG, "cursor size " + cursorSize);
 
-            //--------------------------------------------------------------------------------------
-            // Get the question and the correct answer
-            //--------------------------------------------------------------------------------------
-
+            // Get the first country. Our question and answer will be based on it.
             mCursor.moveToFirst();
-            int randomInt1 = util.getRandomInt(cursorSize,null);
-            Log.e(LOG_TAG, "randomInt1 " + randomInt1);
-            exclude[0] = randomInt1;
-            Log.e(LOG_TAG, "exclude[0] " + exclude[0]);
+            int randomInt1 = util.getRandomInt(cursorSize, null);
             mCursor.move(randomInt1);
-
             String countryName = mCursor.getString(Contract.CountryEntry.indexCountryName);
             String countryCapital = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
-
-
 
             String questionText = "What is the capital of " + countryName + "?";
             String answerText = "The the capital of " + countryName + " is " + countryCapital;
 
+            exclude[0] = randomInt1;
+
+            // Build the multiple choices
+            // Choice1
+            choices[0] = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+
+            // Choice2
+            int randomInt2 = util.getRandomInt(cursorSize, exclude);
+            mCursor.moveToFirst();
+            mCursor.move(randomInt2);
+            choices[1]= mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            exclude[1] = randomInt2;
+
+            // Choice3
+            int randomInt3 = util.getRandomInt(cursorSize, exclude);
+            mCursor.moveToFirst();
+            mCursor.move(randomInt3);
+            choices[2] = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            exclude[2] = randomInt3;
+
+            // Choice4
+            int randomInt4 = util.getRandomInt(cursorSize, exclude);
+            mCursor.moveToFirst();
+            mCursor.move(randomInt4);
+            choices[3] = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+
+
+            // Shuffle the choices
+            util.shuffleArray(choices);
+
+            // Store the values and return them
             contentValues.put("country_name", countryName);
+            contentValues.put("country_capital", countryCapital);
             contentValues.put("question", questionText);
             contentValues.put("answer", answerText);
 
-            // Build the multiple choices, include the correct answer
-            contentValues.put("choice_1", countryCapital);
-
-            int randomInt2 = util.getRandomInt(cursorSize,exclude);
-            Log.e(LOG_TAG, "randomInt2 " + randomInt2);
-            mCursor.moveToFirst();
-            exclude[1] = randomInt2;
-            Log.e(LOG_TAG, "exclude[1] " + exclude[1]);
-            mCursor.move(randomInt2);
-            contentValues.put("choice_2", mCursor.getString(Contract.CountryEntry.indexCountryCapital));
-
-            int randomInt3 = util.getRandomInt(cursorSize,exclude);
-            Log.e(LOG_TAG, "randomInt3 " + randomInt3);
-            mCursor.moveToFirst();
-            exclude[2] = randomInt3;
-            mCursor.move(randomInt3);
-            contentValues.put("choice_3", mCursor.getString(Contract.CountryEntry.indexCountryCapital));
-
-            int randomInt4 = util.getRandomInt(cursorSize,exclude);
-            mCursor.moveToFirst();
-            Log.e(LOG_TAG, "randomInt4 " + randomInt4);
-            mCursor.move(randomInt4);
-            Log.e(LOG_TAG, "exclude[2] " + exclude[2]);
-            contentValues.put("choice_4", mCursor.getString(Contract.CountryEntry.indexCountryCapital));
-
-
+            contentValues.put("choice1", choices[0]);
+            contentValues.put("choice2", choices[1]);
+            contentValues.put("choice4", choices[2]);
+            contentValues.put("choice3", choices[3]);
 
         }
         return contentValues;

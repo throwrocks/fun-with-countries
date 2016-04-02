@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.facebook.stetho.Stetho;
+
 import rocks.throw20.funwithcountries.Data.Contract;
 import rocks.throw20.funwithcountries.Data.FetchTask;
 
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Stetho.initializeWithDefaults(this);
+        Stetho.initializeWithDefaults(this);
 
         Utilities util = new Utilities(this);
         mCursor = util.getAllCountries();

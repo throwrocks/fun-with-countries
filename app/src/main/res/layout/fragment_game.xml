@@ -14,13 +14,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="rocks.throw20.funwithcountries.GameActivity"
-    tools:showIn="@layout/activity_game">
+    tools:showIn="@layout/activity_game"
+    >
 
     <TextView
         android:id="@+id/question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_select_game_mode"
         android:textSize="@dimen/subheading_text"
         />
 
@@ -29,7 +29,6 @@
         android:layout_below="@+id/question"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
-        android:text="@string/button_game_mode_capitals"
         />
 
     <Button
@@ -37,7 +36,6 @@
         android:layout_below="@+id/choice1"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
-        android:text="@string/button_game_mode_flags"
         />
 
     <Button
@@ -45,7 +43,6 @@
         android:layout_below="@+id/choice2"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
-        android:text="@string/button_game_mode_subregion"
         />
 
     <Button
@@ -53,9 +50,43 @@
         android:layout_below="@+id/choice3"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
-        android:text="@string/button_game_mode_randomize"
         />
 
+
+    <TextView
+        android:id="@+id/confirm_text"
+        android:layout_below="@id/choice4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/body_text"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/action_answer"
+        android:layout_below="@+id/choice4"
+        android:layout_toRightOf="@id/confirm_text"
+        android:layout_toEndOf="@id/confirm_text"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:drawableStart="@drawable/ic_done_black_24dp"
+        android:drawableLeft="@drawable/ic_done_black_24dp"
+        android:text="Yes"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/action_next_question"
+        android:layout_below="@+id/choice4"
+        android:layout_toRightOf="@id/confirm_text"
+        android:layout_toEndOf="@id/confirm_text"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"
+        android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
+        android:text="Next Question"
+        android:visibility="gone"
+        />
 
 
 

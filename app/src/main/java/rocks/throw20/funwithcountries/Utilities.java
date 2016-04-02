@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import rocks.throw20.funwithcountries.Data.Contract;
 import rocks.throw20.funwithcountries.Data.FetchTask;
@@ -37,6 +38,20 @@ public class Utilities {
         return mCursor;
     }
 
+
+    public Cursor getAllCountriesWithCapitals(){
+        Cursor mCursor;
+        // Get all the countries in a cursor
+        mCursor = mContext.getContentResolver().query(
+                Contract.CountryEntry.buildCountries(),
+                null,
+                "LENGTH(" + Contract.CountryEntry.countryCapital + ") >0",
+                null,
+                null);
+        return mCursor;
+    }
+
+
     /**
      * getRandomInt
      * @param max the max int
@@ -46,7 +61,9 @@ public class Utilities {
     public int getRandomInt(int max, int[] exclude) {
         Random rand = new Random();
 
-        int n = rand.nextInt(max) + 1;
+        int n = rand.nextInt(max);
+        // If the int = max substract 1 so it doesn't go out of bounds
+        if ( n == max ){ n = n - 1;}
 
         if ( exclude != null ){
             Log.e(LOG_TAG, "exclude length " + exclude.length);
@@ -59,7 +76,28 @@ public class Utilities {
                 }
             }
     }
-
         return n;
+    }
+
+
+    /**
+     * shuffleArray
+     * Method to shuffle the Strings in an array
+     * @param ar the array to be suffled
+     */
+    // Implementing Fisher–Yates shuffle
+    // http://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
+    public String[] shuffleArray(String[] ar)
+    {
+        Random rand = new Random();
+        for (int i = ar.length - 1; i > 0; i--)
+        {
+            int index = rand.nextInt(i + 1);
+            // Simple swap
+            String a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
+        return ar;
     }
 }

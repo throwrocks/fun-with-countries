@@ -13,5 +13,7 @@
     <string name="buton_share_this_app">Share this App</string>
     <string name="title_activity_game">GameActivity</string>
 
+    <string name="action_submit">Yes</string>
+
 
 </resources>
