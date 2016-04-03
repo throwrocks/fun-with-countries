@@ -32,7 +32,8 @@ public class GameActivityFragment extends Fragment{
 
     TextView gameProgress;
     DonutProgress gameIimer;
-
+    CountDownTimer questionTimer;
+    boolean questionTimerIsRunning = false;
     Button nextQuestionView;
 
     TextView actionConfirmation;
@@ -71,7 +72,7 @@ public class GameActivityFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(LOG_TAG, "onCreate " + savedInstanceState);
+        //Log.e(LOG_TAG, "onCreate " + savedInstanceState);
         if (savedInstanceState == null) {
             getQuestion(true);
         }
@@ -93,7 +94,7 @@ public class GameActivityFragment extends Fragment{
         Bundle args = getArguments();
         if ( isnew ) {
             ContentValues contentValues = newQuestion();
-            Log.e(LOG_TAG, "new content " + true);
+            //Log.e(LOG_TAG, "new content " + true);
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
@@ -131,7 +132,7 @@ public class GameActivityFragment extends Fragment{
         choice4 = getArguments().getString("choice4");
         selectedAnswer = getArguments().getString("selected_answer");
         evaluatedAnswer = getArguments().getString("evaluated_answer");
-        Log.e(LOG_TAG, "evaluated answer " + evaluatedAnswer);
+        //Log.e(LOG_TAG, "evaluated answer " + evaluatedAnswer);
 
         questionView = (TextView) rootView.findViewById(R.id.question);
         questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
@@ -254,6 +255,8 @@ public class GameActivityFragment extends Fragment{
         choice3View.setEnabled(false);
         choice4View.setEnabled(false);
 
+        questionTimer.cancel();
+
         String selectedAnswer = getArguments().getString("selected_answer", "");
         String currentAnswer = getArguments().getString("current_answer", "");
 
@@ -296,23 +299,29 @@ public class GameActivityFragment extends Fragment{
         String gameMode = "";
         Question questionObj = new Question(this.getContext());
         ContentValues contentValues = questionObj.getQuestion(gameMode);
-
-        new CountDownTimer(10000, 1000) {
-
+        Log.e(LOG_TAG, "questionTimerIsRunning " + questionTimerIsRunning);
+        if ( questionTimerIsRunning ) {
+            Log.e(LOG_TAG, "cancel " + true);
+            questionTimerIsRunning= false;
+            questionTimer.cancel();
+        }
+        questionTimer = new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
+                Log.e(LOG_TAG, "tick " + questionTimerIsRunning);
+                questionTimerIsRunning = true;
                 int progress = (int) (long) (millisUntilFinished / 1000);
                 gameIimer.setProgress(progress);
             }
             public void onFinish() {
+                Log.e(LOG_TAG, "cancel " + questionTimerIsRunning);
+                questionTimerIsRunning= false;
                 gameIimer.setProgress(0);
                 gameIimer.setInnerBottomTextSize(36);
                 gameIimer.setInnerBottomText("Time up!");
-
             }
         }.start();
 
         return  contentValues;
-
     }
 
 

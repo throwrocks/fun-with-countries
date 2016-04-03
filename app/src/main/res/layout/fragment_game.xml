@@ -31,7 +31,7 @@
         android:id="@+id/game_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:donut_progress="100"
+        app:donut_progress="1000"
         app:donut_prefix_text=""
         app:donut_suffix_text=""
         app:donut_max="10"
