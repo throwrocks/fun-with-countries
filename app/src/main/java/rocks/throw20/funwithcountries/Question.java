@@ -51,7 +51,7 @@ public class Question {
             String countryName = mCursor.getString(Contract.CountryEntry.indexCountryName);
             String countryCapital = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
 
-            String questionText = "What is the capital of " + countryName + "?";
+            String questionText = "What is the capital of ";
             String answerText = "The the capital of " + countryName + " is " + countryCapital;
 
             exclude[0] = randomInt1;

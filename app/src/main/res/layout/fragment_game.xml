@@ -18,18 +18,48 @@
     >
 
     <TextView
-        android:id="@+id/question"
-        android:layout_width="match_parent"
+        android:id="@+id/game_progress"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/h1_text"
+        android:text="Question 1 of 10"
+        />
+
+    <com.github.lzyzsd.circleprogress.DonutProgress
+        android:layout_marginLeft="50dp"
+        android:layout_below="@id/game_progress"
+        android:id="@+id/game_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:donut_progress="100"
+        app:donut_prefix_text=""
+        app:donut_suffix_text=""
+        app:donut_max="10"
+        />
+
+    <TextView
+        android:id="@+id/question"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@id/game_progress"
         android:textSize="@dimen/subheading_text"
+        />
+    <TextView
+        android:id="@+id/question_country"
+        android:layout_toRightOf="@id/game_timer"
+        android:layout_below="@id/question"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/h1_text"
         />
 
     <Button
         android:id="@+id/choice1"
-        android:layout_below="@+id/question"
+        android:layout_below="@+id/game_timer"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
         />
+
 
     <Button
         android:id="@+id/choice2"
