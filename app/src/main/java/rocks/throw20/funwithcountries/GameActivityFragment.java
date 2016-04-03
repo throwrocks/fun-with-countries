@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -123,8 +124,7 @@ public class GameActivityFragment extends Fragment{
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setViews(){
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
         Bundle b = getArguments();
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
@@ -236,7 +236,7 @@ public class GameActivityFragment extends Fragment{
      * This method is called when the choice to a question is confirmed
      */
     private void answerQuestion(){
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
         final SharedPreferences.Editor editor = sharedPref.edit();
         choice1View = (Button) rootView.findViewById(R.id.choice1);
         choice2View = (Button) rootView.findViewById(R.id.choice2);
@@ -274,12 +274,11 @@ public class GameActivityFragment extends Fragment{
 
         int gameProgress = sharedPref.getInt("game_progress",0);
         int gameProgressMax = sharedPref.getInt("game_progress_max",0);
-        int gameProgressCalc;
+        int gameProgressCalc =  gameProgress + 1;
         // TODO  End the game
         if ( gameProgress == gameProgressMax ) {  }
         // Track game progress
         else {
-            gameProgressCalc = gameProgress + gameProgressMax;
             editor.putInt("game_progress", gameProgressCalc);
             editor.apply();
         }

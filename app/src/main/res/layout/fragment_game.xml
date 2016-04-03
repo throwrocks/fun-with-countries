@@ -22,13 +22,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/h1_text"
-        android:text="Question 1 of 10"
         />
 
     <com.github.lzyzsd.circleprogress.DonutProgress
-        android:layout_marginLeft="50dp"
-        android:layout_below="@id/game_progress"
         android:id="@+id/game_timer"
+        android:layout_below="@id/game_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:donut_progress="1000"
@@ -39,14 +37,13 @@
 
     <TextView
         android:id="@+id/question"
+        android:layout_below="@id/game_timer"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/game_progress"
         android:textSize="@dimen/subheading_text"
         />
     <TextView
         android:id="@+id/question_country"
-        android:layout_toRightOf="@id/game_timer"
         android:layout_below="@id/question"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -55,7 +52,7 @@
 
     <Button
         android:id="@+id/choice1"
-        android:layout_below="@+id/game_timer"
+        android:layout_below="@+id/question_country"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
         />
@@ -95,13 +92,11 @@
     <Button
         android:id="@+id/action_answer"
         android:layout_below="@+id/choice4"
-        android:layout_toRightOf="@id/confirm_text"
-        android:layout_toEndOf="@id/confirm_text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:drawableStart="@drawable/ic_done_black_24dp"
         android:drawableLeft="@drawable/ic_done_black_24dp"
-        android:text="Yes"
+        android:text="@string/action_submit"
         android:visibility="gone"
         />
 

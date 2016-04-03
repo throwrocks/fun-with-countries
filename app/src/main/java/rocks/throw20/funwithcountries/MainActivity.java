@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -47,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
         final Button button = (Button) findViewById(R.id.button_fun_with_capitals);
         final Intent intent = new Intent(this, GameActivity.class);
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(this);
         final SharedPreferences.Editor editor = sharedPref.edit();
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                editor.putInt("game_progress", 0);
+                editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 10);
                 editor.putString("game_mode","capitals");
                 editor.putString("game_title", "Learn the Capitals");

@@ -34,7 +34,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Log.e(LOG_TAG, "setContentView " + true);
-
+        Intent intent = getIntent();
         Bundle args = new Bundle();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         gameTitle = sharedPref.getString("game_title","");
@@ -42,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(gameTitle);
         setSupportActionBar(toolbar);
+
 
 
         if (savedInstanceState == null) {
