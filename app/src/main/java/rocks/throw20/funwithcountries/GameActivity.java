@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,24 +28,21 @@ public class GameActivity extends AppCompatActivity {
     String gameTitle;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Log.e(LOG_TAG, "setContentView " + true);
-        Intent intent = getIntent();
-        gameMode = intent.getStringExtra("gameMode");
-        gameTitle = intent.getStringExtra("gameTitle");
 
         Bundle args = new Bundle();
-        args.putString("gameMode", gameMode);
-        args.putString("gameTitle", gameTitle);
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        gameTitle = sharedPref.getString("game_title","");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(gameTitle);
         setSupportActionBar(toolbar);
 
-        Log.e(LOG_TAG, "args " + args);
 
         if (savedInstanceState == null) {
             GameActivityFragment gameActivityFragment = new GameActivityFragment();

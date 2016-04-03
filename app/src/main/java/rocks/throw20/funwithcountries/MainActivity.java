@@ -2,6 +2,7 @@ package rocks.throw20.funwithcountries;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -44,14 +45,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Set the buttons OnClickListeners
         final Button button = (Button) findViewById(R.id.button_fun_with_capitals);
-
         final Intent intent = new Intent(this, GameActivity.class);
 
-
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                intent.putExtra("gameMode", "capitals");
-                intent.putExtra("gameTitle", "Learn the Capitals");
+
+                editor.putInt("game_progress", 0);
+                editor.putInt("game_progress_max", 10);
+                editor.putString("game_mode","capitals");
+                editor.putString("game_title", "Learn the Capitals");
+                editor.apply();
+
                 startActivity(intent);
 
 
