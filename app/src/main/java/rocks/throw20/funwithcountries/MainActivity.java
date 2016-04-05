@@ -55,7 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
                 editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 10);
-                editor.putString("game_mode","capitals");
+                editor.putString("game_mode", "capitals");
+                editor.putString("game_title", "Learn the Capitals");
+                editor.putInt("correct_answers", 0);
+                editor.putInt("incorrect_answers",0);
                 editor.putString("game_title", "Learn the Capitals");
                 editor.apply();
 

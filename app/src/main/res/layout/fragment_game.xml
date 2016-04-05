@@ -25,9 +25,18 @@
         android:textSize="@dimen/h1_text"
         />
 
+    <TextView
+        android:id="@+id/game_score"
+        android:layout_below="@+id/game_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/body_text"
+        />
+
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/game_timer"
-        android:layout_below="@id/game_progress"
+        android:layout_below="@id/game_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:donut_progress="1000"

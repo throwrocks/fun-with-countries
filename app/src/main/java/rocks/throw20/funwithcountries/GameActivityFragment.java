@@ -27,25 +27,18 @@ public class GameActivityFragment extends Fragment{
 
     private View rootView;
 
-    private TextView gameProgressView;
     private DonutProgress gameTimerView;
     private CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
     private Button nextQuestionView;
 
     private TextView actionConfirmationView;
-    private TextView questionView;
-    private TextView questionCountryView;
     private Button actionAnswerView;
-    private TextView confirmTextView;
     private Button choice1View;
     private Button choice2View;
     private Button choice3View;
     private Button choice4View;
 
-    private int gameProgress;
-    private int gameProgressMax;
-    private String gameProgressText;
     private String countryName;
     private String countryCapital;
     private String question;
@@ -56,9 +49,7 @@ public class GameActivityFragment extends Fragment{
     private String choice3;
     private String choice4;
 
-    private String selectedAnswer;
     private String currentAnswer;
-    private String evaluatedAnswer;
 
 
     public GameActivityFragment() {
@@ -128,9 +119,11 @@ public class GameActivityFragment extends Fragment{
         Bundle b = getArguments();
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
-        gameProgress = sharedPref.getInt("game_progress",0);
-        gameProgressMax = sharedPref.getInt("game_progress_max", 0);
-        gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
+        int gameProgress = sharedPref.getInt("game_progress", 0);
+        int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
+        int correctAnswers = sharedPref.getInt("correct_answers", 0);
+        String gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
+        String gameScoreText = "Score: " + correctAnswers;
         countryName = b.getString("country_name");
         countryCapital = b.getString("country_capital");
         question = b.getString("question");
@@ -139,13 +132,14 @@ public class GameActivityFragment extends Fragment{
         choice2 = b.getString("choice2");
         choice3 = b.getString("choice3");
         choice4 = b.getString("choice4");
-        selectedAnswer = b.getString("selected_answer");
-        evaluatedAnswer = b.getString("evaluated_answer");
+        String selectedAnswer = b.getString("selected_answer");
+        String evaluatedAnswer = b.getString("evaluated_answer");
         //------------------------------------------------------------------------------------------
         // Get all the views
-        questionView = (TextView) rootView.findViewById(R.id.question);
-        questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
-        gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
+        TextView questionView = (TextView) rootView.findViewById(R.id.question);
+        TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
+        TextView questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
+        TextView gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
         gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         choice1View = (Button) rootView.findViewById(R.id.choice1);
         choice2View = (Button) rootView.findViewById(R.id.choice2);
@@ -217,6 +211,7 @@ public class GameActivityFragment extends Fragment{
         // Set the views
         gameProgressView.setText(gameProgressText);
         questionView.setText(question);
+        gameScoreView.setText(gameScoreText);
         questionCountryView.setText(countryName + "?");
 
         choice1View.setEnabled(true);
@@ -255,14 +250,25 @@ public class GameActivityFragment extends Fragment{
         String selectedAnswer = getArguments().getString("selected_answer", "");
         String currentAnswer = getArguments().getString("current_answer", "");
 
+        // Evaluate the answer
         Boolean test  = selectedAnswer.equals(currentAnswer);
         getArguments().putBoolean("evaluated_answer",test);
 
-        // Evaluated answer text for display
+        // Evaluated answer text for keeping track of the score and displaying the result
+        int gameCorrectAnswers = sharedPref.getInt("correct_answers",0);
+        int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers",0);
         CharSequence text;
-        if ( test ){text = "Correct";}
-        else{text = "Incorrect";}
 
+        // The answer was correct
+        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; text = "Correct";}
+        // The answer was incorrect
+        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; text = "Incorrect";}
+
+        // Save the score
+        editor.putInt("correct_answers", gameCorrectAnswers);
+        editor.putInt("incorrect_answers", gameIncorrectAnswers);
+
+        // Display the result
         Context context = this.getContext();
         int duration = Toast.LENGTH_SHORT;
 
@@ -271,7 +277,6 @@ public class GameActivityFragment extends Fragment{
         toast.show();
 
         // Save the game's progress
-
         int gameProgress = sharedPref.getInt("game_progress",0);
         int gameProgressMax = sharedPref.getInt("game_progress_max",0);
         int gameProgressCalc =  gameProgress + 1;
@@ -288,7 +293,7 @@ public class GameActivityFragment extends Fragment{
 
         nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
         actionAnswerView = (Button) rootView.findViewById(R.id.action_answer);
-        confirmTextView = (TextView) rootView.findViewById(R.id.confirm_text);
+        TextView confirmTextView = (TextView) rootView.findViewById(R.id.confirm_text);
 
         nextQuestionView.setVisibility(View.VISIBLE);
         confirmTextView.setVisibility(View.GONE);
@@ -340,6 +345,9 @@ public class GameActivityFragment extends Fragment{
                 gameTimerView.setProgress(0);
                 gameTimerView.setInnerBottomTextSize(36);
                 gameTimerView.setInnerBottomText("Time up!");
+                // Time is up, clear any selected answers and answer the question (incorrect)
+                Bundle b = getArguments();
+                b.putString("selected_answer","");
                 answerQuestion();
             }
         }.start();
