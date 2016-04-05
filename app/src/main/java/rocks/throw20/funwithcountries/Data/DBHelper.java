@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 class DBHelper extends SQLiteOpenHelper {
 
+    // TODO Create scores database
     // The databse version
     private static final int DATABASE_VERSION = 15;
 

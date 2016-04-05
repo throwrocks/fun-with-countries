@@ -276,14 +276,14 @@ public class GameActivityFragment extends Fragment{
         int gameProgressMax = sharedPref.getInt("game_progress_max",0);
         int gameProgressCalc =  gameProgress + 1;
         // TODO  End the game
-        if ( gameProgress == gameProgressMax ) {  }
+        if ( gameProgress == gameProgressMax ) {
+            endGame();
+        }
         // Track game progress
         else {
             editor.putInt("game_progress", gameProgressCalc);
             editor.apply();
         }
-
-
 
 
         nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
@@ -329,6 +329,7 @@ public class GameActivityFragment extends Fragment{
         questionTimer = new CountDownTimer(10000, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
+                gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 int progress = (int) (long) (millisUntilFinished / 1000);
                 gameTimerView.setProgress(progress);
@@ -339,6 +340,7 @@ public class GameActivityFragment extends Fragment{
                 gameTimerView.setProgress(0);
                 gameTimerView.setInnerBottomTextSize(36);
                 gameTimerView.setInnerBottomText("Time up!");
+                answerQuestion();
             }
         }.start();
 
@@ -356,6 +358,22 @@ public class GameActivityFragment extends Fragment{
         actionConfirmationView.setVisibility(View.VISIBLE);
         actionConfirmationView.setText("The capital is " + answer);
         getArguments().putString("selected_answer", answer);
+
+    }
+
+    /**
+     * endGame
+     * Method to end the game, submit the scores, and start the scores activity
+     */
+    private void endGame(){
+
+    }
+
+    /**
+     * cancelGame
+     * Method to cancel the game and return the MainActivity
+     */
+    private void cancelGame(){
 
     }
 
