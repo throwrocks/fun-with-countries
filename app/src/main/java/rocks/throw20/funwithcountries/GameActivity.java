@@ -25,20 +25,17 @@ import rocks.throw20.funwithcountries.R;
 
 public class GameActivity extends AppCompatActivity {
     private static final String LOG_TAG = GameActivity.class.getSimpleName();
-    String gameMode;
-    String gameTitle;
-
-
+    SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Log.e(LOG_TAG, "setContentView " + true);
-        Intent intent = getIntent();
+
         Bundle args = new Bundle();
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        gameTitle = sharedPref.getString("game_title","");
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String gameTitle = sharedPref.getString("game_title", "");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(gameTitle);
@@ -47,6 +44,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
+            Log.e(LOG_TAG, "SavedInstanceState " + null);
             GameActivityFragment gameActivityFragment = new GameActivityFragment();
             gameActivityFragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()

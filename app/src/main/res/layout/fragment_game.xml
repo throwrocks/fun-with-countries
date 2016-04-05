@@ -116,9 +116,18 @@
         android:layout_centerHorizontal="true"
         />
 
+    <TextView
+        android:id="@+id/question_result"
+        android:layout_below="@id/action_answer"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/subheading_text"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        />
     <Button
         android:id="@+id/action_next_question"
-        android:layout_below="@+id/confirm_text"
+        android:layout_below="@+id/question_result"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"
@@ -127,7 +136,6 @@
         android:visibility="gone"
         android:layout_centerHorizontal="true"
         />
-
 
 
 </RelativeLayout>

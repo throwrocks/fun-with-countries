@@ -3,6 +3,7 @@ package rocks.throw20.funwithcountries;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -13,10 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -24,11 +28,12 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
  */
 public class GameActivityFragment extends Fragment{
     private static final String LOG_TAG = GameActivityFragment.class.getSimpleName();
-
+    SharedPreferences sharedPref;
     private View rootView;
 
+
     private DonutProgress gameTimerView;
-    private CountDownTimer questionTimer;
+    private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
     private Button nextQuestionView;
 
@@ -63,6 +68,7 @@ public class GameActivityFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
         //Log.e(LOG_TAG, "onCreate " + savedInstanceState);
         if (savedInstanceState == null) {
             getQuestion(true);
@@ -115,7 +121,7 @@ public class GameActivityFragment extends Fragment{
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setViews(){
-        SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         Bundle b = getArguments();
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
@@ -140,6 +146,7 @@ public class GameActivityFragment extends Fragment{
         TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         TextView questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
         TextView gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
+        TextView gameQuestionResultView = (TextView) rootView.findViewById(R.id.question_result);
         gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         choice1View = (Button) rootView.findViewById(R.id.choice1);
         choice2View = (Button) rootView.findViewById(R.id.choice2);
@@ -159,9 +166,11 @@ public class GameActivityFragment extends Fragment{
             actionAnswerView.setVisibility(View.GONE);
         }
         // Of the next question button
-        if ( evaluatedAnswer != null ){
+        if ( evaluatedAnswer != null ) {
+            gameQuestionResultView.setVisibility(View.VISIBLE);
             nextQuestionView.setVisibility(View.VISIBLE);
         } else{
+            gameQuestionResultView.setVisibility(View.GONE);
             nextQuestionView.setVisibility(View.GONE);
         }
         //------------------------------------------------------------------------------------------
@@ -231,8 +240,7 @@ public class GameActivityFragment extends Fragment{
      * This method is called when the choice to a question is confirmed
      */
     private void answerQuestion(){
-        SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences.Editor editor = sharedPref.edit();
         choice1View = (Button) rootView.findViewById(R.id.choice1);
         choice2View = (Button) rootView.findViewById(R.id.choice2);
         choice3View = (Button) rootView.findViewById(R.id.choice3);
@@ -244,6 +252,7 @@ public class GameActivityFragment extends Fragment{
         choice4View.setEnabled(false);
 
         // Cancel the timer
+        Log.e(LOG_TAG, "questioNTimer " + questionTimer);
         questionTimer.cancel();
 
         // Get the current and selected answers to see if they match (evaluated answer)
@@ -257,24 +266,16 @@ public class GameActivityFragment extends Fragment{
         // Evaluated answer text for keeping track of the score and displaying the result
         int gameCorrectAnswers = sharedPref.getInt("correct_answers",0);
         int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers",0);
-        CharSequence text;
+        CharSequence questionResultText;
 
         // The answer was correct
-        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; text = "Correct";}
+        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; questionResultText = "Correct";}
         // The answer was incorrect
-        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; text = "Incorrect";}
+        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Incorrect";}
 
         // Save the score
         editor.putInt("correct_answers", gameCorrectAnswers);
         editor.putInt("incorrect_answers", gameIncorrectAnswers);
-
-        // Display the result
-        Context context = this.getContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        // TODO Create a display for the evaluation
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
 
         // Save the game's progress
         int gameProgress = sharedPref.getInt("game_progress",0);
@@ -294,10 +295,17 @@ public class GameActivityFragment extends Fragment{
         nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
         actionAnswerView = (Button) rootView.findViewById(R.id.action_answer);
         TextView confirmTextView = (TextView) rootView.findViewById(R.id.confirm_text);
+        TextView questionResultView = (TextView) rootView.findViewById(R.id.question_result);
 
+        questionResultView.setVisibility(View.VISIBLE);
         nextQuestionView.setVisibility(View.VISIBLE);
         confirmTextView.setVisibility(View.GONE);
         actionAnswerView.setVisibility(View.GONE);
+
+        // Set the evaluation result (Correct vs Incorrect)
+        questionResultView.setText(questionResultText);
+
+
 
         // Clear the Bundle
         getArguments().clear();
@@ -334,6 +342,7 @@ public class GameActivityFragment extends Fragment{
         questionTimer = new CountDownTimer(10000, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
+                Log.e(LOG_TAG, "onTick " + questionTimerIsRunning);
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 int progress = (int) (long) (millisUntilFinished / 1000);
@@ -341,6 +350,7 @@ public class GameActivityFragment extends Fragment{
             }
             // When the timer finishes, mark the question as wrong and end the question
             public void onFinish() {
+                Log.e(LOG_TAG, "onFinish " + questionTimerIsRunning);
                 questionTimerIsRunning= false;
                 gameTimerView.setProgress(0);
                 gameTimerView.setInnerBottomTextSize(36);
@@ -374,6 +384,17 @@ public class GameActivityFragment extends Fragment{
      * Method to end the game, submit the scores, and start the scores activity
      */
     private void endGame(){
+
+        // TODO Implement game end logic
+
+        Context context = getActivity();
+        CharSequence text = "Game Over!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+        getActivity().finish();
 
     }
 
