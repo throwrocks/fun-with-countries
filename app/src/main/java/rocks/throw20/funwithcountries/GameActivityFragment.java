@@ -2,6 +2,7 @@ package rocks.throw20.funwithcountries;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.LinearGradient;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import org.w3c.dom.Text;
+
+import java.util.logging.Handler;
 
 
 /**
@@ -69,7 +73,7 @@ public class GameActivityFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
-        //Log.e(LOG_TAG, "onCreate " + savedInstanceState);
+        Log.e(LOG_TAG, "onCreate " + true);
         if (savedInstanceState == null) {
             getQuestion(true);
         }
@@ -84,6 +88,26 @@ public class GameActivityFragment extends Fragment{
         rootView = inflater.inflate(R.layout.fragment_game, container, false);
         setViews();
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        Log.e(LOG_TAG, "onPause " + true);
+        // TODO pause the timer
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.e(LOG_TAG, "onStop " + true);
+        cancelGame();
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        Log.e(LOG_TAG, "onResume " + true);
+        super.onResume();
     }
 
     /**
@@ -121,7 +145,7 @@ public class GameActivityFragment extends Fragment{
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setViews(){
-
+        Log.e(LOG_TAG, "setViews " + true);
         Bundle b = getArguments();
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
@@ -167,8 +191,11 @@ public class GameActivityFragment extends Fragment{
         }
         // Of the next question button
         if ( evaluatedAnswer != null ) {
-            gameQuestionResultView.setVisibility(View.VISIBLE);
-            nextQuestionView.setVisibility(View.VISIBLE);
+
+
+            slideInView(gameQuestionResultView,540);
+            slideInView(nextQuestionView,520);
+
         } else{
             gameQuestionResultView.setVisibility(View.GONE);
             nextQuestionView.setVisibility(View.GONE);
@@ -223,16 +250,79 @@ public class GameActivityFragment extends Fragment{
         gameScoreView.setText(gameScoreText);
         questionCountryView.setText(countryName + "?");
 
-        choice1View.setEnabled(true);
-        choice2View.setEnabled(true);
-        choice3View.setEnabled(true);
-        choice4View.setEnabled(true);
 
         choice1View.setText(choice1);
         choice2View.setText(choice2);
         choice3View.setText(choice3);
         choice4View.setText(choice4);
+        Log.e(LOG_TAG, "slideIn " + true);
 
+        slideInView(choice1View, 360);
+        slideInView(choice2View, 340);
+        slideInView(choice3View, 320);
+        slideInView(choice4View, 300);
+
+        choice1View.setEnabled(true);
+        choice2View.setEnabled(true);
+        choice3View.setEnabled(true);
+        choice4View.setEnabled(true);
+
+
+        // Create a new timer for this question
+        questionTimer = new CountDownTimer(11000, 1000) {
+            // Count down the timer on every tick
+            public void onTick(long millisUntilFinished) {
+
+                gameTimerView.setInnerBottomText("");
+                questionTimerIsRunning = true;
+                int progress = (int) (long) ( millisUntilFinished / 1000);
+                Log.e(LOG_TAG, "progress " + progress);
+                if ( progress <= 10 ){
+
+                    gameTimerView.setProgress(progress);
+                }
+            }
+            // When the timer finishes, mark the question as wrong and end the question
+            public void onFinish() {
+                Log.e(LOG_TAG, "onFinish " + true);
+                questionTimerIsRunning= false;
+                Log.e(LOG_TAG, "progress " + 0);
+                gameTimerView.setProgress(0);
+                gameTimerView.setInnerBottomTextSize(36);
+                gameTimerView.setInnerBottomText("Time up!");
+                // Time is up, clear any selected answers and answer the question (incorrect)
+                Bundle b = getArguments();
+                b.putString("selected_answer","");
+                answerQuestion();
+            }
+        }.start();
+
+
+
+    }
+
+    private void slideInView(View view, int duration){
+        TranslateAnimation animate = new TranslateAnimation(-view.getWidth(),0,0,0);
+        animate.setDuration(duration);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    private void slideOutView(View view, int duration){
+        TranslateAnimation animate = new TranslateAnimation(0,+view.getWidth(),0,0);
+        animate.setDuration(duration);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    public void slideToTop(View view){
+        TranslateAnimation animate = new TranslateAnimation(0,0,view.getHeight(),344);
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -250,6 +340,11 @@ public class GameActivityFragment extends Fragment{
         choice2View.setEnabled(false);
         choice3View.setEnabled(false);
         choice4View.setEnabled(false);
+
+        slideOutView(choice1View, 360);
+        slideOutView(choice2View, 340);
+        slideOutView(choice3View, 320);
+        slideOutView(choice4View, 300);
 
         // Cancel the timer
         Log.e(LOG_TAG, "questioNTimer " + questionTimer);
@@ -338,29 +433,6 @@ public class GameActivityFragment extends Fragment{
             questionTimerIsRunning= false;
             questionTimer.cancel();
         }
-        // Create a new timer for this question
-        questionTimer = new CountDownTimer(10000, 1000) {
-            // Count down the timer on every tick
-            public void onTick(long millisUntilFinished) {
-                Log.e(LOG_TAG, "onTick " + questionTimerIsRunning);
-                gameTimerView.setInnerBottomText("");
-                questionTimerIsRunning = true;
-                int progress = (int) (long) (millisUntilFinished / 1000);
-                gameTimerView.setProgress(progress);
-            }
-            // When the timer finishes, mark the question as wrong and end the question
-            public void onFinish() {
-                Log.e(LOG_TAG, "onFinish " + questionTimerIsRunning);
-                questionTimerIsRunning= false;
-                gameTimerView.setProgress(0);
-                gameTimerView.setInnerBottomTextSize(36);
-                gameTimerView.setInnerBottomText("Time up!");
-                // Time is up, clear any selected answers and answer the question (incorrect)
-                Bundle b = getArguments();
-                b.putString("selected_answer","");
-                answerQuestion();
-            }
-        }.start();
 
         return  contentValues;
     }
@@ -403,6 +475,7 @@ public class GameActivityFragment extends Fragment{
      * Method to cancel the game and return the MainActivity
      */
     private void cancelGame(){
+        questionTimer.cancel();
 
     }
 

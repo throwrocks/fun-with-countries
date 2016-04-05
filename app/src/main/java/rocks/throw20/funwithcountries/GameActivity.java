@@ -73,6 +73,7 @@ public class GameActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     // do something when the button is clicked
                     public void onClick(DialogInterface arg0, int arg1) {
+
                         finish();
                         //close();
                     }
