@@ -137,8 +137,8 @@
         android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"
         android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
         android:text="@string/action_next_question"
-        android:visibility="gone"
         android:layout_centerHorizontal="true"
+        android:visibility="gone"
         />
 
 

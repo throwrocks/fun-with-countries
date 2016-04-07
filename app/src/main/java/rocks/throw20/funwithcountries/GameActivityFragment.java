@@ -1,5 +1,6 @@
 package rocks.throw20.funwithcountries;
 
+import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -164,8 +166,29 @@ public class GameActivityFragment extends Fragment{
         choice4 = b.getString("choice4");
         String selectedAnswer = b.getString("selected_answer");
         String evaluatedAnswer = b.getString("evaluated_answer");
+
+        // TODO Create views programatically
+        RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
+
+
+
+        Button choice5View = new Button(getActivity());
+
+
+
+        RelativeLayout.LayoutParams choice5ViewParams =  new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        choice5ViewParams.addRule(RelativeLayout.BELOW,R.id.question_country);
+        choice5View.setLayoutParams(choice5ViewParams);
+        choice5View.setLayoutParams(choice5ViewParams);
+        choice5View.setText("CHOICE 5");
+        gameContent.addView(choice5View);
+
         //------------------------------------------------------------------------------------------
         // Get all the views
+
         TextView questionView = (TextView) rootView.findViewById(R.id.question);
         TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         TextView questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
@@ -193,7 +216,7 @@ public class GameActivityFragment extends Fragment{
         if ( evaluatedAnswer != null ) {
 
 
-            slideInView(gameQuestionResultView,540);
+            slideInView(gameQuestionResultView, 540);
             slideInView(nextQuestionView,520);
 
         } else{
