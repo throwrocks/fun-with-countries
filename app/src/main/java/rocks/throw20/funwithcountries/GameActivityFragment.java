@@ -38,23 +38,31 @@ public class GameActivityFragment extends Fragment{
     private View rootView;
 
 
+
+
     private DonutProgress gameTimerView;
     private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
-    private Button nextQuestionView;
 
-    private TextView actionConfirmationView;
+
+    TextView confirmTextView;
     private Button actionAnswerView;
-    private Button choice1View;
-    private Button choice2View;
-    private Button choice3View;
-    private Button choice4View;
+
+    TextView questionResultView;
+    Button nextQuestionView;
+
 
     private String countryName;
     private String countryCapital;
     private String question;
 
     private String answer;
+
+    private Button choice1View;
+    private Button choice2View;
+    private Button choice3View;
+    private Button choice4View;
+
     private String choice1;
     private String choice2;
     private String choice3;
@@ -109,6 +117,7 @@ public class GameActivityFragment extends Fragment{
     @Override
     public void onResume() {
         Log.e(LOG_TAG, "onResume " + true);
+
         super.onResume();
     }
 
@@ -164,78 +173,94 @@ public class GameActivityFragment extends Fragment{
         choice2 = b.getString("choice2");
         choice3 = b.getString("choice3");
         choice4 = b.getString("choice4");
-        String selectedAnswer = b.getString("selected_answer");
-        String evaluatedAnswer = b.getString("evaluated_answer");
 
-        // TODO Create views programatically
+
         RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
-
-
-
-        Button choice5View = new Button(getActivity());
-
-
-
-        RelativeLayout.LayoutParams choice5ViewParams =  new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        choice5ViewParams.addRule(RelativeLayout.BELOW,R.id.question_country);
-        choice5View.setLayoutParams(choice5ViewParams);
-        choice5View.setLayoutParams(choice5ViewParams);
-        choice5View.setText("CHOICE 5");
-        gameContent.addView(choice5View);
-
         //------------------------------------------------------------------------------------------
-        // Get all the views
+        // Choice 1
+        if ( choice1View == null ){
+            Log.e(LOG_TAG, "choice1View null " + true);
+        choice1View = new Button(getActivity());
+        RelativeLayout.LayoutParams choice1ViewParams =  new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        choice1ViewParams.addRule(RelativeLayout.BELOW, R.id.question_country);
+        choice1View.setId(R.id.choice1);
+        choice1View.setLayoutParams(choice1ViewParams);
+        }
+        if ( rootView.findViewById(R.id.choice1) == null ){
+            Log.e(LOG_TAG, "choice1View on Layout " + false);
+            gameContent.addView(choice1View);
+        }
+        //------------------------------------------------------------------------------------------
+        // Choice 2
+        if ( choice2View == null ) {
+            choice2View = new Button(getActivity());
+            RelativeLayout.LayoutParams choice2ViewParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            choice2ViewParams.addRule(RelativeLayout.BELOW, R.id.choice1);
+            choice2View.setId(R.id.choice2);
+            choice2View.setLayoutParams(choice2ViewParams);
+        }
+        if ( rootView.findViewById(R.id.choice2) == null ){
+            gameContent.addView(choice2View);
+        }
+        //------------------------------------------------------------------------------------------
+        // Choice 3
+        if ( choice3View == null ) {
+            choice3View = new Button(getActivity());
+            RelativeLayout.LayoutParams choice3ViewParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            choice3ViewParams.addRule(RelativeLayout.BELOW, R.id.choice2);
+            choice3View.setId(R.id.choice3);
+            choice3View.setLayoutParams(choice3ViewParams);
+        }
+        if ( rootView.findViewById(R.id.choice3) == null ){
+            gameContent.addView(choice3View);
+        }
+        //------------------------------------------------------------------------------------------
+        // Choice 4
+        if ( choice4View == null ) {
+            choice4View = new Button(getActivity());
+            RelativeLayout.LayoutParams choice4ViewParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            choice4ViewParams.addRule(RelativeLayout.BELOW, R.id.choice3);
+            choice4View.setId(R.id.choice4);
+            choice4View.setLayoutParams(choice4ViewParams);
+        }
+        if ( rootView.findViewById(R.id.choice4) == null ){
+            gameContent.addView(choice4View);
+        }
 
+
+        choice1View.setText(choice1);
+        choice2View.setText(choice2);
+        choice3View.setText(choice3);
+        choice4View.setText(choice4);
+        Log.e(LOG_TAG, "slideIn " + true);
+
+
+        slideInView(choice1View, 360);
+        slideInView(choice2View, 340);
+        slideInView(choice3View, 320);
+        slideInView(choice4View, 300);
+
+        choice1View.setEnabled(true);
+        choice2View.setEnabled(true);
+        choice3View.setEnabled(true);
+        choice4View.setEnabled(true);
+        //------------------------------------------------------------------------------------------
+        // Set the top views
         TextView questionView = (TextView) rootView.findViewById(R.id.question);
         TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         TextView questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
         TextView gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
-        TextView gameQuestionResultView = (TextView) rootView.findViewById(R.id.question_result);
         gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
-        choice1View = (Button) rootView.findViewById(R.id.choice1);
-        choice2View = (Button) rootView.findViewById(R.id.choice2);
-        choice3View = (Button) rootView.findViewById(R.id.choice3);
-        choice4View = (Button) rootView.findViewById(R.id.choice4);
-        actionConfirmationView = (TextView) rootView.findViewById(R.id.confirm_text);
-        actionAnswerView = (Button) rootView.findViewById(R.id.action_answer);
-        nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
-        //------------------------------------------------------------------------------------------
-        // Set the visibility
-        // Of the answer confirmation and answer actions views
-        if ( selectedAnswer != null ) {
-            actionConfirmationView.setVisibility(View.VISIBLE);
-            actionAnswerView.setVisibility(View.VISIBLE);
-        }else{
-            actionConfirmationView.setVisibility(View.GONE);
-            actionAnswerView.setVisibility(View.GONE);
-        }
-        // Of the next question button
-        if ( evaluatedAnswer != null ) {
 
 
-            slideInView(gameQuestionResultView, 540);
-            slideInView(nextQuestionView,520);
-
-        } else{
-            gameQuestionResultView.setVisibility(View.GONE);
-            nextQuestionView.setVisibility(View.GONE);
-        }
-        //------------------------------------------------------------------------------------------
-        // Set on ClickListeners
-        // For the answer and next question buttons
-        actionAnswerView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                answerQuestion();
-            }
-        });
-        nextQuestionView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                nextQuestionOnClickListener();
-            }
-        });
         // For the choice buttons
         choice1View.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,21 +299,7 @@ public class GameActivityFragment extends Fragment{
         questionCountryView.setText(countryName + "?");
 
 
-        choice1View.setText(choice1);
-        choice2View.setText(choice2);
-        choice3View.setText(choice3);
-        choice4View.setText(choice4);
-        Log.e(LOG_TAG, "slideIn " + true);
 
-        slideInView(choice1View, 360);
-        slideInView(choice2View, 340);
-        slideInView(choice3View, 320);
-        slideInView(choice4View, 300);
-
-        choice1View.setEnabled(true);
-        choice2View.setEnabled(true);
-        choice3View.setEnabled(true);
-        choice4View.setEnabled(true);
 
 
         // Create a new timer for this question
@@ -333,11 +344,12 @@ public class GameActivityFragment extends Fragment{
     }
 
     private void slideOutView(View view, int duration){
+        RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
         TranslateAnimation animate = new TranslateAnimation(0,+view.getWidth(),0,0);
         animate.setDuration(duration);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.VISIBLE);
+        gameContent.removeView(view);
     }
 
     public void slideToTop(View view){
@@ -345,8 +357,74 @@ public class GameActivityFragment extends Fragment{
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.VISIBLE);
+        //view.setVisibility(View.VISIBLE);
     }
+
+
+    /**
+     * selectAnswer
+     * This method is called when clicking on a choice button
+     * It sets the views that confirm your answer and allow you to submit
+     * @param answer the answer text
+     */
+    private void selectAnswer(String answer){
+        selectedAnswerView(answer);
+        getArguments().putString("selected_answer", answer);
+
+    }
+
+    /**
+     * selectedAnwswerView
+     * This method builds the confirmation answer text, and button to submit the asnwer
+     * @param answer pass the answer string to be displayed
+     */
+    private void selectedAnswerView(String answer){
+        Log.e(LOG_TAG, "selectedAnswerView " + confirmTextView);
+        RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
+        //------------------------------------------------------------------------------------------
+        if ( confirmTextView == null ) {
+            Log.e(LOG_TAG, "confirmTextView " + true);
+            // confirmTextView
+            confirmTextView = new TextView(getActivity());
+            RelativeLayout.LayoutParams confirmTextParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            confirmTextParams.addRule(RelativeLayout.BELOW, R.id.choice4);
+            confirmTextView.setId(R.id.confirm_text);
+            confirmTextView.setLayoutParams(confirmTextParams);
+
+        }
+        if ( rootView.findViewById(R.id.confirm_text) == null ){
+            gameContent.addView(confirmTextView);
+        }
+        confirmTextView.setText("The capital is " + answer);
+        //------------------------------------------------------------------------------------------
+        // actionAnswerView
+        if ( actionAnswerView == null ) {
+            actionAnswerView = new Button(getActivity());
+            RelativeLayout.LayoutParams actionAnswerParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            actionAnswerParams.addRule(RelativeLayout.BELOW, R.id.confirm_text);
+            actionAnswerView.setId(R.id.action_answer);
+            actionAnswerView.setLayoutParams(actionAnswerParams);
+            actionAnswerView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_black_24dp, 0);
+            gameContent.addView(actionAnswerView);
+            actionAnswerView.setText(R.string.action_submit);
+            //------------------------------------------------------------------------------------------
+            // actionAnswerView: Set on ClickListeners
+            actionAnswerView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    answerQuestion();
+                }
+            });
+        }
+        if ( rootView.findViewById(R.id.action_answer) == null ){
+            gameContent.addView(actionAnswerView);
+        }
+
+    }
+
 
     /**
      * answerQuestions
@@ -354,20 +432,7 @@ public class GameActivityFragment extends Fragment{
      */
     private void answerQuestion(){
         SharedPreferences.Editor editor = sharedPref.edit();
-        choice1View = (Button) rootView.findViewById(R.id.choice1);
-        choice2View = (Button) rootView.findViewById(R.id.choice2);
-        choice3View = (Button) rootView.findViewById(R.id.choice3);
-        choice4View = (Button) rootView.findViewById(R.id.choice4);
 
-        choice1View.setEnabled(false);
-        choice2View.setEnabled(false);
-        choice3View.setEnabled(false);
-        choice4View.setEnabled(false);
-
-        slideOutView(choice1View, 360);
-        slideOutView(choice2View, 340);
-        slideOutView(choice3View, 320);
-        slideOutView(choice4View, 300);
 
         // Cancel the timer
         Log.e(LOG_TAG, "questioNTimer " + questionTimer);
@@ -409,24 +474,82 @@ public class GameActivityFragment extends Fragment{
             editor.apply();
         }
 
-
-        nextQuestionView = (Button) rootView.findViewById(R.id.action_next_question);
-        actionAnswerView = (Button) rootView.findViewById(R.id.action_answer);
-        TextView confirmTextView = (TextView) rootView.findViewById(R.id.confirm_text);
-        TextView questionResultView = (TextView) rootView.findViewById(R.id.question_result);
-
-        questionResultView.setVisibility(View.VISIBLE);
-        nextQuestionView.setVisibility(View.VISIBLE);
-        confirmTextView.setVisibility(View.GONE);
-        actionAnswerView.setVisibility(View.GONE);
-
-        // Set the evaluation result (Correct vs Incorrect)
-        questionResultView.setText(questionResultText);
-
-
-
-        // Clear the Bundle
+        answerQuestionView(questionResultText.toString());;
         getArguments().clear();
+    }
+
+    /**
+     * selectedAnwswerView
+     * This method builds the confirmation answer text, and button to submit the asnwer
+     */
+    private void answerQuestionView(String resultText){
+        RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
+
+        Button choice1View = (Button) rootView.findViewById(R.id.choice1);
+        Button choice2View = (Button) rootView.findViewById(R.id.choice2);
+        Button choice3View = (Button) rootView.findViewById(R.id.choice3);
+        Button choice4View = (Button) rootView.findViewById(R.id.choice4);
+
+        choice1View.setEnabled(false);
+        choice2View.setEnabled(false);
+        choice3View.setEnabled(false);
+        choice4View.setEnabled(false);
+
+        slideOutView(choice1View, 360);
+        slideOutView(choice2View, 340);
+        slideOutView(choice3View, 320);
+        slideOutView(choice4View, 300);
+        // Remove confirmation view
+        gameContent.removeView(confirmTextView);
+        gameContent.removeView(actionAnswerView);
+
+        Log.e(LOG_TAG, "answerQuestionView " + true);
+
+        //------------------------------------------------------------------------------------------
+        if ( questionResultView == null ) {
+            Log.e(LOG_TAG, "questionResultView null " + true);
+            // confirmTextView
+            questionResultView = new TextView(getActivity());
+            RelativeLayout.LayoutParams questionResultParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            questionResultParams.addRule(RelativeLayout.BELOW, R.id.question_country);
+            questionResultView.setId(R.id.question_result);
+            questionResultView.setLayoutParams(questionResultParams);
+            gameContent.addView(questionResultView);
+        }
+        if ( rootView.findViewById(R.id.question_result) == null ){
+            Log.e(LOG_TAG, "question result view on layout " + false);
+            gameContent.addView(questionResultView);
+        }
+        questionResultView.setText(resultText);
+        questionResultView.setText("The capital is " + answer);
+        //------------------------------------------------------------------------------------------
+        // nextQuestionView
+        if ( nextQuestionView  == null ) {
+            Log.e(LOG_TAG, "nextQuestionView null " + true);
+            nextQuestionView = new Button(getActivity());
+            RelativeLayout.LayoutParams nextQuestionParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            nextQuestionParams.addRule(RelativeLayout.BELOW, R.id.question_result);
+            nextQuestionView.setId(R.id.action_next_question);
+            nextQuestionView.setLayoutParams(nextQuestionParams);
+            nextQuestionView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+            gameContent.addView(nextQuestionView);
+            //------------------------------------------------------------------------------------------
+            // actionAnswerView: Set on ClickListeners
+            nextQuestionView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    nextQuestionOnClickListener();
+                }
+            });
+        }
+        if ( rootView.findViewById(R.id.action_next_question) == null ){
+            Log.e(LOG_TAG, "nextQuestionView on layout " + false);
+            gameContent.addView(nextQuestionView);
+        }
+        nextQuestionView.setText(R.string.action_next_question);
     }
 
     /**
@@ -435,44 +558,14 @@ public class GameActivityFragment extends Fragment{
      * Clears the Bundle, gets a new question, and sets the views
      */
     private void nextQuestionOnClickListener(){
+        slideOutView(questionResultView, 360);
+        slideOutView(nextQuestionView, 360);
         getArguments().clear();
         getQuestion(true);
         setViews();
     }
 
-    /**
-     * newQuestion
-     * This method creates a new Question object and returns the ContentValues from it
-     * It also creates a CountDownTimer to drive the timer and its display on the question
-     * @return a ContentValues Object with the question, answer, and choices.
-     */
-    private ContentValues newQuestion(){
-        String gameMode = "";
-        Question questionObj = new Question(this.getContext());
-        ContentValues contentValues = questionObj.getQuestion(gameMode);
-        Log.e(LOG_TAG, "questionTimerIsRunning " + questionTimerIsRunning);
-        // If a new question is requested and there is a timer running, cancel it first
-        if ( questionTimerIsRunning ) {
-            questionTimerIsRunning= false;
-            questionTimer.cancel();
-        }
 
-        return  contentValues;
-    }
-
-    /**
-     * selectAnswer
-     * This method is called when clicking on a choice button
-     * It sets the views that confirm your answer and allow you to submit
-     * @param answer the answer text
-     */
-    private void selectAnswer(String answer){
-        actionAnswerView.setVisibility(View.VISIBLE);
-        actionConfirmationView.setVisibility(View.VISIBLE);
-        actionConfirmationView.setText("The capital is " + answer);
-        getArguments().putString("selected_answer", answer);
-
-    }
 
     /**
      * endGame
@@ -500,6 +593,26 @@ public class GameActivityFragment extends Fragment{
     private void cancelGame(){
         questionTimer.cancel();
 
+    }
+
+    /**
+     * newQuestion
+     * This method creates a new Question object and returns the ContentValues from it
+     * It also creates a CountDownTimer to drive the timer and its display on the question
+     * @return a ContentValues Object with the question, answer, and choices.
+     */
+    private ContentValues newQuestion(){
+        String gameMode = "";
+        Question questionObj = new Question(this.getContext());
+        ContentValues contentValues = questionObj.getQuestion(gameMode);
+        Log.e(LOG_TAG, "questionTimerIsRunning " + questionTimerIsRunning);
+        // If a new question is requested and there is a timer running, cancel it first
+        if ( questionTimerIsRunning ) {
+            questionTimerIsRunning= false;
+            questionTimer.cancel();
+        }
+
+        return  contentValues;
     }
 
 }

@@ -63,62 +63,12 @@
         android:layout_centerHorizontal="true"
         />
 
-    <Button
-        android:id="@+id/choice1"
-        android:layout_below="@+id/question_country"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        />
 
 
-    <Button
-        android:id="@+id/choice2"
-        android:layout_below="@+id/choice1"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:visibility="gone"
-        />
-
-    <Button
-        android:id="@+id/choice3"
-        android:layout_below="@+id/choice2"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:visibility="gone"
-        />
-
-    <Button
-        android:id="@+id/choice4"
-        android:layout_below="@+id/choice3"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:visibility="gone"
-        />
 
 
-    <TextView
-        android:id="@+id/confirm_text"
-        android:layout_below="@id/choice4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/body_text"
-        android:visibility="gone"
-        android:layout_centerHorizontal="true"
-        />
 
-    <Button
-        android:id="@+id/action_answer"
-        android:layout_below="@+id/confirm_text"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:drawableStart="@drawable/ic_done_black_24dp"
-        android:drawableLeft="@drawable/ic_done_black_24dp"
-        android:text="@string/action_submit"
-        android:visibility="gone"
-        android:layout_centerHorizontal="true"
-        />
+
 
     <TextView
         android:id="@+id/question_result"
