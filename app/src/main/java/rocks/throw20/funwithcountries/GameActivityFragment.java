@@ -3,11 +3,13 @@ package rocks.throw20.funwithcountries;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,6 +64,7 @@ public class GameActivityFragment extends Fragment{
     private final int relativeMatchParent = RelativeLayout.LayoutParams.MATCH_PARENT;
     private final int relativeWrapContent = RelativeLayout.LayoutParams.WRAP_CONTENT;
     private final int relativeBelow = RelativeLayout.BELOW;
+    private final int relativeCenterHorizontal = RelativeLayout.CENTER_HORIZONTAL;
 
     private String sequence;
 
@@ -199,10 +202,7 @@ public class GameActivityFragment extends Fragment{
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
-
-
         countryCapital = b.getString("country_capital");
-
         answer = b.getString("answer");
         choice1 = b.getString("choice1");
         choice2 = b.getString("choice2");
@@ -210,9 +210,6 @@ public class GameActivityFragment extends Fragment{
         choice4 = b.getString("choice4");
         questionTimerIsRunning = b.getBoolean("timer_is_running");
         int questionTimerProgress = b.getInt("timer_progress");
-
-
-
         //------------------------------------------------------------------------------------------
         // Set Choice 1
         //------------------------------------------------------------------------------------------
@@ -346,7 +343,6 @@ public class GameActivityFragment extends Fragment{
             }
         }.start();
     }
-
 
     /**
      * selectAnswer
@@ -490,11 +486,24 @@ public class GameActivityFragment extends Fragment{
             //Log.e(LOG_TAG, "create answer result view " + true);
             RelativeLayout.LayoutParams answerResultViewParams = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
             answerResultViewParams.addRule(relativeBelow, R.id.question_country);
+            answerResultViewParams.addRule(relativeCenterHorizontal);
             answerResultView.setId(R.id.next_question_answer_result_text);
-            answerResultView.setLayoutParams(answerResultViewParams);}
+            answerResultView.setLayoutParams(answerResultViewParams);
+            answerResultView.setTextSize(28);
+
+        }
         if ( rootView.findViewById(R.id.next_question_answer_result_text) == null ){
-            //Log.e(LOG_TAG, "add answer result view " + true);
+
             gameContent.addView(answerResultView);
+            if ( resultText != null  && resultText.equals("Incorrect")) {
+                Log.e(LOG_TAG, "result text " + resultText);
+                answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
+                answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
+            } else if ( resultText != null && resultText.equals("Correct")) {
+                Log.e(LOG_TAG, "result text " + resultText);
+                answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
+                answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
+            }
             answerResultView.setText(resultText);}
         //------------------------------------------------------------------------------------------
         // nextQuestionTextView
