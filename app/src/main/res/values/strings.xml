@@ -16,16 +16,22 @@
     <string name="action_submit">Yes</string>
     <string name="action_next_question">Next Question</string>
 
-
-    <!---Choice Button Ids-->>
+    <!--Question Header Ids-->
+    <item type="id" name="game_progress"/>
+    <item type="id" name="game_score"/>
+    <item type="id" name="game_timer"/>
+    <item type="id" name="question"/>
+    <item type="id" name="question_country"/>
+    <!--Choice Button Ids-->
     <item type="id" name="choice1" />
     <item type="id" name="choice2" />
     <item type="id" name="choice3" />
     <item type="id" name="choice4" />
-
-    <item type="id" name="confirm_text" />
-    <item type="id" name="action_answer" />
-
-    <item type="id" name="question_result" />
-    <item type="id" name="action_next_question" />
+    <!--Answer Confirmation Ids-->
+    <item type="id" name="answer_confirmation_text" />
+    <item type="id" name="answer_confirmation_button" />
+    <!--Next Question Ids-->
+    <item type="id" name="next_question_answer_result_text" />
+    <item type="id" name="next_question_text" />
+    <item type="id" name="next_question_button" />
 </resources>
