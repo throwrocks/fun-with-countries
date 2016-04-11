@@ -27,11 +27,13 @@ public class Question {
      * This method builds a question using the database
      * @return contentValues
      */
-    public ContentValues getQuestion(String gameMode){
+    public ContentValues getQuestion(String gameMode, String[] usedCountries){
         // Create a Utilities Object so we can run the randomInt and shuffleArray utility methods.
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
-        mCursor = util.getAllCountriesWithCapitals();
+
+        mCursor = util.getAllCountriesExcept(new String[]{"'Barbados' OR 'France'"});
+        //mCursor = util.getAllCountriesWithCapitals();
         // The exclude array is used to store the position of the country records that have already
         // been used. It's passed to the getRandomInt method to make sure it doesn't return a
         // repeated int, and therefore we end up repeating countries for the choices

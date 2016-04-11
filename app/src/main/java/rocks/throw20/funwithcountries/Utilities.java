@@ -51,6 +51,18 @@ public class Utilities {
         return mCursor;
     }
 
+    public Cursor getAllCountriesExcept(String[] selectArgs){
+        Cursor mCursor;
+        // Get all the countries in a cursor
+        mCursor = mContext.getContentResolver().query(
+                Contract.CountryEntry.buildCountries(),
+                null,
+                Contract.CountryEntry.countryName + "!=?",
+                selectArgs,
+                null);
+        return mCursor;
+    }
+
 
     /**
      * getRandomInt

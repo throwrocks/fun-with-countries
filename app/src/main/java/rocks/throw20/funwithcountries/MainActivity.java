@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putInt("correct_answers", 0);
                 editor.putInt("incorrect_answers",0);
                 editor.putString("game_title", "Learn the Capitals");
+                editor.putString("used_countries", "");
                 editor.apply();
 
                 startActivity(intent);
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public void showQuestion(){
         Log.e(LOG_TAG, "showQuestion " + true);
         Question newQuestions = new Question(this);
-        newQuestions.getQuestion("");
+        newQuestions.getQuestion("",new String[]{});
     }
 
 }

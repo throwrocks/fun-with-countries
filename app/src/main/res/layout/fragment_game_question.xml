@@ -15,11 +15,10 @@
     android:orientation="vertical"
     >
 <LinearLayout
-    android:background="#4CAF50"
     android:orientation="vertical"
     android:id="@+id/game_header"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
     <TextView
         android:id="@+id/game_progress"
         android:layout_width="wrap_content"
@@ -63,10 +62,9 @@
         />
 </LinearLayout>
     <LinearLayout
-        android:background="#03A9F4"
         android:orientation="vertical"
         android:id="@+id/game_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
     </LinearLayout>
 </LinearLayout>
