@@ -3,7 +3,6 @@ package rocks.throw20.funwithcountries;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -11,13 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,9 @@ public class GameActivityFragment extends Fragment{
     private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
 
-    private RelativeLayout gameContent;
+    private LinearLayout gameFragment;
+    private LinearLayout gameHeader;
+    private LinearLayout gameContent;
 
     private TextView confirmAnswerTextView;
     private Button confirmAnswerButtonView;
@@ -43,7 +44,6 @@ public class GameActivityFragment extends Fragment{
     private TextView answerResultView;
     private TextView nextQuestionTextView;
     private Button nextQuestionButtonView;
-
 
     private String countryName;
     private String countryCapital;
@@ -60,11 +60,12 @@ public class GameActivityFragment extends Fragment{
     private String choice2;
     private String choice3;
     private String choice4;
-
-    private final int relativeMatchParent = RelativeLayout.LayoutParams.MATCH_PARENT;
-    private final int relativeWrapContent = RelativeLayout.LayoutParams.WRAP_CONTENT;
-    private final int relativeBelow = RelativeLayout.BELOW;
-    private final int relativeCenterHorizontal = RelativeLayout.CENTER_HORIZONTAL;
+    private String usedCountries;
+    private String usedCountriesSelection;
+    private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
+    private final int linearLayoutWrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
+   // private final int relativeBelow = LinearLayout.BELOW;
+   // private final int relativeCenterHorizontal = LinearLayout.CENTER_HORIZONTAL;
 
     private String sequence;
 
@@ -93,7 +94,7 @@ public class GameActivityFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "onCreateView " + true);
-        rootView = inflater.inflate(R.layout.fragment_game, container, false);
+        rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
         return rootView;
     }
 
@@ -142,8 +143,9 @@ public class GameActivityFragment extends Fragment{
      */
     private void getQuestion(Boolean isnew){
         Bundle b = getArguments();
-        getArguments().putString("sequence", "getQuestion");
+        b.putString("sequence", "getQuestion");
         if ( isnew ) {
+            SharedPreferences.Editor editor = sharedPref.edit();
             ContentValues contentValues = newQuestion();
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
@@ -154,6 +156,16 @@ public class GameActivityFragment extends Fragment{
             choice2 = contentValues.getAsString("choice2");
             choice3 = contentValues.getAsString("choice3");
             choice4 = contentValues.getAsString("choice4");
+
+
+            usedCountries = sharedPref.getString("used_countries","");
+            Log.e(LOG_TAG,"usedCountries: " + usedCountries);
+            if ( usedCountries.isEmpty() ){
+                usedCountriesSelection = "'" + countryName + "'";
+            }else{
+                usedCountriesSelection = usedCountries + " OR '" + countryName + "'";
+            }
+
             // Store them in the bundle
             b.putString("country_name", countryName);
             b.putString("country_capital", countryCapital);
@@ -164,6 +176,9 @@ public class GameActivityFragment extends Fragment{
             b.putString("choice2", choice2);
             b.putString("choice3", choice3);
             b.putString("choice4", choice4);
+            editor.putString("used_countries", usedCountriesSelection);
+            editor.apply();
+            Log.e(LOG_TAG,"used_countries: " + usedCountriesSelection);
         }
     }
 
@@ -187,7 +202,8 @@ public class GameActivityFragment extends Fragment{
         gameProgressView.setText(gameProgressText);
         questionView.setText(question);
         gameScoreView.setText(gameScoreText);
-        questionCountryView.setText(countryName + "?");
+        String countryNameDisplay = countryName + "?";
+        questionCountryView.setText(countryNameDisplay);
     }
 
     /**
@@ -198,7 +214,7 @@ public class GameActivityFragment extends Fragment{
         setLayourHeader();
         Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
-        gameContent =  (RelativeLayout) rootView.findViewById(R.id.game_content);
+        gameContent =  (LinearLayout) rootView.findViewById(R.id.game_content);
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
@@ -215,8 +231,8 @@ public class GameActivityFragment extends Fragment{
         //------------------------------------------------------------------------------------------
         if ( choice1View == null ) {
             choice1View = new Button(getActivity());
-            RelativeLayout.LayoutParams choiceView1params = new RelativeLayout.LayoutParams( relativeMatchParent, relativeWrapContent);
-            choiceView1params.addRule(relativeBelow, R.id.question_country);
+            LinearLayout.LayoutParams choiceView1params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+            //choiceView1params.addRule(relativeBelow, R.id.question_country);
             choice1View.setId(R.id.choice1);
             choice1View.setLayoutParams(choiceView1params); }
         if ( rootView.findViewById(R.id.choice1) == null ){
@@ -236,8 +252,8 @@ public class GameActivityFragment extends Fragment{
         //------------------------------------------------------------------------------------------
         if ( choice2View == null ) {
             choice2View = new Button(getActivity());
-            RelativeLayout.LayoutParams choiceView2params = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            choiceView2params.addRule(relativeBelow, R.id.choice1);
+            LinearLayout.LayoutParams choiceView2params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+            //choiceView2params.addRule(relativeBelow, R.id.choice1);
             choice2View.setId(R.id.choice2);
             choice2View.setLayoutParams(choiceView2params);
         }
@@ -258,8 +274,8 @@ public class GameActivityFragment extends Fragment{
         //------------------------------------------------------------------------------------------
         if ( choice3View == null ) {
             choice3View = new Button(getActivity());
-            RelativeLayout.LayoutParams choiceView3params = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            choiceView3params.addRule(relativeBelow, R.id.choice2);
+            LinearLayout.LayoutParams choiceView3params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+            //choiceView3params.addRule(relativeBelow, R.id.choice2);
             choice3View.setId(R.id.choice3);
             choice3View.setLayoutParams(choiceView3params);
         }
@@ -280,8 +296,8 @@ public class GameActivityFragment extends Fragment{
         //------------------------------------------------------------------------------------------
         if ( choice4View == null ) {
             choice4View = new Button(getActivity());
-            RelativeLayout.LayoutParams choiceView4params = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            choiceView4params.addRule(relativeBelow, R.id.choice3);
+            LinearLayout.LayoutParams choiceView4params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+            //choiceView4params.addRule(relativeBelow, R.id.choice3);
             choice4View.setId(R.id.choice4);
             choice4View.setLayoutParams(choiceView4params);
         }
@@ -312,9 +328,11 @@ public class GameActivityFragment extends Fragment{
         // If a timer is running, resume it
         if ( questionTimerIsRunning ){startTimer = questionTimerProgress * 1000;}
         Log.e(LOG_TAG, "create new timer " + true);
+
         questionTimer = new CountDownTimer(startTimer, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
+
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 getArguments().putBoolean("timer_is_running",true);
@@ -327,6 +345,7 @@ public class GameActivityFragment extends Fragment{
             }
             // When the timer finishes, mark the question as wrong and end the question
             public void onFinish() {
+
                 Log.e(LOG_TAG, "onFinish " + true);
                 questionTimerIsRunning = false;
                 getArguments().putBoolean("timer_is_running",false);
@@ -363,13 +382,13 @@ public class GameActivityFragment extends Fragment{
     private void selectedAnswerView(){
         String answer = getArguments().getString("selected_answer");
         Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
-        RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
+        gameContent = (LinearLayout) rootView.findViewById(R.id.game_content);
         //------------------------------------------------------------------------------------------
         if ( confirmAnswerTextView == null ) {
             Log.e(LOG_TAG, "confirmAnswerTextView " + true);
             confirmAnswerTextView = new TextView(getActivity());
-            RelativeLayout.LayoutParams confirmTextParams = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            confirmTextParams.addRule(relativeBelow, R.id.choice4);
+            LinearLayout.LayoutParams confirmTextParams = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+            //confirmTextParams.addRule(relativeBelow, R.id.choice4);
             confirmAnswerTextView.setId(R.id.answer_confirmation_text);
             confirmAnswerTextView.setLayoutParams(confirmTextParams);
         }
@@ -377,13 +396,14 @@ public class GameActivityFragment extends Fragment{
             Log.e(LOG_TAG, "confirmAnswerTextView " + " found");
             gameContent.addView(confirmAnswerTextView);
         }
-        confirmAnswerTextView.setText("The capital is " + answer);
+        String answerDisplay = "The capital is " + answer;
+        confirmAnswerTextView.setText(answerDisplay);
         //------------------------------------------------------------------------------------------
         // confirmAnswerButtonView
         if ( confirmAnswerButtonView == null ) {
             confirmAnswerButtonView = new Button(getActivity());
-            RelativeLayout.LayoutParams actionAnswerParams = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            actionAnswerParams.addRule(relativeBelow, R.id.answer_confirmation_text);
+            LinearLayout.LayoutParams actionAnswerParams = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+            //actionAnswerParams.addRule(relativeBelow, R.id.answer_confirmation_text);
             confirmAnswerButtonView.setId(R.id.answer_confirmation_button);
             confirmAnswerButtonView.setLayoutParams(actionAnswerParams);
             confirmAnswerButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_black_24dp, 0);
@@ -476,7 +496,7 @@ public class GameActivityFragment extends Fragment{
     private void answerQuestionView(){
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");
-        final RelativeLayout gameContent = (RelativeLayout) rootView.findViewById(R.id.game_content);
+        gameContent = (LinearLayout) rootView.findViewById(R.id.game_content);
         //Log.e(LOG_TAG, "answerResultView " + answerResultView);
         //------------------------------------------------------------------------------------------
         // answerResultView
@@ -484,9 +504,8 @@ public class GameActivityFragment extends Fragment{
         if ( answerResultView == null ) {
             answerResultView = new TextView(getActivity());
             //Log.e(LOG_TAG, "create answer result view " + true);
-            RelativeLayout.LayoutParams answerResultViewParams = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            answerResultViewParams.addRule(relativeBelow, R.id.question_country);
-            answerResultViewParams.addRule(relativeCenterHorizontal);
+            LinearLayout.LayoutParams answerResultViewParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+            answerResultViewParams.gravity = Gravity.CENTER;
             answerResultView.setId(R.id.next_question_answer_result_text);
             answerResultView.setLayoutParams(answerResultViewParams);
             answerResultView.setTextSize(28);
@@ -509,24 +528,21 @@ public class GameActivityFragment extends Fragment{
         // nextQuestionTextView
         //------------------------------------------------------------------------------------------
         if ( nextQuestionTextView == null ) {
-            //Log.e(LOG_TAG, "nextQuestionTextView null " + true);
             nextQuestionTextView = new TextView(getActivity());
-            RelativeLayout.LayoutParams questionResultParams = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            questionResultParams.addRule(relativeBelow, R.id.next_question_answer_result_text);
+            LinearLayout.LayoutParams questionResultParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+            questionResultParams.gravity = Gravity.CENTER;
             nextQuestionTextView.setId(R.id.next_question_text);
             nextQuestionTextView.setLayoutParams(questionResultParams);}
         if ( rootView.findViewById(R.id.next_question_text) == null ){
-            //Log.e(LOG_TAG, "nextQuestionTextView on layout " + false);
             gameContent.addView(nextQuestionTextView);
             nextQuestionTextView.setText(resultTextDescription);}
         //------------------------------------------------------------------------------------------
         // nextQuestionButtonView
         //------------------------------------------------------------------------------------------
         if ( nextQuestionButtonView == null ) {
-            //Log.e(LOG_TAG, "nextQuestionButtonView null " + true);
             nextQuestionButtonView = new Button(getActivity());
-            RelativeLayout.LayoutParams nextQuestionParams = new RelativeLayout.LayoutParams(relativeMatchParent, relativeWrapContent);
-            nextQuestionParams.addRule(relativeBelow, R.id.next_question_text);
+            LinearLayout.LayoutParams nextQuestionParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+            nextQuestionParams.gravity = Gravity.CENTER;
             nextQuestionButtonView.setId(R.id.next_question_button);
             nextQuestionButtonView.setLayoutParams(nextQuestionParams);
             nextQuestionButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
@@ -545,8 +561,15 @@ public class GameActivityFragment extends Fragment{
             nextQuestionButtonView.setText(R.string.action_next_question);}
         // Slide in the next question views
         slideInView(answerResultView,360);
-        slideInView(nextQuestionTextView,360);
-        slideInView(nextQuestionButtonView,360);
+        slideInView(nextQuestionTextView,340);
+        slideInView(nextQuestionButtonView,320);
+
+        // Display the Score
+        int correctAnswers = sharedPref.getInt("correct_answers", 0);
+        String gameScoreText = "Score: " + correctAnswers;
+        TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
+        gameScoreView.setText(gameScoreText);
+
     }
 
     private void nextButtonOnClickListener(){
@@ -556,9 +579,9 @@ public class GameActivityFragment extends Fragment{
         Log.e(LOG_TAG, "answerResultView on layout " + answerResultView);
         Log.e(LOG_TAG, "nextQuestionTextView on layout " + nextQuestionTextView);
         Log.e(LOG_TAG, "nextQuestionButtonView on layout " + nextQuestionButtonView);
-        slideOutView(answerResultView,360);
-        slideOutView(nextQuestionTextView, 360);
-        slideOutView(nextQuestionButtonView, 360);
+        slideOutView(answerResultView,160);
+        slideOutView(nextQuestionTextView, 140);
+        slideOutView(nextQuestionButtonView, 120);
         getArguments().clear();
         getQuestion(true);
         // Set the question views
@@ -604,7 +627,7 @@ public class GameActivityFragment extends Fragment{
     private ContentValues newQuestion(){
         String gameMode = "";
         Question questionObj = new Question(this.getContext());
-        ContentValues contentValues = questionObj.getQuestion(gameMode);
+        ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{"Barbados"});
         Log.e(LOG_TAG, "questionTimerIsRunning " + questionTimerIsRunning);
         // If a new question is requested and there is a timer running, cancel it first
         if ( questionTimerIsRunning ) {
@@ -636,7 +659,7 @@ public class GameActivityFragment extends Fragment{
      * @param duration the duration of the slide
      */
     private void slideOutView(View view, int duration){
-        gameContent =  (RelativeLayout) rootView.findViewById(R.id.game_content);
+        gameContent =  (LinearLayout) rootView.findViewById(R.id.game_content);
         TranslateAnimation animate = new TranslateAnimation(0,+view.getWidth(),0,0);
         animate.setDuration(duration);
         animate.setFillAfter(true);

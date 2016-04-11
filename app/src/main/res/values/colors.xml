@@ -9,4 +9,7 @@
     <color name="correctBackground">#00C853</color>
     <color name="correctText">#E8F5E9</color>
 
+    <color name="timerUnfinishedColor">#01579B</color>
+    <color name="timerFinishedColor">#9E9E9E</color>
+
 </resources>

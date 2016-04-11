@@ -1,75 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:id="@+id/game_content"
+    android:id="@+id/game_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="rocks.throw20.funwithcountries.GameActivity"
     tools:showIn="@layout/activity_game"
+    android:orientation="vertical"
     >
-
+<LinearLayout
+    android:orientation="vertical"
+    android:id="@+id/game_header"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <TextView
         android:id="@+id/game_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:textSize="@dimen/h1_text"
+        android:layout_gravity="center"
         />
 
     <TextView
         android:id="@+id/game_score"
-        android:layout_below="@+id/game_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:textSize="@dimen/body_text"
+        android:layout_gravity="center"
         />
 
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/game_timer"
-        android:layout_below="@id/game_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:donut_progress="1000"
         app:donut_prefix_text=""
         app:donut_suffix_text=""
         app:donut_max="10"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         />
 
     <TextView
         android:id="@+id/question"
-        android:layout_below="@id/game_timer"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:textSize="@dimen/subheading_text"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         />
     <TextView
         android:id="@+id/question_country"
-        android:layout_below="@id/question"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:textSize="@dimen/h1_text"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         />
-
-
-
-
-
-
-
-
-
-
-</RelativeLayout>
+</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/game_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </LinearLayout>
+</LinearLayout>
