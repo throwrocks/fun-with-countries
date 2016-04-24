@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-import android.widget.Toast;
 
 import rocks.throw20.funwithcountries.Data.Contract;
 
@@ -31,8 +30,12 @@ public class Question {
         // Create a Utilities Object so we can run the randomInt and shuffleArray utility methods.
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
-
-        mCursor = util.getAllCountriesExcept(new String[]{"'Barbados' OR 'France'"});
+        Log.e(LOG_TAG, "usedCountries " + usedCountries[0]);
+        if ( usedCountries[0] == null ){
+            mCursor = util.getAllCountriesWithCapitals();
+        } else {
+            mCursor = util.getAllCountriesWithCapitalsExcept(usedCountries);
+        }
         //mCursor = util.getAllCountriesWithCapitals();
         // The exclude array is used to store the position of the country records that have already
         // been used. It's passed to the getRandomInt method to make sure it doesn't return a

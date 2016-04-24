@@ -34,8 +34,6 @@ public class GameActivityFragment extends Fragment{
     private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
 
-    private LinearLayout gameFragment;
-    private LinearLayout gameHeader;
     private LinearLayout gameContent;
 
     private TextView confirmAnswerTextView;
@@ -157,7 +155,7 @@ public class GameActivityFragment extends Fragment{
             choice3 = contentValues.getAsString("choice3");
             choice4 = contentValues.getAsString("choice4");
 
-
+            // Keep track of countries used during the game session
             usedCountries = sharedPref.getString("used_countries","");
             Log.e(LOG_TAG,"usedCountries: " + usedCountries);
             if ( usedCountries.isEmpty() ){
@@ -625,9 +623,11 @@ public class GameActivityFragment extends Fragment{
      * @return a ContentValues Object with the question, answer, and choices.
      */
     private ContentValues newQuestion(){
+        String usedCountries = sharedPref.getString("used_countries", "");
+        Log.e(LOG_TAG, "new Question -> usedCountries " + usedCountries);
         String gameMode = "";
         Question questionObj = new Question(this.getContext());
-        ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{"Barbados"});
+        ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{usedCountries});
         Log.e(LOG_TAG, "questionTimerIsRunning " + questionTimerIsRunning);
         // If a new question is requested and there is a timer running, cancel it first
         if ( questionTimerIsRunning ) {

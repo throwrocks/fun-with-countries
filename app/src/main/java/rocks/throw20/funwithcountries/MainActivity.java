@@ -6,19 +6,15 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.facebook.stetho.Stetho;
 
-import rocks.throw20.funwithcountries.Data.Contract;
 import rocks.throw20.funwithcountries.Data.FetchTask;
 
 public class MainActivity extends AppCompatActivity {

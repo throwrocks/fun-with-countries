@@ -51,13 +51,15 @@ public class Utilities {
         return mCursor;
     }
 
-    public Cursor getAllCountriesExcept(String[] selectArgs){
+    public Cursor getAllCountriesWithCapitalsExcept(String[] selectArgs){
         Cursor mCursor;
         // Get all the countries in a cursor
+        // Except for countries with no capital,
+        // and countries already used during the game session
         mCursor = mContext.getContentResolver().query(
                 Contract.CountryEntry.buildCountries(),
                 null,
-                Contract.CountryEntry.countryName + "!=?",
+                "LENGTH(" + Contract.CountryEntry.countryCapital + ") >0" + " AND " + Contract.CountryEntry.countryName + "!=?",
                 selectArgs,
                 null);
         return mCursor;
