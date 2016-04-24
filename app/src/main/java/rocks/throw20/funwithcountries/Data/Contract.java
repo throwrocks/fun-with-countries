@@ -50,6 +50,7 @@ public class Contract {
         public static final String countryRegion = "region";
         public static final String countrySubRegion = "subregion";
         public static final String countryPopulation = "population";
+        public static final String countryAlpha2Code = "alpha2Code";
 
         //The countries table index
         public static final int indexCountryId = 1;
@@ -58,6 +59,7 @@ public class Contract {
         public static final int indexRegion = 4;
         public static final int indexSubRegion = 5;
         public static final int indexPopulation = 6;
+        public static final int indexAlpha2code = 7;
 
         public static Uri buildCountriesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

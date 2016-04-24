@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         // If the Cursor is null, or it doesn't contain 247 records
         // create a DataFetch Async task and execute it
-        if ( mCursor == null || mCursor.getCount() != 247) {
+        if ( mCursor == null || mCursor.getCount() < 247) {
             FetchTask fetchData = new FetchTask(this);
             fetchData.execute();
         }

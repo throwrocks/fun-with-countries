@@ -40,6 +40,7 @@ class JSONParser {
             final String fieldCountryRegion = Contract.CountryEntry.countryRegion;
             final String fieldCountrySubRegion = Contract.CountryEntry.countrySubRegion;
             final String fieldCountryPopulation = Contract.CountryEntry.countryPopulation;
+            final String fieldCountryAlpha2Code = Contract.CountryEntry.countryAlpha2Code;
 
             int countriesQty = countriesArray.length();
             //Log.e(LOG_TAG, "CountriesQty: " + countriesQty);
@@ -58,6 +59,7 @@ class JSONParser {
                 String countryRegion = countryRecord.getString(fieldCountryRegion);
                 String countrySubRegion = countryRecord.getString(fieldCountrySubRegion);
                 Long countryPopulation = countryRecord.getLong(fieldCountryPopulation);
+                String countryAlpha2Code = countryRecord.getString(fieldCountryAlpha2Code);
                 //Log.e(LOG_TAG, "Parsing string: " + countryName + " " + countryCapital + " " + countryRegion);
 
                 // Create a content values object
@@ -68,7 +70,7 @@ class JSONParser {
                 countryValues.put(fieldCountryRegion, countryRegion);
                 countryValues.put(fieldCountrySubRegion, countrySubRegion);
                 countryValues.put(fieldCountryPopulation, countryPopulation);
-
+                countryValues.put(fieldCountryAlpha2Code, countryAlpha2Code);
                 //----------------------------------------------------------------------------------
                 // Build an array of content values to be returned and processed outside this method
                 //----------------------------------------------------------------------------------

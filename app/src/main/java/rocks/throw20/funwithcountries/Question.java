@@ -27,6 +27,23 @@ public class Question {
      * @return contentValues
      */
     public ContentValues getQuestion(String gameMode, String[] usedCountries){
+        ContentValues contentValues;
+        if ( gameMode.equals("capitals")){
+            contentValues = buildCapitalsQuestion(usedCountries);
+        } else {
+            contentValues = null;
+        }
+        return contentValues;
+
+    }
+
+    /**
+     * buildQuestions
+     * This method will build the question and answers based on the game mode
+     * @return a set of ContentValues with the question/answer data
+     */
+
+    private ContentValues buildCapitalsQuestion(String[] usedCountries){
         // Create a Utilities Object so we can run the randomInt and shuffleArray utility methods.
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
@@ -36,7 +53,6 @@ public class Question {
         } else {
             mCursor = util.getAllCountriesWithCapitalsExcept(usedCountries);
         }
-        //mCursor = util.getAllCountriesWithCapitals();
         // The exclude array is used to store the position of the country records that have already
         // been used. It's passed to the getRandomInt method to make sure it doesn't return a
         // repeated int, and therefore we end up repeating countries for the choices
@@ -102,18 +118,6 @@ public class Question {
 
         }
         return contentValues;
-
-    }
-
-    /**
-     * buildQuestions
-     * This method will build the question and answers based on the game mode
-     * @param gameMode the game mode (capitals, flags, subregions, randomize)
-     * @return a set of ContentValues with the question/answer data
-     */
-
-    private ContentValues buildQuestion(String gameMode ){
-        return null;
     }
 
 }

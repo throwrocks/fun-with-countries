@@ -624,11 +624,9 @@ public class GameActivityFragment extends Fragment{
      */
     private ContentValues newQuestion(){
         String usedCountries = sharedPref.getString("used_countries", "");
-        Log.e(LOG_TAG, "new Question -> usedCountries " + usedCountries);
         String gameMode = "";
         Question questionObj = new Question(this.getContext());
         ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{usedCountries});
-        Log.e(LOG_TAG, "questionTimerIsRunning " + questionTimerIsRunning);
         // If a new question is requested and there is a timer running, cancel it first
         if ( questionTimerIsRunning ) {
             questionTimer.cancel();
