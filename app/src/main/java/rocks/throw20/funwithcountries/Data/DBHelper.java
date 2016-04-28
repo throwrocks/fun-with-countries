@@ -12,7 +12,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     // TODO Create scores database
     // The database version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 21;
 
     private static final String DATABASE_NAME = "countries.db";
 

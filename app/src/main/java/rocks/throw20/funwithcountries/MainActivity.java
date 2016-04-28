@@ -24,44 +24,59 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Stetho used for viewing the SQLite database values
         Stetho.initializeWithDefaults(this);
 
+        // Create a new util object to check if the countries exist
         Utilities util = new Utilities(this);
         mCursor = util.getAllCountries();
-
-        // If the Cursor is null, or it doesn't contain 247 records
+        // If the Cursor is null, or it doesn't contain 247 countries
         // create a DataFetch Async task and execute it
         if ( mCursor == null || mCursor.getCount() < 247) {
             FetchTask fetchData = new FetchTask(this);
             fetchData.execute();
         }
 
+        Log.e(LOG_TAG,"start game");
         // Setup the layout
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Set the buttons OnClickListeners
-        final Button button = (Button) findViewById(R.id.button_fun_with_capitals);
+        // Get the GameMode buttons
+        final Button buttonGameModeCapitals = (Button) findViewById(R.id.button_fun_with_capitals);
+        final Button buttonGameModeFlags = (Button) findViewById(R.id.button_fun_with_flags);
+        // Create the GameActivity Intent
         final Intent intent = new Intent(this, GameActivity.class);
-
+        // Set the game settings in shared preferences
         SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(this);
         final SharedPreferences.Editor editor = sharedPref.edit();
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        // Default GameMode settings
 
+        // Set the GameMode buttons onClickListeners
+        buttonGameModeCapitals.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(intent);
                 editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 10);
-                editor.putString("game_mode", "capitals");
-                editor.putString("game_title", "Learn the Capitals");
                 editor.putInt("correct_answers", 0);
-                editor.putInt("incorrect_answers",0);
-                editor.putString("game_title", "Learn the Capitals");
+                editor.putInt("incorrect_answers", 0);
                 editor.putString("used_countries", "");
+                editor.putString("game_title", "Learn the Capitals");
+                editor.putString("game_mode", "capitals");
                 editor.apply();
-
+            }
+        });
+        buttonGameModeFlags.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 startActivity(intent);
-
-
+                editor.putInt("game_progress", 1);
+                editor.putInt("game_progress_max", 10);
+                editor.putInt("correct_answers", 0);
+                editor.putInt("incorrect_answers", 0);
+                editor.putString("used_countries", "");
+                editor.putString("game_title", "Learn the Flags");
+                editor.putString("game_mode", "flags");
+                editor.apply();
             }
         });
 

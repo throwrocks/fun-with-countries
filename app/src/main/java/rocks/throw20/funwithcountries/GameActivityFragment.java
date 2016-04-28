@@ -33,7 +33,7 @@ public class GameActivityFragment extends Fragment{
 
     private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
-
+    private boolean timeUp;
     private LinearLayout gameContent;
 
     private TextView confirmAnswerTextView;
@@ -142,9 +142,10 @@ public class GameActivityFragment extends Fragment{
     private void getQuestion(Boolean isnew){
         Bundle b = getArguments();
         b.putString("sequence", "getQuestion");
+        String gameMode = sharedPref.getString("game_mode","");
         if ( isnew ) {
             SharedPreferences.Editor editor = sharedPref.edit();
-            ContentValues contentValues = newQuestion();
+            ContentValues contentValues = newQuestion(gameMode);
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
@@ -333,6 +334,7 @@ public class GameActivityFragment extends Fragment{
 
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
+                timeUp = false;
                 getArguments().putBoolean("timer_is_running",true);
                 int progress = (int) (long) ( millisUntilFinished / 1000);
                 if ( progress <= 10 ){
@@ -346,11 +348,12 @@ public class GameActivityFragment extends Fragment{
 
                 Log.e(LOG_TAG, "onFinish " + true);
                 questionTimerIsRunning = false;
-                getArguments().putBoolean("timer_is_running",false);
-                getArguments().putInt("timer_progress",0);
+                timeUp = true;
+                getArguments().putBoolean("timer_is_running", false);
+                getArguments().putInt("timer_progress", 0);
                 gameTimerView.setProgress(0);
                 gameTimerView.setInnerBottomTextSize(36);
-                gameTimerView.setInnerBottomText("Time up!");
+                //gameTimerView.setInnerBottomText("Time up!");
                 // Time is up, clear any selected answers and answer the question (incorrect)
                 getArguments().putString("selected_answer","");
                 // TODO Create a timeout function
@@ -368,6 +371,7 @@ public class GameActivityFragment extends Fragment{
      * @param answer the answer text
      */
     private void selectAnswer(String answer){
+        Log.e(LOG_TAG, "selectAnswer answer: " + answer);
         getArguments().putString("selected_answer", answer);
         getArguments().putString("sequence", "selectAnswer");
         selectedAnswerView();
@@ -386,7 +390,6 @@ public class GameActivityFragment extends Fragment{
             Log.e(LOG_TAG, "confirmAnswerTextView " + true);
             confirmAnswerTextView = new TextView(getActivity());
             LinearLayout.LayoutParams confirmTextParams = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-            //confirmTextParams.addRule(relativeBelow, R.id.choice4);
             confirmAnswerTextView.setId(R.id.answer_confirmation_text);
             confirmAnswerTextView.setLayoutParams(confirmTextParams);
         }
@@ -438,12 +441,16 @@ public class GameActivityFragment extends Fragment{
         // Evaluate the answer
         Boolean test  = selectedAnswer.equals(currentAnswer);
         getArguments().putBoolean("evaluated_answer",test);
+        Log.e(LOG_TAG, "answerQuestions selectedAnswer: " + selectedAnswer);
+        Log.e(LOG_TAG, "answerQuestions currentAnswer: " + currentAnswer);
         // Evaluated answer text for keeping track of the score and displaying the result
         int gameCorrectAnswers = sharedPref.getInt("correct_answers",0);
         int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers",0);
         CharSequence questionResultText;
         // The answer was correct
         if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; questionResultText = "Correct";}
+        // The time is up
+        else if ( timeUp ){ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Time up!"; }
         // The answer was incorrect
         else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Incorrect";}
         // Save the score
@@ -516,11 +523,16 @@ public class GameActivityFragment extends Fragment{
                 Log.e(LOG_TAG, "result text " + resultText);
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
+            } else if ( resultText != null  && resultText.equals("Time up!") ){
+                Log.e(LOG_TAG, "result text " + resultText);
+                answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.timeUpBackground));
+                answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
             } else if ( resultText != null && resultText.equals("Correct")) {
                 Log.e(LOG_TAG, "result text " + resultText);
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
             }
+
             answerResultView.setText(resultText);}
         //------------------------------------------------------------------------------------------
         // nextQuestionTextView
@@ -622,10 +634,10 @@ public class GameActivityFragment extends Fragment{
      * It also creates a CountDownTimer to drive the timer and its display on the question
      * @return a ContentValues Object with the question, answer, and choices.
      */
-    private ContentValues newQuestion(){
+    private ContentValues newQuestion(String gameMode){
         String usedCountries = sharedPref.getString("used_countries", "");
-        String gameMode = "";
         Question questionObj = new Question(this.getContext());
+        Log.e(LOG_TAG,"gameMode: " + gameMode);
         ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{usedCountries});
         // If a new question is requested and there is a timer running, cancel it first
         if ( questionTimerIsRunning ) {

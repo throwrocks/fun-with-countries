@@ -30,7 +30,11 @@ public class Question {
         ContentValues contentValues;
         if ( gameMode.equals("capitals")){
             contentValues = buildCapitalsQuestion(usedCountries);
-        } else {
+        }
+        else if ( gameMode.equals("flags")){
+            contentValues = buildCapitalsQuestion(usedCountries);
+        }
+        else {
             contentValues = null;
         }
         return contentValues;
@@ -71,6 +75,7 @@ public class Question {
             mCursor.move(randomInt1);
             String countryName = mCursor.getString(Contract.CountryEntry.indexCountryName);
             String countryCapital = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            String countryAlpha2Code = mCursor.getString(Contract.CountryEntry.indexAlpha2code);
 
             String questionText = "What is the capital of ";
             String answerText = "The capital of " + countryName + " is " + countryCapital;
@@ -110,6 +115,7 @@ public class Question {
             contentValues.put("country_capital", countryCapital);
             contentValues.put("question", questionText);
             contentValues.put("answer", answerText);
+            contentValues.put("alpha2Code",countryAlpha2Code);
 
             contentValues.put("choice1", choices[0]);
             contentValues.put("choice2", choices[1]);
