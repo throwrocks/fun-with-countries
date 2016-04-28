@@ -3,6 +3,7 @@ package rocks.throw20.funwithcountries;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -16,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.squareup.picasso.Picasso;
+
+import rocks.throw20.funwithcountries.Data.Contract;
 
 
 /**
@@ -54,10 +59,16 @@ public class GameActivityFragment extends Fragment{
     private Button choice3View;
     private Button choice4View;
 
+    private ImageButton choice1ImageButtonView;
+    private ImageButton choice2ImageButtonView;
+    private ImageButton choice3ImageButtonView;
+    private ImageButton choice4ImageButtonView;
+
     private String choice1;
     private String choice2;
     private String choice3;
     private String choice4;
+
     private String usedCountries;
     private String usedCountriesSelection;
     private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -185,6 +196,7 @@ public class GameActivityFragment extends Fragment{
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
         int correctAnswers = sharedPref.getInt("correct_answers", 0);
+
         String gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
         String gameScoreText = "Score: " + correctAnswers;
         question = getArguments().getString("question");
@@ -213,6 +225,7 @@ public class GameActivityFragment extends Fragment{
         setLayourHeader();
         Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
+        String gameMode = sharedPref.getString("game_mode", "");
         gameContent =  (LinearLayout) rootView.findViewById(R.id.game_content);
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
@@ -228,100 +241,139 @@ public class GameActivityFragment extends Fragment{
         //------------------------------------------------------------------------------------------
         // Set Choice 1
         //------------------------------------------------------------------------------------------
-        if ( choice1View == null ) {
-            choice1View = new Button(getActivity());
-            LinearLayout.LayoutParams choiceView1params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-            //choiceView1params.addRule(relativeBelow, R.id.question_country);
-            choice1View.setId(R.id.choice1);
-            choice1View.setLayoutParams(choiceView1params); }
-        if ( rootView.findViewById(R.id.choice1) == null ){
-            choice1View.setText(choice1);
-            choice1View.setEnabled(true);
-            choice1View.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CharSequence countryCapital = choice1View.getText();
-                    selectAnswer(countryCapital.toString());
-                }
-            });
-            gameContent.addView(choice1View);
+        if ( gameMode.equals("capitals")) {
+            if (choice1View == null) {
+                choice1View = new Button(getActivity());
+                LinearLayout.LayoutParams choiceView1params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+                choice1View.setId(R.id.choice1);
+                choice1View.setLayoutParams(choiceView1params);
+            }
+            if (rootView.findViewById(R.id.choice1) == null) {
+                choice1View.setText(choice1);
+                choice1View.setEnabled(true);
+                choice1View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CharSequence countryCapital = choice1View.getText();
+                        selectAnswer(countryCapital.toString());
+                    }
+                });
+                gameContent.addView(choice1View);
+            }
+        } else if ( gameMode.equals("flags")){
+            if (choice1ImageButtonView == null) {
+                choice1ImageButtonView = new ImageButton(getActivity());
+                LinearLayout.LayoutParams choiceView1params = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                choice1ImageButtonView.setId(R.id.choice1);
+                choice1ImageButtonView.setLayoutParams(choiceView1params);
+            }
+            if (rootView.findViewById(R.id.choice1) == null) {
+                Log.e(LOG_TAG, "choice1 " + choice1.toLowerCase());
+                int flagDrawable = R.drawable.flag_ad;
+
+                Picasso.with(getContext()).load(flagDrawable)
+                        .into(choice1ImageButtonView);
+
+                //choice1View.setText(choice1);
+                choice1ImageButtonView.setEnabled(true);
+                choice1ImageButtonView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CharSequence countryCapital = choice1View.getText();
+                        selectAnswer(countryCapital.toString());
+                    }
+                });
+                gameContent.addView(choice1ImageButtonView);
+            }
         }
         //------------------------------------------------------------------------------------------
         // Set Choice 2
         //------------------------------------------------------------------------------------------
-        if ( choice2View == null ) {
-            choice2View = new Button(getActivity());
-            LinearLayout.LayoutParams choiceView2params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-            //choiceView2params.addRule(relativeBelow, R.id.choice1);
-            choice2View.setId(R.id.choice2);
-            choice2View.setLayoutParams(choiceView2params);
-        }
-        if ( rootView.findViewById(R.id.choice2) == null ){
-            choice2View.setText(choice2);
-            choice2View.setEnabled(true);
-            choice2View.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CharSequence countryCapital = choice2View.getText();
-                    selectAnswer(countryCapital.toString());
-                }
-            });
-            gameContent.addView(choice2View);
-        }
+        //if ( gameMode.equals("capitals")) {
+            if (choice2View == null) {
+                choice2View = new Button(getActivity());
+                LinearLayout.LayoutParams choiceView2params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+                //choiceView2params.addRule(relativeBelow, R.id.choice1);
+                choice2View.setId(R.id.choice2);
+                choice2View.setLayoutParams(choiceView2params);
+            }
+            if (rootView.findViewById(R.id.choice2) == null) {
+                choice2View.setText(choice2);
+                choice2View.setEnabled(true);
+                choice2View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CharSequence countryCapital = choice2View.getText();
+                        selectAnswer(countryCapital.toString());
+                    }
+                });
+                gameContent.addView(choice2View);
+            }
+        //}
         //------------------------------------------------------------------------------------------
         // Set Choice 3
         //------------------------------------------------------------------------------------------
-        if ( choice3View == null ) {
-            choice3View = new Button(getActivity());
-            LinearLayout.LayoutParams choiceView3params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-            //choiceView3params.addRule(relativeBelow, R.id.choice2);
-            choice3View.setId(R.id.choice3);
-            choice3View.setLayoutParams(choiceView3params);
-        }
-        if ( rootView.findViewById(R.id.choice3) == null ){
-            choice3View.setText(choice3);
-            choice3View.setEnabled(true);
-            choice3View.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CharSequence countryCapital = choice3View.getText();
-                    selectAnswer(countryCapital.toString());
-                }
-            });
-            gameContent.addView(choice3View);
-        }
+       // if ( gameMode.equals("capitals")) {
+            if (choice3View == null) {
+                choice3View = new Button(getActivity());
+                LinearLayout.LayoutParams choiceView3params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+                //choiceView3params.addRule(relativeBelow, R.id.choice2);
+                choice3View.setId(R.id.choice3);
+                choice3View.setLayoutParams(choiceView3params);
+            }
+            if (rootView.findViewById(R.id.choice3) == null) {
+                choice3View.setText(choice3);
+                choice3View.setEnabled(true);
+                choice3View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CharSequence countryCapital = choice3View.getText();
+                        selectAnswer(countryCapital.toString());
+                    }
+                });
+                gameContent.addView(choice3View);
+            }
+        //}
         //------------------------------------------------------------------------------------------
         // Set Choice 4
         //------------------------------------------------------------------------------------------
-        if ( choice4View == null ) {
-            choice4View = new Button(getActivity());
-            LinearLayout.LayoutParams choiceView4params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-            //choiceView4params.addRule(relativeBelow, R.id.choice3);
-            choice4View.setId(R.id.choice4);
-            choice4View.setLayoutParams(choiceView4params);
-        }
-        if ( rootView.findViewById(R.id.choice4) == null ){
-            choice4View.setText(choice4);
-            choice4View.setEnabled(true);
-            choice4View.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CharSequence countryCapital = choice4View.getText();
-                    selectAnswer(countryCapital.toString());
-                }
-            });
-            gameContent.addView(choice4View);
-        }
+       // if ( gameMode.equals("capitals")) {
+            if (choice4View == null) {
+                choice4View = new Button(getActivity());
+                LinearLayout.LayoutParams choiceView4params = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
+                //choiceView4params.addRule(relativeBelow, R.id.choice3);
+                choice4View.setId(R.id.choice4);
+                choice4View.setLayoutParams(choiceView4params);
+            }
+            if (rootView.findViewById(R.id.choice4) == null) {
+                choice4View.setText(choice4);
+                choice4View.setEnabled(true);
+                choice4View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CharSequence countryCapital = choice4View.getText();
+                        selectAnswer(countryCapital.toString());
+                    }
+                });
+                gameContent.addView(choice4View);
+            }
+       // }
         //------------------------------------------------------------------------------------------
         // Slide in the choice views
         //------------------------------------------------------------------------------------------
-        slideInView(choice1View, 360);
-        slideInView(choice2View, 340);
-        slideInView(choice3View, 320);
-        slideInView(choice4View, 300);
+        if ( gameMode.equals("capitals")) {
+            slideInView(choice1View, 360);
+            slideInView(choice2View, 340);
+            slideInView(choice3View, 320);
+            slideInView(choice4View, 300);
+        }else if ( gameMode.equals("flags")){
+            slideInView(choice1ImageButtonView, 360);
+        }
+
+
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
-        //------------------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------------------
         Log.e(LOG_TAG, "timer is running " + questionTimerIsRunning);
         int startTimer = 11000;
         // If a timer is running, resume it
@@ -382,6 +434,7 @@ public class GameActivityFragment extends Fragment{
 
      */
     private void selectedAnswerView(){
+        String gameMode = sharedPref.getString("game_mode","");
         String answer = getArguments().getString("selected_answer");
         Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
         gameContent = (LinearLayout) rootView.findViewById(R.id.game_content);
@@ -397,7 +450,9 @@ public class GameActivityFragment extends Fragment{
             Log.e(LOG_TAG, "confirmAnswerTextView " + " found");
             gameContent.addView(confirmAnswerTextView);
         }
-        String answerDisplay = "The capital is " + answer;
+        String answerDisplay = "";
+        if ( gameMode.equals("capitals")) { answerDisplay = "The capital is " + answer; }
+        else if ( gameMode.equals("flags")){ answerDisplay = "The flag is " + "" ; }
         confirmAnswerTextView.setText(answerDisplay);
         //------------------------------------------------------------------------------------------
         // confirmAnswerButtonView
@@ -475,6 +530,7 @@ public class GameActivityFragment extends Fragment{
         Log.e(LOG_TAG, "question result 2 " + answer);
 
         // Disable, slide out and remove the choice buttons
+
         choice1View = (Button) rootView.findViewById(R.id.choice1);
         choice2View = (Button) rootView.findViewById(R.id.choice2);
         choice3View = (Button) rootView.findViewById(R.id.choice3);

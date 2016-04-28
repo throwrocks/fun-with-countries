@@ -28,11 +28,8 @@ public class Question {
      */
     public ContentValues getQuestion(String gameMode, String[] usedCountries){
         ContentValues contentValues;
-        if ( gameMode.equals("capitals")){
-            contentValues = buildCapitalsQuestion(usedCountries);
-        }
-        else if ( gameMode.equals("flags")){
-            contentValues = buildCapitalsQuestion(usedCountries);
+        if ( gameMode != null ) {
+            contentValues = buildQuestion(gameMode,usedCountries);
         }
         else {
             contentValues = null;
@@ -42,12 +39,12 @@ public class Question {
     }
 
     /**
-     * buildQuestions
-     * This method will build the question and answers based on the game mode
+     * buildQuestion
+     * This method returns the ContentValues used in the capitals game mode
      * @return a set of ContentValues with the question/answer data
      */
 
-    private ContentValues buildCapitalsQuestion(String[] usedCountries){
+    private ContentValues buildQuestion (String gameMode, String[] usedCountries){
         // Create a Utilities Object so we can run the randomInt and shuffleArray utility methods.
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
@@ -77,34 +74,49 @@ public class Question {
             String countryCapital = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
             String countryAlpha2Code = mCursor.getString(Contract.CountryEntry.indexAlpha2code);
 
-            String questionText = "What is the capital of ";
-            String answerText = "The capital of " + countryName + " is " + countryCapital;
+            String questionText = "";
+            String answerText = "";
+
+            if ( gameMode.equals("capitals")) {
+                questionText = "What is the capital of ";
+                answerText = "The capital of " + countryName + " is " + countryCapital;
+            }
+            else if ( gameMode.equals("flags")){
+                questionText = "What is the flag of ";
+                answerText = "The flag of " + countryName + " is ";
+            }
 
             exclude[0] = randomInt1;
 
             // Build the multiple choices
             // Choice1
-            choices[0] = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            if ( gameMode.equals("capitals")) {  choices[0]= mCursor.getString(Contract.CountryEntry.indexCountryCapital); }
+            else if ( gameMode.equals("flags")){  choices[0]= mCursor.getString(Contract.CountryEntry.indexAlpha2code); }
+
 
             // Choice2
             int randomInt2 = util.getRandomInt(cursorSize, exclude);
             mCursor.moveToFirst();
             mCursor.move(randomInt2);
-            choices[1]= mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            if ( gameMode.equals("capitals")) {  choices[1]= mCursor.getString(Contract.CountryEntry.indexCountryCapital); }
+            else if ( gameMode.equals("flags")){  choices[1]= mCursor.getString(Contract.CountryEntry.indexAlpha2code); }
+
             exclude[1] = randomInt2;
 
             // Choice3
             int randomInt3 = util.getRandomInt(cursorSize, exclude);
             mCursor.moveToFirst();
             mCursor.move(randomInt3);
-            choices[2] = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            if ( gameMode.equals("capitals")) {  choices[2]= mCursor.getString(Contract.CountryEntry.indexCountryCapital); }
+            else if ( gameMode.equals("flags")){  choices[2]= mCursor.getString(Contract.CountryEntry.indexAlpha2code); }
             exclude[2] = randomInt3;
 
             // Choice4
             int randomInt4 = util.getRandomInt(cursorSize, exclude);
             mCursor.moveToFirst();
             mCursor.move(randomInt4);
-            choices[3] = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
+            if ( gameMode.equals("capitals")) {  choices[3]= mCursor.getString(Contract.CountryEntry.indexCountryCapital); }
+            else if ( gameMode.equals("flags")){  choices[3]= mCursor.getString(Contract.CountryEntry.indexAlpha2code); }
 
 
             // Shuffle the choices
