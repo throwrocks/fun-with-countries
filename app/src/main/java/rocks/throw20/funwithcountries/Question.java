@@ -105,14 +105,22 @@ public class Question {
             }
 
 
+
             if ( gameMode.equals("capitals")) {
                 questionText = "What is the capital of ";
                 answerText = "The capital of " + countryName + " is " + countryCapital;
             }
             else if ( gameMode.equals("flags")){
                 questionText = "What is the flag of ";
-                answerText = "The flag of " + countryName + " is ";
+                answerText = "The flag of " + countryName + " is " + countryAlpha2Code;
             }
+
+            // Store the values and return them
+            contentValues.put("country_name", countryName);
+            contentValues.put("country_capital", countryCapital);
+            contentValues.put("question", questionText);
+            contentValues.put("answer", answerText);
+            contentValues.put("country_alpha2Code",countryAlpha2Code);
 
 
 
@@ -196,12 +204,7 @@ public class Question {
             // Shuffle the choices
             util.shuffleArray(choices);
 
-            // Store the values and return them
-            contentValues.put("country_name", countryName);
-            contentValues.put("country_capital", countryCapital);
-            contentValues.put("question", questionText);
-            contentValues.put("answer", answerText);
-            contentValues.put("alpha2Code",countryAlpha2Code);
+
 
             contentValues.put("choice1", choices[0]);
             contentValues.put("choice2", choices[1]);
