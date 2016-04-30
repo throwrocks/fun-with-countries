@@ -343,6 +343,7 @@ public class GameActivityFragment extends Fragment {
         // Game Mode: flags
         //------------------------------------------------------------------------------------------
         else if (gameMode.equals("flags")) {
+            Utilities util = new Utilities(getContext());
             //--------------------------------------------------------------------------------------
             // Flags: Choice 1
             //--------------------------------------------------------------------------------------
@@ -355,19 +356,18 @@ public class GameActivityFragment extends Fragment {
             }
             if (rootView.findViewById(R.id.choice1) == null) {
                 Log.e(LOG_TAG, "choice1 " + choice1.toLowerCase());
-                int flagDrawable = getDrawable(getContext(), "flag_" + choice1.toLowerCase());
+                final String alpha2Code = choice1.toLowerCase();
+                int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
                 Picasso.with(getContext()).load(flagDrawable)
                         .resize(250, 250)
                         .onlyScaleDown()
                         .into(choice1ImageButtonView);
 
-                //choice1View.setText(choice1);
                 choice1ImageButtonView.setEnabled(true);
                 choice1ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CharSequence countryCapital = choice1View.getText();
-                        selectAnswer(countryCapital.toString());
+                        selectAnswer(alpha2Code);
                     }
                 });
                 gameContent.addView(choice1ImageButtonView);
@@ -384,7 +384,8 @@ public class GameActivityFragment extends Fragment {
             }
             if (rootView.findViewById(R.id.choice2) == null) {
                 Log.e(LOG_TAG, "choice2 " + choice2.toLowerCase());
-                int flagDrawable = getDrawable(getContext(), "flag_" + choice2.toLowerCase());
+                final String alpha2Code = choice2.toLowerCase();
+                int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
 
                 Picasso.with(getContext()).load(flagDrawable)
                         .resize(250, 250)
@@ -396,8 +397,7 @@ public class GameActivityFragment extends Fragment {
                 choice2ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CharSequence countryCapital = choice2View.getText();
-                        selectAnswer(countryCapital.toString());
+                        selectAnswer(alpha2Code);
                     }
                 });
                 gameContent.addView(choice2ImageButtonView);
@@ -414,7 +414,8 @@ public class GameActivityFragment extends Fragment {
             }
             if (rootView.findViewById(R.id.choice3) == null) {
                 Log.e(LOG_TAG, "choice3 " + choice3.toLowerCase());
-                int flagDrawable = getDrawable(getContext(), "flag_" + choice3.toLowerCase());
+                final String alpha2Code = choice3.toLowerCase();
+                int flagDrawable = util.getDrawable(getContext(),"flag_" +  alpha2Code);
 
                 Picasso.with(getContext()).load(flagDrawable)
                         .resize(250, 250)
@@ -426,8 +427,7 @@ public class GameActivityFragment extends Fragment {
                 choice3ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CharSequence countryCapital = choice3View.getText();
-                        selectAnswer(countryCapital.toString());
+                        selectAnswer(alpha2Code);
                     }
                 });
                 gameContent.addView(choice3ImageButtonView);
@@ -437,13 +437,15 @@ public class GameActivityFragment extends Fragment {
             //--------------------------------------------------------------------------------------
             if (choice4ImageButtonView == null) {
                 choice4ImageButtonView = new ImageButton(getActivity());
-                LinearLayout.LayoutParams choiceView1params = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                LinearLayout.LayoutParams choiceView4params =
+                        new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
                 choice4ImageButtonView.setId(R.id.choice4);
-                choice4ImageButtonView.setLayoutParams(choiceView1params);
+                choice4ImageButtonView.setLayoutParams(choiceView4params);
             }
             if (rootView.findViewById(R.id.choice4) == null) {
                 Log.e(LOG_TAG, "choice4 " + choice4.toLowerCase());
-                int flagDrawable = getDrawable(getContext(), "flag_" + choice4.toLowerCase());
+                final String alpha2Code = choice4.toLowerCase();
+                int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
 
                 Picasso.with(getContext()).load(flagDrawable)
                         .resize(250, 250)
@@ -455,8 +457,7 @@ public class GameActivityFragment extends Fragment {
                 choice4ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CharSequence countryCapital = choice4View.getText();
-                        selectAnswer(countryCapital.toString());
+                        selectAnswer(alpha2Code);
                     }
                 });
                 gameContent.addView(choice4ImageButtonView);
@@ -526,14 +527,7 @@ public class GameActivityFragment extends Fragment {
             }
         }.start();
     }
-    public static int getDrawable(Context context, String name)
-    {
-        Assert.assertNotNull(context);
-        Assert.assertNotNull(name);
 
-        return context.getResources().getIdentifier(name,
-                "drawable", context.getPackageName());
-    }
     /**
      * selectAnswer
      * This method is called when clicking on a choice button

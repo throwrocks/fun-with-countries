@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import junit.framework.Assert;
+
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -113,5 +115,21 @@ public class Utilities {
             ar[i] = a;
         }
         return ar;
+    }
+
+    /**
+     * getDrawable
+     * http://stackoverflow.com/questions/7948059/dynamic-loading-of-images-r-drawable-using-variable
+     * @param context the context
+     * @param name the name of the drawable
+     * @return the int of the drawable
+     */
+    public int getDrawable(Context context, String name)
+    {
+        Assert.assertNotNull(context);
+        Assert.assertNotNull(name);
+
+        return context.getResources().getIdentifier(name,
+                "drawable", context.getPackageName());
     }
 }
