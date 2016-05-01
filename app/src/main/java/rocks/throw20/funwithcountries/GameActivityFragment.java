@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -21,7 +23,9 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +58,7 @@ public class GameActivityFragment extends Fragment {
     private TextView answerResultView;
     private TextView nextQuestionTextView;
     private Button nextQuestionButtonView;
+    private ImageView answerFlag;
 
     private String countryName;
     private String countryCapital;
@@ -385,9 +390,14 @@ public class GameActivityFragment extends Fragment {
                 choice1ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        choice1ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         selectAnswer(choice1);
                     }
                 });
+                choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                 gameContent.addView(choice1ImageButtonView);
             }
             //--------------------------------------------------------------------------------------
@@ -415,9 +425,14 @@ public class GameActivityFragment extends Fragment {
                 choice2ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        selectAnswer(choice2);
+                        choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice2ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                     selectAnswer(choice2);
                     }
                 });
+                choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                 gameContent.addView(choice2ImageButtonView);
             }
             //--------------------------------------------------------------------------------------
@@ -444,9 +459,14 @@ public class GameActivityFragment extends Fragment {
                 choice3ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice3ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         selectAnswer(choice3);
                     }
                 });
+                choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                 gameContent.addView(choice3ImageButtonView);
             }
             //--------------------------------------------------------------------------------------
@@ -475,9 +495,14 @@ public class GameActivityFragment extends Fragment {
                 choice4ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        choice4ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                         selectAnswer(choice4);
                     }
                 });
+                choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                 gameContent.addView(choice4ImageButtonView);
             }
         }
@@ -569,7 +594,6 @@ public class GameActivityFragment extends Fragment {
         Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
 
         gameAnswerConfirmation = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
-        //gameContent = (GridLayout) rootView.findViewById(R.id.game_content);
         //------------------------------------------------------------------------------------------
         if ( confirmAnswerTextView == null ) {
             Log.e(LOG_TAG, "confirmAnswerTextView " + true);
@@ -582,10 +606,15 @@ public class GameActivityFragment extends Fragment {
             Log.e(LOG_TAG, "confirmAnswerTextView " + " found");
             gameAnswerConfirmation.addView(confirmAnswerTextView);
         }
-        String answerDisplay = "";
-        if ( gameMode.equals("capitals")) { answerDisplay = "The capital is " + answer; }
-        else if ( gameMode.equals("flags")){ answerDisplay = "The flag is " + answer ; }
-        confirmAnswerTextView.setText(answerDisplay);
+        String answerDisplay;
+        if ( gameMode.equals("capitals")) {
+            answerDisplay = "The capital is " + answer;
+            confirmAnswerTextView.setText(answerDisplay);
+        } else if ( gameMode.equals("flags")){
+
+
+        }
+
         //------------------------------------------------------------------------------------------
         // confirmAnswerButtonView
         if ( confirmAnswerButtonView == null ) {
@@ -657,6 +686,7 @@ public class GameActivityFragment extends Fragment {
         }
 
         getArguments().putString("answer_result",questionResultText.toString());
+
         getArguments().putString("answer_result_display",answer);
 
         Log.e(LOG_TAG, "question result 1 " + questionResultText);
@@ -707,6 +737,8 @@ public class GameActivityFragment extends Fragment {
         Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");
+        String currentAnswer = getArguments().getString("current_answer", "");
+        String gameMode = sharedPref.getString("game_mode", "");
         gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
         //Log.e(LOG_TAG, "answerResultView " + answerResultView);
         //------------------------------------------------------------------------------------------
@@ -751,7 +783,22 @@ public class GameActivityFragment extends Fragment {
             nextQuestionTextView.setLayoutParams(questionResultParams);}
         if ( rootView.findViewById(R.id.next_question_text) == null ){
             gameAnswer.addView(nextQuestionTextView);
-            nextQuestionTextView.setText(resultTextDescription);}
+            if ( gameMode.equals("capitals")){
+                nextQuestionTextView.setText(resultTextDescription);
+            } else if ( gameMode.equals("flags")){
+                Utilities util = new Utilities(getContext());
+                nextQuestionTextView.setText(resultTextDescription);
+                answerFlag = new ImageView(getActivity());
+                gameAnswer.addView(answerFlag);
+                Log.e(LOG_TAG,"Next/answer " + answer);
+                int flagDrawable = util.getDrawable(getContext(), "flag_" + currentAnswer.toLowerCase());
+                Picasso.with(getContext()).load(flagDrawable)
+                        .resize(220, 140)
+                        .onlyScaleDown()
+                        .into(answerFlag);
+            }
+        }
+
         //------------------------------------------------------------------------------------------
         // nextQuestionButtonView
         //------------------------------------------------------------------------------------------
@@ -790,6 +837,7 @@ public class GameActivityFragment extends Fragment {
     }
 
     private void nextButtonOnClickListener(){
+        String gameMode = sharedPref.getString("game_mode","");
         answerResultView = (TextView) rootView.findViewById(R.id.next_question_answer_result_text);
         nextQuestionTextView = (TextView) rootView.findViewById(R.id.next_question_text);
         nextQuestionButtonView = (Button) rootView.findViewById(R.id.next_question_button);
@@ -799,6 +847,9 @@ public class GameActivityFragment extends Fragment {
         slideOutView("gameAnswer", answerResultView,360);
         slideOutView("gameAnswer", nextQuestionTextView, 340);
         slideOutView("gameAnswer", nextQuestionButtonView, 320);
+        if ( gameMode.equals("flags")){
+            slideOutView("gameAnswer", answerFlag, 310);
+        }
         getArguments().clear();
         getQuestion(true);
         // Set the question views
@@ -881,19 +932,20 @@ public class GameActivityFragment extends Fragment {
         animate.setFillAfter(true);
         slideOutView.startAnimation(animate);
 
-        if ( parentView.equals("gameContent")){
-            gameContent =  (GridLayout) rootView.findViewById(R.id.game_content);
-            gameContent.removeView(slideOutView);
-        }else if ( parentView.equals("gameAnswerConfirmation")){
-            gameAnswerConfirmation =  (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
-            gameAnswerConfirmation.removeView(slideOutView);
-        }else if ( parentView.equals("gameAnswer")){
-            gameAnswer =  (LinearLayout) rootView.findViewById(R.id.game_answer);
-            gameAnswer.removeView(slideOutView);
+        switch (parentView) {
+            case "gameContent" :
+                gameContent =  (GridLayout) rootView.findViewById(R.id.game_content);
+                gameContent.removeView(slideOutView);
+                break;
+            case "gameAnswerConfirmation" :
+                gameAnswerConfirmation =  (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
+                gameAnswerConfirmation.removeView(slideOutView);
+                break;
+            case "gameAnswer":
+                gameAnswer =  (LinearLayout) rootView.findViewById(R.id.game_answer);
+                gameAnswer.removeView(slideOutView);
+                break;
         }
-
-
-
     }
 
     public void slideToTop(View view){

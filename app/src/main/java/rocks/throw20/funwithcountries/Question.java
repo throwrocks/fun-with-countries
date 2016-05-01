@@ -112,7 +112,7 @@ public class Question {
             }
             else if ( gameMode.equals("flags")){
                 questionText = "What is the flag of ";
-                answerText = "The flag of " + countryName + " is " + countryAlpha2Code;
+                answerText = "The flag of " + countryName + " is ";
             }
 
             // Store the values and return them
