@@ -10,28 +10,31 @@
     <string name="button_game_mode_flags">Guess the Flags</string>
     <string name="button_game_mode_subregion">Discover the Subregions</string>
     <string name="button_game_mode_randomize">Randomize</string>
+    <string name="button_game_scores">High Scores</string>
     <string name="buton_share_this_app">Share this App</string>
     <string name="title_activity_game">GameActivity</string>
 
     <string name="action_submit">Yes</string>
     <string name="action_next_question">Next Question</string>
+    <string name="action_view_scores">View Scores</string>
 
     <!--Question Header Ids-->
-    <item type="id" name="game_progress"/>
-    <item type="id" name="game_score"/>
-    <item type="id" name="game_timer"/>
-    <item type="id" name="question"/>
-    <item type="id" name="question_country"/>
+    <item name="game_progress" type="id" />
+    <item name="game_score" type="id" />
+    <item name="game_timer" type="id" />
+    <item name="question" type="id" />
+    <item name="question_country" type="id" />
     <!--Choice Button Ids-->
-    <item type="id" name="choice1" />
-    <item type="id" name="choice2" />
-    <item type="id" name="choice3" />
-    <item type="id" name="choice4" />
+    <item name="choice1" type="id" />
+    <item name="choice2" type="id" />
+    <item name="choice3" type="id" />
+    <item name="choice4" type="id" />
     <!--Answer Confirmation Ids-->
-    <item type="id" name="answer_confirmation_text" />
-    <item type="id" name="answer_confirmation_button" />
+    <item name="answer_confirmation_text" type="id" />
+    <item name="answer_confirmation_button" type="id" />
     <!--Next Question Ids-->
-    <item type="id" name="next_question_answer_result_text" />
-    <item type="id" name="next_question_text" />
-    <item type="id" name="next_question_button" />
+    <item name="next_question_answer_result_text" type="id" />
+    <item name="next_question_text" type="id" />
+    <item name="next_question_button" type="id" />
+    <string name="title_activity_scores">ScoresActivity</string>
 </resources>

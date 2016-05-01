@@ -2,6 +2,7 @@ package rocks.throw20.funwithcountries;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -548,7 +549,6 @@ public class GameActivityFragment extends Fragment {
             }
             // When the timer finishes, mark the question as wrong and end the question
             public void onFinish() {
-
                //Log.e(LOG_TAG, "onFinish " + true);
                 questionTimerIsRunning = false;
                 timeUp = true;
@@ -559,7 +559,6 @@ public class GameActivityFragment extends Fragment {
                 //gameTimerView.setInnerBottomText("Time up!");
                 // Time is up, clear any selected answers and answer the question (incorrect)
                 getArguments().putString("selected_answer","");
-                // TODO Create a timeout function
                 // Select and answer
                 selectAnswer("");
                 answerQuestion();
@@ -669,8 +668,10 @@ public class GameActivityFragment extends Fragment {
         editor.putInt("correct_answers", gameCorrectAnswers);
         editor.putInt("incorrect_answers", gameIncorrectAnswers);
         // Save the game's progress
+        int gameProgressMax = sharedPref.getInt("game_progress_max",0);
         int gameProgress = sharedPref.getInt("game_progress",0);
         int gameProgressCalc =  gameProgress + 1;
+
 
         editor.putInt("game_progress", gameProgressCalc);
         editor.apply();
@@ -678,7 +679,13 @@ public class GameActivityFragment extends Fragment {
         getArguments().putString("answer_result",questionResultText.toString());
         getArguments().putString("answer_result_display",answer);
 
-       //Log.e(LOG_TAG, "question result 1 " + questionResultText);
+        //------------------------------------------------------------------------------------------
+        //The game is over !!!! Submit the score
+        //------------------------------------------------------------------------------------------
+        gameProgress = sharedPref.getInt("game_progress",0);
+        if ( gameProgressMax == gameProgress ){ submitScore(); }
+
+        //Log.e(LOG_TAG, "question result 1 " + questionResultText);
        //Log.e(LOG_TAG, "question result 2 " + answer);
        //Log.e(LOG_TAG, "gameMode " + gameMode);
        // Disable, slide out and remove the choice buttons
@@ -814,7 +821,7 @@ public class GameActivityFragment extends Fragment {
                 //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
                 gameAnswer.addView(nextQuestionButtonView);
                 //gameContent.addView(nextQuestionButtonView);
-                nextQuestionButtonView.setText("View Scores");
+                nextQuestionButtonView.setText(R.string.action_view_scores);
             }
         }
         //------------------------------------------------------------------------------------------
@@ -880,21 +887,11 @@ public class GameActivityFragment extends Fragment {
      * Method to end the game, submit the scores, and start the scores activity
      */
     private void endGame(){
-        submitScore();
-
-        // TODO Implement game end logic
-        /*gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
-        viewScoresButtonView = new Button(getActivity());
-        viewScoresButtonView.setText("View Scores");
-        gameAnswer.addView(viewScoresButtonView);*/
-
-        /*Context context = getActivity();
-        CharSequence text = "Game Over!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();*/
+        // Launch the ScoresActivity and end the GameActivity
+        final Intent intent = new Intent(getContext(), ScoresActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         getActivity().finish();
-
     }
 
     /**

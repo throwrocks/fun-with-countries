@@ -45,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
         // Get the GameMode buttons
         final Button buttonGameModeCapitals = (Button) findViewById(R.id.button_fun_with_capitals);
         final Button buttonGameModeFlags = (Button) findViewById(R.id.button_fun_with_flags);
+        final Button buttonGameScores = (Button) findViewById(R.id.button_scores);
         // Create the GameActivity Intent
-        final Intent intent = new Intent(this, GameActivity.class);
+        final Intent gameIntent = new Intent(this, GameActivity.class);
+        final Intent scoresIntent = new Intent(this, ScoresActivity.class);
         // Set the game settings in shared preferences
         SharedPreferences sharedPref =  PreferenceManager.getDefaultSharedPreferences(this);
         final SharedPreferences.Editor editor = sharedPref.edit();
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         // Set the GameMode buttons onClickListeners
         buttonGameModeCapitals.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(intent);
+                startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 10);
                 editor.putInt("correct_answers", 0);
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         });
         buttonGameModeFlags.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(intent);
+                startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 2);
                 editor.putInt("correct_answers", 0);
@@ -77,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("game_title", "Learn the Flags");
                 editor.putString("game_mode", "flags");
                 editor.apply();
+            }
+        });
+
+        buttonGameScores.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(scoresIntent);
             }
         });
 

@@ -51,10 +51,17 @@
         android:layout_width="520dp"
         android:text="@string/button_game_mode_randomize"
         />
+    <Button
+        android:id="@+id/button_scores"
+        android:layout_below="@+id/button_randomize"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_scores"
+        />
 
     <Button
         android:id="@+id/button_share"
-        android:layout_below="@+id/button_randomize"
+        android:layout_below="@+id/button_scores"
         android:layout_height="wrap_content"
         android:layout_width="520dp"
         android:text="@string/buton_share_this_app"

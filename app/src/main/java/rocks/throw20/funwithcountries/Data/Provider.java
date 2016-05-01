@@ -155,7 +155,7 @@ public class Provider extends ContentProvider {
                 retCursor = getCountryByName(uri, projection, sortOrder);
                 break;
             }
-            case SCORES:
+            case SCORES: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         Contract.ScoreEntry.SCORES_TABLE_NAME,
                         projection,
@@ -164,6 +164,8 @@ public class Provider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+            }
+            break;
             default:
                 //Log.e(LOG_TAG, "unknown uri -> " + uri);
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -188,11 +190,12 @@ public class Provider extends ContentProvider {
                 else throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
-            case SCORES:
+            case SCORES: {
                 long _id = db.insert(Contract.ScoreEntry.SCORES_TABLE_NAME, null, values);
                 if (_id > 0) returnUri = Contract.ScoreEntry.buildScoresUri(_id);
                 else throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
