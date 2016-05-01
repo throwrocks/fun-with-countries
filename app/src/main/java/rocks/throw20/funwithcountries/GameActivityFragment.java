@@ -4,12 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.OrientationHelper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,7 +44,9 @@ public class GameActivityFragment extends Fragment {
     private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
     private boolean timeUp;
-    private LinearLayout gameContent;
+    private GridLayout gameContent;
+    private LinearLayout gameAnswerConfirmation;
+    private LinearLayout gameAnswer;
 
     private TextView confirmAnswerTextView;
     private Button confirmAnswerButtonView;
@@ -52,7 +57,6 @@ public class GameActivityFragment extends Fragment {
 
     private String countryName;
     private String countryCapital;
-    private String countryAlpha2Code;
     private String question;
 
     private String answer;
@@ -72,14 +76,10 @@ public class GameActivityFragment extends Fragment {
     private String choice3;
     private String choice4;
 
-    private String usedCountries;
-    private String usedCountriesSelection;
     private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
     private final int linearLayoutWrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
     // private final int relativeBelow = LinearLayout.BELOW;
     // private final int relativeCenterHorizontal = LinearLayout.CENTER_HORIZONTAL;
-
-    private String sequence;
 
     public GameActivityFragment() {
     }
@@ -128,7 +128,7 @@ public class GameActivityFragment extends Fragment {
     @Override
     public void onResume() {
         Log.e(LOG_TAG, "onResume " + true);
-        sequence = getArguments().getString("sequence");
+        String sequence = getArguments().getString("sequence");
         Log.e(LOG_TAG, "sequence " + sequence);
         if (sequence != null) {
             switch (sequence) {
@@ -164,7 +164,7 @@ public class GameActivityFragment extends Fragment {
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
-            countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
+            String countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
             Log.e(LOG_TAG,"alphaCode " + countryAlpha2Code);
             question = contentValues.getAsString("question");
             answer = contentValues.getAsString("answer");
@@ -175,8 +175,9 @@ public class GameActivityFragment extends Fragment {
 
 
             // Keep track of countries used during the game session
-            usedCountries = sharedPref.getString("used_countries", "");
+            String usedCountries = sharedPref.getString("used_countries", "");
             Log.e(LOG_TAG, "usedCountries: " + usedCountries);
+            String usedCountriesSelection;
             if (usedCountries.isEmpty()) {
                 usedCountriesSelection = "'" + countryName + "'";
             } else {
@@ -237,7 +238,7 @@ public class GameActivityFragment extends Fragment {
         Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
         String gameMode = sharedPref.getString("game_mode", "");
-        gameContent = (LinearLayout) rootView.findViewById(R.id.game_content);
+        gameContent = (GridLayout) rootView.findViewById(R.id.game_content);
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
@@ -250,11 +251,15 @@ public class GameActivityFragment extends Fragment {
         questionTimerIsRunning = b.getBoolean("timer_is_running");
         int questionTimerProgress = b.getInt("timer_progress");
 
+
+
         // Set the choices based on the Game Mode
         //------------------------------------------------------------------------------------------
         // Game Mode: Capitals
         //------------------------------------------------------------------------------------------
         if (gameMode.equals("capitals")) {
+            gameContent.setColumnCount(1);
+            gameContent.setOrientation(GridLayout.VERTICAL);
             //--------------------------------------------------------------------------------------
             // Capitals: Choice 1
             //--------------------------------------------------------------------------------------
@@ -351,6 +356,10 @@ public class GameActivityFragment extends Fragment {
         // Game Mode: flags
         //------------------------------------------------------------------------------------------
         else if (gameMode.equals("flags")) {
+            gameContent.setColumnCount(2);
+            gameContent.setOrientation(GridLayout.HORIZONTAL);
+            //gameContent.setWeightSum(6);
+
             Utilities util = new Utilities(getContext());
             //--------------------------------------------------------------------------------------
             // Flags: Choice 1
@@ -358,7 +367,8 @@ public class GameActivityFragment extends Fragment {
             if (choice1ImageButtonView == null) {
                 choice1ImageButtonView = new ImageButton(getActivity());
                 LinearLayout.LayoutParams choiceView1params =
-                        new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                        new LinearLayout.LayoutParams(400, linearLayoutWrapContent);
+
                 choice1ImageButtonView.setId(R.id.choice1);
                 choice1ImageButtonView.setLayoutParams(choiceView1params);
             }
@@ -367,7 +377,7 @@ public class GameActivityFragment extends Fragment {
                 final String alpha2Code = choice1.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
                 Picasso.with(getContext()).load(flagDrawable)
-                        .resize(20, 20)
+                        .resize(275, 165)
                         .onlyScaleDown()
                         .into(choice1ImageButtonView);
 
@@ -386,7 +396,8 @@ public class GameActivityFragment extends Fragment {
             if (choice2ImageButtonView == null) {
                 choice2ImageButtonView = new ImageButton(getActivity());
                 LinearLayout.LayoutParams choiceView2params =
-                        new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                        new LinearLayout.LayoutParams(400, linearLayoutWrapContent);
+
                 choice2ImageButtonView.setId(R.id.choice2);
                 choice2ImageButtonView.setLayoutParams(choiceView2params);
             }
@@ -394,9 +405,8 @@ public class GameActivityFragment extends Fragment {
                 Log.e(LOG_TAG, "choice2 " + choice2);
                 final String alpha2Code = choice2.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
-
                 Picasso.with(getContext()).load(flagDrawable)
-                        .resize(20, 20)
+                        .resize(275, 165)
                         .onlyScaleDown()
                         .into(choice2ImageButtonView);
 
@@ -416,7 +426,8 @@ public class GameActivityFragment extends Fragment {
             if (choice3ImageButtonView == null) {
                 choice3ImageButtonView = new ImageButton(getActivity());
                 LinearLayout.LayoutParams choiceView3params =
-                        new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                        new LinearLayout.LayoutParams(400, linearLayoutWrapContent);
+
                 choice3ImageButtonView.setId(R.id.choice3);
                 choice3ImageButtonView.setLayoutParams(choiceView3params);
             }
@@ -424,13 +435,11 @@ public class GameActivityFragment extends Fragment {
                 Log.e(LOG_TAG, "choice3 " + choice3.toLowerCase());
                 final String alpha2Code = choice3.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(),"flag_" +  alpha2Code);
-
                 Picasso.with(getContext()).load(flagDrawable)
-                        .resize(20, 20)
+                        .resize(275, 165)
                         .onlyScaleDown()
                         .into(choice3ImageButtonView);
 
-                //choice1View.setText(choice1);
                 choice3ImageButtonView.setEnabled(true);
                 choice3ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -446,7 +455,8 @@ public class GameActivityFragment extends Fragment {
             if (choice4ImageButtonView == null) {
                 choice4ImageButtonView = new ImageButton(getActivity());
                 LinearLayout.LayoutParams choiceView4params =
-                        new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                        new LinearLayout.LayoutParams(400, linearLayoutWrapContent);
+
                 choice4ImageButtonView.setId(R.id.choice4);
                 choice4ImageButtonView.setLayoutParams(choiceView4params);
             }
@@ -456,7 +466,7 @@ public class GameActivityFragment extends Fragment {
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
 
                 Picasso.with(getContext()).load(flagDrawable)
-                        .resize(20, 20)
+                        .resize(275, 165)
                         .onlyScaleDown()
                         .into(choice4ImageButtonView);
 
@@ -557,7 +567,9 @@ public class GameActivityFragment extends Fragment {
         String gameMode = sharedPref.getString("game_mode","");
         String answer = getArguments().getString("selected_answer");
         Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
-        gameContent = (LinearLayout) rootView.findViewById(R.id.game_content);
+
+        gameAnswerConfirmation = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
+        //gameContent = (GridLayout) rootView.findViewById(R.id.game_content);
         //------------------------------------------------------------------------------------------
         if ( confirmAnswerTextView == null ) {
             Log.e(LOG_TAG, "confirmAnswerTextView " + true);
@@ -568,7 +580,7 @@ public class GameActivityFragment extends Fragment {
         }
         if ( rootView.findViewById(R.id.answer_confirmation_text) == null ){
             Log.e(LOG_TAG, "confirmAnswerTextView " + " found");
-            gameContent.addView(confirmAnswerTextView);
+            gameAnswerConfirmation.addView(confirmAnswerTextView);
         }
         String answerDisplay = "";
         if ( gameMode.equals("capitals")) { answerDisplay = "The capital is " + answer; }
@@ -583,7 +595,7 @@ public class GameActivityFragment extends Fragment {
             confirmAnswerButtonView.setId(R.id.answer_confirmation_button);
             confirmAnswerButtonView.setLayoutParams(actionAnswerParams);
             confirmAnswerButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_black_24dp, 0);
-            gameContent.addView(confirmAnswerButtonView);
+            gameAnswerConfirmation.addView(confirmAnswerButtonView);
             confirmAnswerButtonView.setText(R.string.action_submit);
             //------------------------------------------------------------------------------------------
             // confirmAnswerButtonView: Set on ClickListeners
@@ -594,7 +606,7 @@ public class GameActivityFragment extends Fragment {
             });
         }
         if ( rootView.findViewById(R.id.answer_confirmation_button) == null ){
-            gameContent.addView(confirmAnswerButtonView);
+            gameAnswerConfirmation.addView(confirmAnswerButtonView);
         }
     }
 
@@ -649,7 +661,7 @@ public class GameActivityFragment extends Fragment {
 
         Log.e(LOG_TAG, "question result 1 " + questionResultText);
         Log.e(LOG_TAG, "question result 2 " + answer);
-
+        Log.e(LOG_TAG, "gameMode " + gameMode);
         // Disable, slide out and remove the choice buttons
 
 
@@ -662,10 +674,10 @@ public class GameActivityFragment extends Fragment {
             choice2View.setEnabled(false);
             choice3View.setEnabled(false);
             choice4View.setEnabled(false);
-            slideOutView(choice1View, 360);
-            slideOutView(choice2View, 340);
-            slideOutView(choice3View, 320);
-            slideOutView(choice4View, 300);
+            slideOutView("gameContent", choice1View, 360);
+            slideOutView("gameContent", choice2View, 340);
+            slideOutView("gameContent", choice3View, 320);
+            slideOutView("gameContent", choice4View, 300);
         }else if ( gameMode.equals("flags")){
             choice1ImageButtonView = (ImageButton) rootView.findViewById(R.id.choice1);
             choice2ImageButtonView = (ImageButton) rootView.findViewById(R.id.choice2);
@@ -675,14 +687,14 @@ public class GameActivityFragment extends Fragment {
             choice2ImageButtonView.setEnabled(false);
             choice3ImageButtonView.setEnabled(false);
             choice4ImageButtonView.setEnabled(false);
-            slideOutView(choice1ImageButtonView, 360);
-            slideOutView(choice2ImageButtonView, 340);
-            slideOutView(choice3ImageButtonView, 320);
-            slideOutView(choice4ImageButtonView, 300);
+            slideOutView("gameContent", choice1ImageButtonView, 360);
+            slideOutView("gameContent", choice2ImageButtonView, 340);
+            slideOutView("gameContent", choice3ImageButtonView, 320);
+            slideOutView("gameContent", choice4ImageButtonView, 300);
         }
         // Remove confirmation view
-        slideOutView(confirmAnswerTextView,360);
-        slideOutView(confirmAnswerButtonView,340);
+        slideOutView("gameAnswerConfirmation", confirmAnswerTextView,360);
+        slideOutView("gameAnswerConfirmation", confirmAnswerButtonView,340);
 
         answerQuestionView();
     }
@@ -692,9 +704,10 @@ public class GameActivityFragment extends Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
+        Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");
-        gameContent = (LinearLayout) rootView.findViewById(R.id.game_content);
+        gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
         //Log.e(LOG_TAG, "answerResultView " + answerResultView);
         //------------------------------------------------------------------------------------------
         // answerResultView
@@ -711,7 +724,7 @@ public class GameActivityFragment extends Fragment {
         }
         if ( rootView.findViewById(R.id.next_question_answer_result_text) == null ){
 
-            gameContent.addView(answerResultView);
+            gameAnswer.addView(answerResultView);
             if ( resultText != null  && resultText.equals("Incorrect")) {
                 Log.e(LOG_TAG, "result text " + resultText);
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
@@ -737,7 +750,7 @@ public class GameActivityFragment extends Fragment {
             nextQuestionTextView.setId(R.id.next_question_text);
             nextQuestionTextView.setLayoutParams(questionResultParams);}
         if ( rootView.findViewById(R.id.next_question_text) == null ){
-            gameContent.addView(nextQuestionTextView);
+            gameAnswer.addView(nextQuestionTextView);
             nextQuestionTextView.setText(resultTextDescription);}
         //------------------------------------------------------------------------------------------
         // nextQuestionButtonView
@@ -760,7 +773,8 @@ public class GameActivityFragment extends Fragment {
         }
         if ( rootView.findViewById(R.id.next_question_button) == null ){
             Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
-            gameContent.addView(nextQuestionButtonView);
+            gameAnswer.addView(nextQuestionButtonView);
+            //gameContent.addView(nextQuestionButtonView);
             nextQuestionButtonView.setText(R.string.action_next_question);}
         // Slide in the next question views
         slideInView(answerResultView,360);
@@ -782,9 +796,9 @@ public class GameActivityFragment extends Fragment {
         Log.e(LOG_TAG, "answerResultView on layout " + answerResultView);
         Log.e(LOG_TAG, "nextQuestionTextView on layout " + nextQuestionTextView);
         Log.e(LOG_TAG, "nextQuestionButtonView on layout " + nextQuestionButtonView);
-        slideOutView(answerResultView,160);
-        slideOutView(nextQuestionTextView, 140);
-        slideOutView(nextQuestionButtonView, 120);
+        slideOutView("gameAnswer", answerResultView,360);
+        slideOutView("gameAnswer", nextQuestionTextView, 340);
+        slideOutView("gameAnswer", nextQuestionButtonView, 320);
         getArguments().clear();
         getQuestion(true);
         // Set the question views
@@ -858,16 +872,28 @@ public class GameActivityFragment extends Fragment {
     /**
      * slideOutView
      * Method to slide out and remove a view
-     * @param view the view slide out and remove
+     * @param slideOutView the view slide out and remove
      * @param duration the duration of the slide
      */
-    private void slideOutView(View view, int duration){
-        gameContent =  (LinearLayout) rootView.findViewById(R.id.game_content);
-        TranslateAnimation animate = new TranslateAnimation(0,+view.getWidth(),0,0);
+    private void slideOutView(String parentView, View slideOutView, int duration){
+        TranslateAnimation animate = new TranslateAnimation(0,+slideOutView.getWidth(),0,0);
         animate.setDuration(duration);
         animate.setFillAfter(true);
-        view.startAnimation(animate);
-        gameContent.removeView(view);
+        slideOutView.startAnimation(animate);
+
+        if ( parentView.equals("gameContent")){
+            gameContent =  (GridLayout) rootView.findViewById(R.id.game_content);
+            gameContent.removeView(slideOutView);
+        }else if ( parentView.equals("gameAnswerConfirmation")){
+            gameAnswerConfirmation =  (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
+            gameAnswerConfirmation.removeView(slideOutView);
+        }else if ( parentView.equals("gameAnswer")){
+            gameAnswer =  (LinearLayout) rootView.findViewById(R.id.game_answer);
+            gameAnswer.removeView(slideOutView);
+        }
+
+
+
     }
 
     public void slideToTop(View view){

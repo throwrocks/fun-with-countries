@@ -61,9 +61,25 @@
         android:layout_gravity="center"
         />
 </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
+    <GridLayout
+        android:background="@color/correctBackground"
+
         android:id="@+id/game_content"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </GridLayout>
+    <LinearLayout
+        android:background="@color/colorAccent"
+        android:orientation="vertical"
+        android:id="@+id/game_answer_confirmation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </LinearLayout>
+    <LinearLayout
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:id="@+id/game_answer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </LinearLayout>
