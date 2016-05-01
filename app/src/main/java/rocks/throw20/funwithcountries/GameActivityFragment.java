@@ -27,6 +27,14 @@ import android.widget.Toast;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import rocks.throw20.funwithcountries.Data.Contract;
+
 
 /**
  * GameActivityFragment
@@ -872,6 +880,7 @@ public class GameActivityFragment extends Fragment {
      * Method to end the game, submit the scores, and start the scores activity
      */
     private void endGame(){
+        submitScore();
 
         // TODO Implement game end logic
         /*gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
@@ -897,6 +906,35 @@ public class GameActivityFragment extends Fragment {
         questionTimerIsRunning = false;
         getArguments().putBoolean("timer_is_running",false);
 
+    }
+
+    /**
+     * submitScore
+     * This method stores the score to the database
+     * It's called when the game ends
+     */
+    private void submitScore(){
+        // Get the score data to be stored in the database
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        String scoreDate = df.format(new Date());
+        String scoreGameMode = sharedPref.getString("game_mode", "");
+        int scoreQuestionsCount = sharedPref.getInt("game_progress_max",0);
+        int scoreCorrectAnswers = sharedPref.getInt("correct_answers", 0);
+        int scoreIncorrectAnswers = sharedPref.getInt("incorrect_answers", 0);
+        String scoreGameDuration = "";
+        // Create a content values object
+        ContentValues scoreValues = new ContentValues();
+        scoreValues.put(Contract.ScoreEntry.scoreDate, scoreDate);
+        scoreValues.put(Contract.ScoreEntry.scoreGameMode, scoreGameMode);
+        scoreValues.put(Contract.ScoreEntry.scoreQuestionsCount, scoreQuestionsCount);
+        scoreValues.put(Contract.ScoreEntry.scoreCorrectAnswers, scoreCorrectAnswers);
+        scoreValues.put(Contract.ScoreEntry.scoreIncorrectAnswers, scoreIncorrectAnswers);
+        scoreValues.put(Contract.ScoreEntry.scoreGameDuration, scoreGameDuration);
+        // Insert the score record
+        getContext().getContentResolver().insert(
+                Contract.ScoreEntry.CONTENT_URI,
+                scoreValues
+        );
     }
 
     /**
