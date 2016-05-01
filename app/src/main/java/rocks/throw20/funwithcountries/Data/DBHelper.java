@@ -10,9 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 class DBHelper extends SQLiteOpenHelper {
 
-    // TODO Create scores database
     // The database version
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 23;
 
     private static final String DATABASE_NAME = "countries.db";
 
@@ -36,11 +35,25 @@ class DBHelper extends SQLiteOpenHelper {
                         ")";
         sqLiteDatabase.execSQL(SQL_CREATE_COUNTRIES_TABLE);
 
+        final String SQL_CREATE_SCORES_TABLE  =
+                "CREATE TABLE " +
+                        Contract.ScoreEntry.SCORES_TABLE_NAME + " (" +
+                        Contract.ScoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        Contract.ScoreEntry.scoreDate + " TEXT NOT NULL, " +
+                        Contract.ScoreEntry.scoreGameMode + " TEXT NOT NULL, " +
+                        Contract.ScoreEntry.scoreQuestionsCount + " INTEGER NULL, " +
+                        Contract.ScoreEntry.scoreCorrectAnswers + " INTEGER NULL, " +
+                        Contract.ScoreEntry.scoreIncorrectAnswers + " INTEGER NULL, " +
+                        Contract.ScoreEntry.scoreGameDuration + " INTEGER NULL " +
+                        ")";
+        sqLiteDatabase.execSQL(SQL_CREATE_SCORES_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contract.CountryEntry.COUNTRIES_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contract.ScoreEntry.SCORES_TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 

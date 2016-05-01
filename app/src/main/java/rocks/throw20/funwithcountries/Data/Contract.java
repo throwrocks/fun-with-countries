@@ -20,7 +20,11 @@ public class Contract {
     public static final String PATH_COUNTRIES = "countries";
     // The path to the country table
     public static final String PATH_COUNTRY_NAME = "country/";
-    // This is the complete path to the Countries database
+
+    // The path to the scores database
+    public static final String PATH_SCORES = "scores";
+    // The path to the country table
+    public static final String PATH_SCORE_RECORD = "score/";
 
 
 
@@ -73,5 +77,50 @@ public class Contract {
         public static String getCountryNameFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+    }
+
+    /**
+     * ScoreEntry
+     *
+     */
+    public static final class ScoreEntry implements BaseColumns{
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SCORES)
+                .build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SCORES;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SCORE_RECORD;
+
+        public static final String SCORES_TABLE_NAME = "scores";
+
+        //The countries table fields
+        public static final String scoreId = "id";
+        public static final String scoreDate = "date";
+        public static final String scoreGameMode = "game_mode";
+        public static final String scoreQuestionsCount = "questions_count";
+        public static final String scoreCorrectAnswers = "correct_answers";
+        public static final String scoreIncorrectAnswers = "incorrect_answers";
+        public static final String scoreGameDuration = "game_duration";
+
+        //The countries table index
+        public static final int indexScoreId = 1;
+        public static final int indexScoreDate = 2;
+        public static final int indexGameMode = 3;
+        public static final int indexQuestionsCount = 4;
+        public static final int indexCorrectAnswers = 5;
+        public static final int indexIncorrectAnswers = 6;
+        public static final int indexGameDuration = 7;
+
+        public static Uri buildScoresUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+        // Build the countries Uri
+        public static Uri buildScores() {
+            return CONTENT_URI.buildUpon().build();
+        }
+
     }
 }
