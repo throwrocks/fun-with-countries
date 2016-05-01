@@ -48,7 +48,7 @@ public class Question {
         // Create a Utilities Object so we can run the randomInt and shuffleArray utility methods.
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
-        Log.e(LOG_TAG, "usedCountries " + usedCountries[0]);
+        //Log.e(LOG_TAG, "usedCountries " + usedCountries[0]);
         if ( usedCountries[0] == null ){
             mCursor = util.getAllCountriesWithCapitals();
         } else {
@@ -64,7 +64,7 @@ public class Question {
         // Only run if the cursor is not null
         if ( mCursor != null) {
             int cursorSize = mCursor.getCount();
-            //Log.e(LOG_TAG, "cursor size " + cursorSize);
+            ////Log.e(LOG_TAG, "cursor size " + cursorSize);
 
             // Get the first country. Our question and answer will be based on it.
 
@@ -96,7 +96,7 @@ public class Question {
                     countryName = mCursor.getString(Contract.CountryEntry.indexCountryName);
                     countryCapital = mCursor.getString(Contract.CountryEntry.indexCountryCapital);
                     countryAlpha2Code = mCursor.getString(Contract.CountryEntry.indexAlpha2code);
-                    Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
+                    //Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
                     drawableId = util.getDrawable(mContext,"flag_" + countryAlpha2Code.toLowerCase());
                     exclude[0] = randomInt1; }
                 while ( drawableId == 0 ) ;
@@ -139,7 +139,7 @@ public class Question {
                     int randomInt2 = util.getRandomInt(cursorSize, exclude);
                     mCursor.move(randomInt2);
                     countryAlpha2Code = mCursor.getString(Contract.CountryEntry.indexAlpha2code);
-                    Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
+                    //Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
                     drawableId = util.getDrawable(mContext,"flag_" + countryAlpha2Code.toLowerCase());
                     exclude[1] = randomInt2; }
                 while ( drawableId == 0 ) ;
@@ -163,7 +163,7 @@ public class Question {
                     int randomInt3 = util.getRandomInt(cursorSize, exclude);
                     mCursor.move(randomInt3);
                     countryAlpha2Code = mCursor.getString(Contract.CountryEntry.indexAlpha2code);
-                    Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
+                    //Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
                     drawableId = util.getDrawable(mContext,"flag_" + countryAlpha2Code.toLowerCase());
                     exclude[2] = randomInt3; }
                 while ( drawableId == 0 ) ;
@@ -187,7 +187,7 @@ public class Question {
                     int randomInt4 = util.getRandomInt(cursorSize, exclude);
                     mCursor.move(randomInt4);
                     countryAlpha2Code = mCursor.getString(Contract.CountryEntry.indexAlpha2code);
-                    Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
+                    //Log.e(LOG_TAG, "countryAlpha2Code " + countryAlpha2Code);
                     drawableId = util.getDrawable(mContext,"flag_" + countryAlpha2Code.toLowerCase());
                     exclude[3] = randomInt4; }
                 while ( drawableId == 0 ) ;

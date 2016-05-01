@@ -1,27 +1,15 @@
 package rocks.throw20.funwithcountries;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import rocks.throw20.funwithcountries.R;
 
 public class GameActivity extends AppCompatActivity {
     private static final String LOG_TAG = GameActivity.class.getSimpleName();
@@ -31,7 +19,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        Log.e(LOG_TAG, "setContentView " + true);
+        //Log.e(LOG_TAG, "setContentView " + true);
 
         Bundle args = new Bundle();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -44,7 +32,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
-            Log.e(LOG_TAG, "SavedInstanceState " + null);
+            //Log.e(LOG_TAG, "SavedInstanceState " + null);
             GameActivityFragment gameActivityFragment = new GameActivityFragment();
             gameActivityFragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()

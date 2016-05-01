@@ -3,18 +3,13 @@ package rocks.throw20.funwithcountries;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.OrientationHelper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,20 +20,16 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
-import junit.framework.Assert;
-
-import rocks.throw20.funwithcountries.Data.Contract;
-
 
 /**
- * Created by josel on 4/2/2016.
+ * GameActivityFragment
+ * Where the game runs under the various modes
  */
 public class GameActivityFragment extends Fragment {
     private static final String LOG_TAG = GameActivityFragment.class.getSimpleName();
@@ -83,8 +74,6 @@ public class GameActivityFragment extends Fragment {
 
     private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
     private final int linearLayoutWrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
-    // private final int relativeBelow = LinearLayout.BELOW;
-    // private final int relativeCenterHorizontal = LinearLayout.CENTER_HORIZONTAL;
 
     public GameActivityFragment() {
     }
@@ -99,9 +88,9 @@ public class GameActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        Log.e(LOG_TAG, "onCreate " + true);
+       //Log.e(LOG_TAG, "onCreate " + true);
         if (savedInstanceState == null) {
-            Log.e(LOG_TAG, "onCreate " + true);
+           //Log.e(LOG_TAG, "onCreate " + true);
             getArguments().putString("savedInstanceState", null);
             getQuestion(true);
         }
@@ -110,14 +99,14 @@ public class GameActivityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e(LOG_TAG, "onCreateView " + true);
+       //Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
         return rootView;
     }
 
     @Override
     public void onPause() {
-        Log.e(LOG_TAG, "onPause " + true);
+       //Log.e(LOG_TAG, "onPause " + true);
         // Cancel the timer, it will be recreated and started from where it left off
         questionTimer.cancel();
         super.onPause();
@@ -125,16 +114,16 @@ public class GameActivityFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.e(LOG_TAG, "onStop " + true);
+       //Log.e(LOG_TAG, "onStop " + true);
         //cancelGame();
         super.onStop();
     }
 
     @Override
     public void onResume() {
-        Log.e(LOG_TAG, "onResume " + true);
+       //Log.e(LOG_TAG, "onResume " + true);
         String sequence = getArguments().getString("sequence");
-        Log.e(LOG_TAG, "sequence " + sequence);
+       //Log.e(LOG_TAG, "sequence " + sequence);
         if (sequence != null) {
             switch (sequence) {
                 case "getQuestion":
@@ -145,7 +134,7 @@ public class GameActivityFragment extends Fragment {
                     selectedAnswerView();
                     break;
                 case "answerQuestion":
-                    setLayourHeader();
+                    setLayoutHeader();
                     answerQuestionView();
                     break;
             }
@@ -156,7 +145,6 @@ public class GameActivityFragment extends Fragment {
 
     /**
      * getQuestion
-     *
      * @param isnew wether the question is new, or it's being restored from savedInstanceState
      */
     private void getQuestion(Boolean isnew) {
@@ -170,7 +158,7 @@ public class GameActivityFragment extends Fragment {
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
             String countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
-            Log.e(LOG_TAG,"alphaCode " + countryAlpha2Code);
+           //Log.e(LOG_TAG,"alphaCode " + countryAlpha2Code);
             question = contentValues.getAsString("question");
             answer = contentValues.getAsString("answer");
             choice1 = contentValues.getAsString("choice1");
@@ -178,10 +166,9 @@ public class GameActivityFragment extends Fragment {
             choice3 = contentValues.getAsString("choice3");
             choice4 = contentValues.getAsString("choice4");
 
-
             // Keep track of countries used during the game session
             String usedCountries = sharedPref.getString("used_countries", "");
-            Log.e(LOG_TAG, "usedCountries: " + usedCountries);
+           //Log.e(LOG_TAG, "usedCountries: " + usedCountries);
             String usedCountriesSelection;
             if (usedCountries.isEmpty()) {
                 usedCountriesSelection = "'" + countryName + "'";
@@ -205,11 +192,16 @@ public class GameActivityFragment extends Fragment {
             b.putString("choice4", choice4);
             editor.putString("used_countries", usedCountriesSelection);
             editor.apply();
-            Log.e(LOG_TAG, "used_countries: " + usedCountriesSelection);
+           //Log.e(LOG_TAG, "used_countries: " + usedCountriesSelection);
         }
     }
 
-    private void setLayourHeader() {
+
+    /**
+     * setLayoutHeader
+     * Set the top views that display the answer, the timer, and the score
+     */
+    private void setLayoutHeader() {
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
         int correctAnswers = sharedPref.getInt("correct_answers", 0);
@@ -219,13 +211,12 @@ public class GameActivityFragment extends Fragment {
         question = getArguments().getString("question");
         countryName = getArguments().getString("country_name");
         //------------------------------------------------------------------------------------------
-        // Set the top views
+        // Set the header views
         //------------------------------------------------------------------------------------------
         TextView questionView = (TextView) rootView.findViewById(R.id.question);
         TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         TextView questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
         TextView gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
-
 
         gameProgressView.setText(gameProgressText);
         questionView.setText(question);
@@ -235,12 +226,12 @@ public class GameActivityFragment extends Fragment {
     }
 
     /**
-     * setViews
+     * setQuestionVies
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setQuestionViews() {
-        setLayourHeader();
-        Log.e(LOG_TAG, "setQuestionViews " + true);
+        setLayoutHeader();
+       //Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
         String gameMode = sharedPref.getString("game_mode", "");
         gameContent = (GridLayout) rootView.findViewById(R.id.game_content);
@@ -255,8 +246,6 @@ public class GameActivityFragment extends Fragment {
         choice4 = b.getString("choice4");
         questionTimerIsRunning = b.getBoolean("timer_is_running");
         int questionTimerProgress = b.getInt("timer_progress");
-
-
 
         // Set the choices based on the Game Mode
         //------------------------------------------------------------------------------------------
@@ -294,7 +283,6 @@ public class GameActivityFragment extends Fragment {
                 choice2View = new Button(getActivity());
                 LinearLayout.LayoutParams choiceView2params =
                         new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-                //choiceView2params.addRule(relativeBelow, R.id.choice1);
                 choice2View.setId(R.id.choice2);
                 choice2View.setLayoutParams(choiceView2params);
             }
@@ -317,7 +305,6 @@ public class GameActivityFragment extends Fragment {
                 choice3View = new Button(getActivity());
                 LinearLayout.LayoutParams choiceView3params =
                         new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
-                //choiceView3params.addRule(relativeBelow, R.id.choice2);
                 choice3View.setId(R.id.choice3);
                 choice3View.setLayoutParams(choiceView3params);
             }
@@ -358,7 +345,9 @@ public class GameActivityFragment extends Fragment {
             }
         }
         //------------------------------------------------------------------------------------------
+        //##########################################################################################
         // Game Mode: flags
+        //##########################################################################################
         //------------------------------------------------------------------------------------------
         else if (gameMode.equals("flags")) {
             gameContent.setColumnCount(2);
@@ -378,7 +367,7 @@ public class GameActivityFragment extends Fragment {
                 choice1ImageButtonView.setLayoutParams(choiceView1params);
             }
             if (rootView.findViewById(R.id.choice1) == null) {
-                Log.e(LOG_TAG, "choice1 " + choice1);
+               //Log.e(LOG_TAG, "choice1 " + choice1);
                 final String alpha2Code = choice1.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
                 Picasso.with(getContext()).load(flagDrawable)
@@ -412,7 +401,7 @@ public class GameActivityFragment extends Fragment {
                 choice2ImageButtonView.setLayoutParams(choiceView2params);
             }
             if (rootView.findViewById(R.id.choice2) == null) {
-                Log.e(LOG_TAG, "choice2 " + choice2);
+               //Log.e(LOG_TAG, "choice2 " + choice2);
                 final String alpha2Code = choice2.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
                 Picasso.with(getContext()).load(flagDrawable)
@@ -447,7 +436,7 @@ public class GameActivityFragment extends Fragment {
                 choice3ImageButtonView.setLayoutParams(choiceView3params);
             }
             if (rootView.findViewById(R.id.choice3) == null) {
-                Log.e(LOG_TAG, "choice3 " + choice3.toLowerCase());
+               //Log.e(LOG_TAG, "choice3 " + choice3.toLowerCase());
                 final String alpha2Code = choice3.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(),"flag_" +  alpha2Code);
                 Picasso.with(getContext()).load(flagDrawable)
@@ -481,7 +470,7 @@ public class GameActivityFragment extends Fragment {
                 choice4ImageButtonView.setLayoutParams(choiceView4params);
             }
             if (rootView.findViewById(R.id.choice4) == null) {
-                Log.e(LOG_TAG, "choice4 " + choice4);
+               //Log.e(LOG_TAG, "choice4 " + choice4);
                 final String alpha2Code = choice4.toLowerCase();
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
 
@@ -508,8 +497,6 @@ public class GameActivityFragment extends Fragment {
         }
 
 
-
-
         //------------------------------------------------------------------------------------------
         // Slide in the choice views
         //------------------------------------------------------------------------------------------
@@ -525,20 +512,18 @@ public class GameActivityFragment extends Fragment {
             slideInView(choice4ImageButtonView, 360);
         }
 
-
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
-            //------------------------------------------------------------------------------------------
-        Log.e(LOG_TAG, "timer is running " + questionTimerIsRunning);
+        //------------------------------------------------------------------------------------------
+       //Log.e(LOG_TAG, "timer is running " + questionTimerIsRunning);
         int startTimer = 11000;
         // If a timer is running, resume it
         if ( questionTimerIsRunning ){startTimer = questionTimerProgress * 1000;}
-        Log.e(LOG_TAG, "create new timer " + true);
+       //Log.e(LOG_TAG, "create new timer " + true);
 
         questionTimer = new CountDownTimer(startTimer, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
-
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 timeUp = false;
@@ -546,14 +531,14 @@ public class GameActivityFragment extends Fragment {
                 int progress = (int) (long) ( millisUntilFinished / 1000);
                 if ( progress <= 10 ){
                     getArguments().putInt("timer_progress",progress);
-                    Log.e(LOG_TAG, "progress " + progress);
+                   //Log.e(LOG_TAG, "progress " + progress);
                     gameTimerView.setProgress(progress);
                 }
             }
             // When the timer finishes, mark the question as wrong and end the question
             public void onFinish() {
 
-                Log.e(LOG_TAG, "onFinish " + true);
+               //Log.e(LOG_TAG, "onFinish " + true);
                 questionTimerIsRunning = false;
                 timeUp = true;
                 getArguments().putBoolean("timer_is_running", false);
@@ -578,7 +563,7 @@ public class GameActivityFragment extends Fragment {
      * @param answer the answer text
      */
     private void selectAnswer(String answer){
-        Log.e(LOG_TAG, "selectAnswer answer: " + answer);
+       //Log.e(LOG_TAG, "selectAnswer answer: " + answer);
         getArguments().putString("selected_answer", answer);
         getArguments().putString("sequence", "selectAnswer");
         selectedAnswerView();
@@ -591,32 +576,30 @@ public class GameActivityFragment extends Fragment {
     private void selectedAnswerView(){
         String gameMode = sharedPref.getString("game_mode","");
         String answer = getArguments().getString("selected_answer");
-        Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
+       //Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
 
         gameAnswerConfirmation = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
         //------------------------------------------------------------------------------------------
         if ( confirmAnswerTextView == null ) {
-            Log.e(LOG_TAG, "confirmAnswerTextView " + true);
+           //Log.e(LOG_TAG, "confirmAnswerTextView " + true);
             confirmAnswerTextView = new TextView(getActivity());
             LinearLayout.LayoutParams confirmTextParams = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
             confirmAnswerTextView.setId(R.id.answer_confirmation_text);
             confirmAnswerTextView.setLayoutParams(confirmTextParams);
         }
         if ( rootView.findViewById(R.id.answer_confirmation_text) == null ){
-            Log.e(LOG_TAG, "confirmAnswerTextView " + " found");
+           //Log.e(LOG_TAG, "confirmAnswerTextView " + " found");
             gameAnswerConfirmation.addView(confirmAnswerTextView);
         }
         String answerDisplay;
         if ( gameMode.equals("capitals")) {
             answerDisplay = "The capital is " + answer;
             confirmAnswerTextView.setText(answerDisplay);
-        } else if ( gameMode.equals("flags")){
-
-
         }
 
         //------------------------------------------------------------------------------------------
         // confirmAnswerButtonView
+        //------------------------------------------------------------------------------------------
         if ( confirmAnswerButtonView == null ) {
             confirmAnswerButtonView = new Button(getActivity());
             LinearLayout.LayoutParams actionAnswerParams = new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
@@ -628,6 +611,7 @@ public class GameActivityFragment extends Fragment {
             confirmAnswerButtonView.setText(R.string.action_submit);
             //------------------------------------------------------------------------------------------
             // confirmAnswerButtonView: Set on ClickListeners
+            //------------------------------------------------------------------------------------------
             confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     answerQuestion();
@@ -646,7 +630,7 @@ public class GameActivityFragment extends Fragment {
     private void answerQuestion(){
         String gameMode = sharedPref.getString("game_mode", "");
         getArguments().putString("sequence", "answerQuestion");
-        Log.e(LOG_TAG, "sequence " + getArguments().getString("sequence"));
+       //Log.e(LOG_TAG, "sequence " + getArguments().getString("sequence"));
         SharedPreferences.Editor editor = sharedPref.edit();
         // Cancel the timer
         questionTimer.cancel();
@@ -658,8 +642,8 @@ public class GameActivityFragment extends Fragment {
         // Evaluate the answer
         Boolean test  = selectedAnswer.equals(currentAnswer);
         getArguments().putBoolean("evaluated_answer",test);
-        Log.e(LOG_TAG, "answerQuestions selectedAnswer: " + selectedAnswer);
-        Log.e(LOG_TAG, "answerQuestions currentAnswer: " + currentAnswer);
+       //Log.e(LOG_TAG, "answerQuestions selectedAnswer: " + selectedAnswer);
+       //Log.e(LOG_TAG, "answerQuestions currentAnswer: " + currentAnswer);
         // Evaluated answer text for keeping track of the score and displaying the result
         int gameCorrectAnswers = sharedPref.getInt("correct_answers",0);
         int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers",0);
@@ -689,11 +673,10 @@ public class GameActivityFragment extends Fragment {
 
         getArguments().putString("answer_result_display",answer);
 
-        Log.e(LOG_TAG, "question result 1 " + questionResultText);
-        Log.e(LOG_TAG, "question result 2 " + answer);
-        Log.e(LOG_TAG, "gameMode " + gameMode);
-        // Disable, slide out and remove the choice buttons
-
+       //Log.e(LOG_TAG, "question result 1 " + questionResultText);
+       //Log.e(LOG_TAG, "question result 2 " + answer);
+       //Log.e(LOG_TAG, "gameMode " + gameMode);
+       // Disable, slide out and remove the choice buttons
 
         if ( gameMode.equals("capitals")){
             choice1View = (Button) rootView.findViewById(R.id.choice1);
@@ -734,7 +717,7 @@ public class GameActivityFragment extends Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
-        Log.e(LOG_TAG, "answerQuestionView " + true);
+       //Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");
         String currentAnswer = getArguments().getString("current_answer", "");
@@ -755,22 +738,20 @@ public class GameActivityFragment extends Fragment {
 
         }
         if ( rootView.findViewById(R.id.next_question_answer_result_text) == null ){
-
             gameAnswer.addView(answerResultView);
             if ( resultText != null  && resultText.equals("Incorrect")) {
-                Log.e(LOG_TAG, "result text " + resultText);
+               //Log.e(LOG_TAG, "result text " + resultText);
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
             } else if ( resultText != null  && resultText.equals("Time up!") ){
-                Log.e(LOG_TAG, "result text " + resultText);
+               //Log.e(LOG_TAG, "result text " + resultText);
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.timeUpBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
             } else if ( resultText != null && resultText.equals("Correct")) {
-                Log.e(LOG_TAG, "result text " + resultText);
+               //Log.e(LOG_TAG, "result text " + resultText);
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
             }
-
             answerResultView.setText(resultText);}
         //------------------------------------------------------------------------------------------
         // nextQuestionTextView
@@ -789,16 +770,16 @@ public class GameActivityFragment extends Fragment {
                 Utilities util = new Utilities(getContext());
                 nextQuestionTextView.setText(resultTextDescription);
                 answerFlag = new ImageView(getActivity());
-                gameAnswer.addView(answerFlag);
-                Log.e(LOG_TAG,"Next/answer " + answer);
+               //Log.e(LOG_TAG,"Next/answer " + answer);
+                // Display the correct flag
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + currentAnswer.toLowerCase());
                 Picasso.with(getContext()).load(flagDrawable)
                         .resize(220, 140)
                         .onlyScaleDown()
                         .into(answerFlag);
+                gameAnswer.addView(answerFlag);
             }
         }
-
         //------------------------------------------------------------------------------------------
         // nextQuestionButtonView
         //------------------------------------------------------------------------------------------
@@ -819,21 +800,20 @@ public class GameActivityFragment extends Fragment {
             });
         }
         if ( rootView.findViewById(R.id.next_question_button) == null ){
-            Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
+           //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
             gameAnswer.addView(nextQuestionButtonView);
             //gameContent.addView(nextQuestionButtonView);
-            nextQuestionButtonView.setText(R.string.action_next_question);}
+            nextQuestionButtonView.setText(R.string.action_next_question);
+        }
         // Slide in the next question views
         slideInView(answerResultView,360);
         slideInView(nextQuestionTextView,340);
         slideInView(nextQuestionButtonView,320);
-
         // Display the Score
         int correctAnswers = sharedPref.getInt("correct_answers", 0);
         String gameScoreText = "Score: " + correctAnswers;
         TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         gameScoreView.setText(gameScoreText);
-
     }
 
     private void nextButtonOnClickListener(){
@@ -841,9 +821,9 @@ public class GameActivityFragment extends Fragment {
         answerResultView = (TextView) rootView.findViewById(R.id.next_question_answer_result_text);
         nextQuestionTextView = (TextView) rootView.findViewById(R.id.next_question_text);
         nextQuestionButtonView = (Button) rootView.findViewById(R.id.next_question_button);
-        Log.e(LOG_TAG, "answerResultView on layout " + answerResultView);
-        Log.e(LOG_TAG, "nextQuestionTextView on layout " + nextQuestionTextView);
-        Log.e(LOG_TAG, "nextQuestionButtonView on layout " + nextQuestionButtonView);
+        //Log.e(LOG_TAG, "answerResultView on layout " + answerResultView);
+        //Log.e(LOG_TAG, "nextQuestionTextView on layout " + nextQuestionTextView);
+        //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + nextQuestionButtonView);
         slideOutView("gameAnswer", answerResultView,360);
         slideOutView("gameAnswer", nextQuestionTextView, 340);
         slideOutView("gameAnswer", nextQuestionButtonView, 320);
@@ -867,10 +847,8 @@ public class GameActivityFragment extends Fragment {
         Context context = getActivity();
         CharSequence text = "Game Over!";
         int duration = Toast.LENGTH_SHORT;
-
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-
         getActivity().finish();
 
     }
@@ -895,7 +873,7 @@ public class GameActivityFragment extends Fragment {
     private ContentValues newQuestion(String gameMode){
         String usedCountries = sharedPref.getString("used_countries", "");
         Question questionObj = new Question(this.getContext());
-        Log.e(LOG_TAG,"gameMode: " + gameMode);
+       //Log.e(LOG_TAG,"gameMode: " + gameMode);
         ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{usedCountries});
         // If a new question is requested and there is a timer running, cancel it first
         if ( questionTimerIsRunning ) {
@@ -931,7 +909,6 @@ public class GameActivityFragment extends Fragment {
         animate.setDuration(duration);
         animate.setFillAfter(true);
         slideOutView.startAnimation(animate);
-
         switch (parentView) {
             case "gameContent" :
                 gameContent =  (GridLayout) rootView.findViewById(R.id.game_content);
@@ -948,11 +925,4 @@ public class GameActivityFragment extends Fragment {
         }
     }
 
-    public void slideToTop(View view){
-        TranslateAnimation animate = new TranslateAnimation(0,0,view.getHeight(),344);
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
-        //view.setVisibility(View.VISIBLE);
-    }
 }
