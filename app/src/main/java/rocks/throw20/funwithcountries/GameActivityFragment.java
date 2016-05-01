@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,8 @@ public class GameActivityFragment extends Fragment {
     private TextView nextQuestionTextView;
     private Button nextQuestionButtonView;
     private ImageView answerFlag;
+
+    private Button viewScoresButtonView;
 
     private String countryName;
     private String countryCapital;
@@ -659,25 +662,18 @@ public class GameActivityFragment extends Fragment {
         editor.putInt("incorrect_answers", gameIncorrectAnswers);
         // Save the game's progress
         int gameProgress = sharedPref.getInt("game_progress",0);
-        int gameProgressMax = sharedPref.getInt("game_progress_max",0);
         int gameProgressCalc =  gameProgress + 1;
-        // TODO  End the game
-        if ( gameProgress == gameProgressMax ) {endGame();}
-        // Track game progress
-        else {
-            editor.putInt("game_progress", gameProgressCalc);
-            editor.apply();
-        }
+
+        editor.putInt("game_progress", gameProgressCalc);
+        editor.apply();
 
         getArguments().putString("answer_result",questionResultText.toString());
-
         getArguments().putString("answer_result_display",answer);
 
        //Log.e(LOG_TAG, "question result 1 " + questionResultText);
        //Log.e(LOG_TAG, "question result 2 " + answer);
        //Log.e(LOG_TAG, "gameMode " + gameMode);
        // Disable, slide out and remove the choice buttons
-
         if ( gameMode.equals("capitals")){
             choice1View = (Button) rootView.findViewById(R.id.choice1);
             choice2View = (Button) rootView.findViewById(R.id.choice2);
@@ -722,6 +718,10 @@ public class GameActivityFragment extends Fragment {
         String resultTextDescription = getArguments().getString("answer_result_display");
         String currentAnswer = getArguments().getString("current_answer", "");
         String gameMode = sharedPref.getString("game_mode", "");
+        int gameProgress = sharedPref.getInt("game_progress",0);
+        int gameProgressMax = sharedPref.getInt("game_progress_max",0);
+        Log.e(LOG_TAG,"game progress " + gameProgress);
+        Log.e(LOG_TAG,"game max " + gameProgressMax);
         gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
         //Log.e(LOG_TAG, "answerResultView " + answerResultView);
         //------------------------------------------------------------------------------------------
@@ -756,21 +756,22 @@ public class GameActivityFragment extends Fragment {
         //------------------------------------------------------------------------------------------
         // nextQuestionTextView
         //------------------------------------------------------------------------------------------
-        if ( nextQuestionTextView == null ) {
-            nextQuestionTextView = new TextView(getActivity());
-            LinearLayout.LayoutParams questionResultParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
-            questionResultParams.gravity = Gravity.CENTER;
-            nextQuestionTextView.setId(R.id.next_question_text);
-            nextQuestionTextView.setLayoutParams(questionResultParams);}
-        if ( rootView.findViewById(R.id.next_question_text) == null ){
+        if (nextQuestionTextView == null) {
+                nextQuestionTextView = new TextView(getActivity());
+                LinearLayout.LayoutParams questionResultParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                questionResultParams.gravity = Gravity.CENTER;
+                nextQuestionTextView.setId(R.id.next_question_text);
+                nextQuestionTextView.setLayoutParams(questionResultParams);
+        }
+        if (rootView.findViewById(R.id.next_question_text) == null) {
             gameAnswer.addView(nextQuestionTextView);
-            if ( gameMode.equals("capitals")){
+            if (gameMode.equals("capitals")) {
                 nextQuestionTextView.setText(resultTextDescription);
-            } else if ( gameMode.equals("flags")){
+            } else if (gameMode.equals("flags")) {
                 Utilities util = new Utilities(getContext());
                 nextQuestionTextView.setText(resultTextDescription);
                 answerFlag = new ImageView(getActivity());
-               //Log.e(LOG_TAG,"Next/answer " + answer);
+                //Log.e(LOG_TAG,"Next/answer " + answer);
                 // Display the correct flag
                 int flagDrawable = util.getDrawable(getContext(), "flag_" + currentAnswer.toLowerCase());
                 Picasso.with(getContext()).load(flagDrawable)
@@ -781,29 +782,59 @@ public class GameActivityFragment extends Fragment {
             }
         }
         //------------------------------------------------------------------------------------------
-        // nextQuestionButtonView
+        // The game is over, show the "View Score" button instead of the "Next Question" button
         //------------------------------------------------------------------------------------------
-        if ( nextQuestionButtonView == null ) {
-            nextQuestionButtonView = new Button(getActivity());
-            LinearLayout.LayoutParams nextQuestionParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
-            nextQuestionParams.gravity = Gravity.CENTER;
-            nextQuestionButtonView.setId(R.id.next_question_button);
-            nextQuestionButtonView.setLayoutParams(nextQuestionParams);
-            nextQuestionButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
-            //------------------------------------------------------------------------------------------
-            // nextQuestionButtonView: Set on ClickListeners
-            //------------------------------------------------------------------------------------------
-            nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    nextButtonOnClickListener();
+        if (gameProgressMax == gameProgress) {
+
+            if (nextQuestionButtonView == null) {
+                nextQuestionButtonView = new Button(getActivity());
+                LinearLayout.LayoutParams nextQuestionParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                nextQuestionParams.gravity = Gravity.CENTER;
+                nextQuestionButtonView.setId(R.id.next_question_button);
+                nextQuestionButtonView.setLayoutParams(nextQuestionParams);
+                nextQuestionButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+                //------------------------------------------------------------------------------------------
+                // viewScoreButtonView: Set on ClickListeners
+                //------------------------------------------------------------------------------------------
+                nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        endGame();
                     }
-            });
+                });
+            }
+            if (rootView.findViewById(R.id.next_question_button) == null) {
+                //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
+                gameAnswer.addView(nextQuestionButtonView);
+                //gameContent.addView(nextQuestionButtonView);
+                nextQuestionButtonView.setText("View Scores");
+            }
         }
-        if ( rootView.findViewById(R.id.next_question_button) == null ){
-           //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
-            gameAnswer.addView(nextQuestionButtonView);
-            //gameContent.addView(nextQuestionButtonView);
-            nextQuestionButtonView.setText(R.string.action_next_question);
+        //------------------------------------------------------------------------------------------
+        // Game in progress, show the "Next Question" button
+        //------------------------------------------------------------------------------------------
+        else{
+            if (nextQuestionButtonView == null) {
+                nextQuestionButtonView = new Button(getActivity());
+                LinearLayout.LayoutParams nextQuestionParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
+                nextQuestionParams.gravity = Gravity.CENTER;
+                nextQuestionButtonView.setId(R.id.next_question_button);
+                nextQuestionButtonView.setLayoutParams(nextQuestionParams);
+                nextQuestionButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+                //------------------------------------------------------------------------------------------
+                // nextQuestionButtonView: Set on ClickListeners
+                //------------------------------------------------------------------------------------------
+                nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        nextButtonOnClickListener();
+                    }
+                });
+            }
+            if (rootView.findViewById(R.id.next_question_button) == null) {
+                //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
+                gameAnswer.addView(nextQuestionButtonView);
+                //gameContent.addView(nextQuestionButtonView);
+                nextQuestionButtonView.setText(R.string.action_next_question);
+            }
         }
         // Slide in the next question views
         slideInView(answerResultView,360);
@@ -843,12 +874,16 @@ public class GameActivityFragment extends Fragment {
     private void endGame(){
 
         // TODO Implement game end logic
+        /*gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
+        viewScoresButtonView = new Button(getActivity());
+        viewScoresButtonView.setText("View Scores");
+        gameAnswer.addView(viewScoresButtonView);*/
 
-        Context context = getActivity();
+        /*Context context = getActivity();
         CharSequence text = "Game Over!";
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        toast.show();*/
         getActivity().finish();
 
     }

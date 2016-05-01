@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(intent);
                 editor.putInt("game_progress", 1);
-                editor.putInt("game_progress_max", 10);
+                editor.putInt("game_progress_max", 2);
                 editor.putInt("correct_answers", 0);
                 editor.putInt("incorrect_answers", 0);
                 editor.putString("used_countries", "");
