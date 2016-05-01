@@ -15,23 +15,29 @@ import android.util.Log;
  * Created by josel on 3/10/2016.
  */
 public class Provider extends ContentProvider {
-    private static final String LOG_TAG = "CountriesProvider";
+    private static final String LOG_TAG = "ContentProvider";
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private DBHelper mOpenHelper;
 
     private static final int COUNTRIES = 100;
     private static final int COUNTRY_NAME = 101;
+    private static final int SCORES = 102;
 
 
     // Declare the query builders
     private static final SQLiteQueryBuilder sCountriesQueryBuilder;
+    private static final SQLiteQueryBuilder sScoresQueryBuilder;
 
     // Set the tables for each query builder
     static {
         sCountriesQueryBuilder = new SQLiteQueryBuilder();
         sCountriesQueryBuilder.setTables(
                 Contract.CountryEntry.COUNTRIES_TABLE_NAME
+        );
+        sScoresQueryBuilder = new SQLiteQueryBuilder();
+        sScoresQueryBuilder.setTables(
+                Contract.ScoreEntry.SCORES_TABLE_NAME
         );
 
     }
@@ -40,6 +46,7 @@ public class Provider extends ContentProvider {
     private static final String sCountryByName =
             Contract.CountryEntry.COUNTRIES_TABLE_NAME +
                     "." + Contract.CountryEntry.countryName + " = ? ";
+
 
     /**
      * getCountriesByID
@@ -86,6 +93,7 @@ public class Provider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, Contract.PATH_COUNTRIES, COUNTRIES);
         matcher.addURI(authority, Contract.PATH_COUNTRY_NAME + "/country/*", COUNTRY_NAME);
+        matcher.addURI(authority, Contract.PATH_SCORES, SCORES);
 
         return matcher;
     }
@@ -110,6 +118,8 @@ public class Provider extends ContentProvider {
                 return Contract.CountryEntry.CONTENT_TYPE;
             case COUNTRY_NAME:
                 return Contract.CountryEntry.CONTENT_ITEM_TYPE;
+            case SCORES:
+                return Contract.ScoreEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -128,7 +138,6 @@ public class Provider extends ContentProvider {
             case COUNTRIES:
             {
                 //Log.e(LOG_TAG, "COUNTRIES -> " + true);
-
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         Contract.CountryEntry.COUNTRIES_TABLE_NAME,
                         projection,
@@ -146,6 +155,15 @@ public class Provider extends ContentProvider {
                 retCursor = getCountryByName(uri, projection, sortOrder);
                 break;
             }
+            case SCORES:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        Contract.ScoreEntry.SCORES_TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
             default:
                 //Log.e(LOG_TAG, "unknown uri -> " + uri);
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -170,6 +188,12 @@ public class Provider extends ContentProvider {
                 else throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case SCORES:
+                long _id = db.insert(Contract.ScoreEntry.SCORES_TABLE_NAME, null, values);
+                if (_id > 0) returnUri = Contract.ScoreEntry.buildScoresUri(_id);
+                else throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -189,6 +213,9 @@ public class Provider extends ContentProvider {
                 rowsDeleted = db.delete(
                         Contract.CountryEntry.COUNTRIES_TABLE_NAME, selection, selectionArgs);
                 break;
+            case SCORES:
+                rowsDeleted = db.delete(
+                        Contract.ScoreEntry.SCORES_TABLE_NAME, selection, selectionArgs);
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -212,6 +239,10 @@ public class Provider extends ContentProvider {
             case COUNTRIES:
                 //Log.e(LOG_TAG, "updateCountries " + true);
                 rowsUpdated = db.update(Contract.CountryEntry.COUNTRIES_TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            case SCORES:
+                rowsUpdated = db.update(Contract.ScoreEntry.SCORES_TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             default:
