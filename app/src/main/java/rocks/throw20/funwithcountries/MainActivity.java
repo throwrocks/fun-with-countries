@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.);
+        //mediaPlayer.start(); // no need to call prepare(); create() does that for you
         // Stetho used for viewing the SQLite database values
         Stetho.initializeWithDefaults(this);
 
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
-                editor.putInt("game_progress_max", 3);
+                editor.putInt("game_progress_max", 10);
                 editor.putInt("correct_answers", 0);
                 editor.putInt("incorrect_answers", 0);
                 editor.putString("used_countries", "");
