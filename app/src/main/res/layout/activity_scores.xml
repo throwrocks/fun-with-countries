@@ -32,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="#E0E0E0"
             >
             <TextView
                 android:id="@+id/score_date_header"
@@ -42,7 +43,6 @@
                 android:layout_marginRight="@dimen/text_margin_8dp"
                 android:layout_marginEnd="@dimen/text_margin_8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:background="@color/timeUpBackground"
                 android:text="@string/score_date_header"
             />
             <TextView
@@ -52,7 +52,6 @@
                 android:layout_marginRight="@dimen/text_margin_8dp"
                 android:layout_marginEnd="@dimen/text_margin_8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:background="@color/incorrectBackground"
                 android:text="@string/score_game_mode_header"
             />
             <TextView
@@ -62,7 +61,6 @@
                 android:layout_marginRight="@dimen/text_margin_8dp"
                 android:layout_marginEnd="@dimen/text_margin_8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:background="@color/timeUpBackground"
                 android:text="@string/scores_score_header"
                 />
             <TextView
@@ -72,7 +70,6 @@
                 android:layout_marginRight="@dimen/text_margin_8dp"
                 android:layout_marginEnd="@dimen/text_margin_8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:background="@color/incorrectBackground"
                 android:text="@string/score_percent_header"
                 />
             <TextView
@@ -82,7 +79,6 @@
                 android:layout_marginRight="@dimen/text_margin_8dp"
                 android:layout_marginEnd="@dimen/text_margin_8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:background="@color/incorrectBackground"
                 android:text="@string/score_final_header"
                 />
         </LinearLayout>
@@ -103,5 +99,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        android:src="@android:drawable/ic_menu_share" />
 </android.support.design.widget.CoordinatorLayout>

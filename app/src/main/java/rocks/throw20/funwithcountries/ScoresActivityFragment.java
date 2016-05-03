@@ -69,7 +69,7 @@ public class ScoresActivityFragment extends Fragment implements LoaderManager.Lo
                 null,
                 null,
                 null,
-                null);
+                Contract.ScoreEntry.scoreFinalScore + " DESC LIMIT 50");
 
         Log.e(LOG_TAG, "onCreateLoader -> " + true);
         return cursorLoader;

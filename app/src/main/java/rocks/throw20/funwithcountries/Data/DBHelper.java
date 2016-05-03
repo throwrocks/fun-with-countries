@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 class DBHelper extends SQLiteOpenHelper {
 
     // The database version
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 29;
 
     private static final String DATABASE_NAME = "countries.db";
 
@@ -43,8 +43,8 @@ class DBHelper extends SQLiteOpenHelper {
                         Contract.ScoreEntry.scoreGameMode + " TEXT NOT NULL, " +
                         Contract.ScoreEntry.scoreQuestionsCount + " INTEGER NULL, " +
                         Contract.ScoreEntry.scoreCorrectAnswers + " INTEGER NULL, " +
-                        Contract.ScoreEntry.scoreIncorrectAnswers + " INTEGER NULL, " +
                         Contract.ScoreEntry.scoreScorePercent + " TEXT NULL, " +
+                        Contract.ScoreEntry.scoreFinalScore + " INTEGER NULL, " +
                         Contract.ScoreEntry.scoreGameDuration + " INTEGER NULL " +
                         ")";
         sqLiteDatabase.execSQL(SQL_CREATE_SCORES_TABLE);

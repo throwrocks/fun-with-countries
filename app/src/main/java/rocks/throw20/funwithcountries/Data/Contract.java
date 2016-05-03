@@ -102,8 +102,8 @@ public class Contract {
         public static final String scoreGameMode = "game_mode";
         public static final String scoreQuestionsCount = "questions_count";
         public static final String scoreCorrectAnswers = "correct_answers";
-        public static final String scoreIncorrectAnswers = "incorrect_answers";
         public static final String scoreScorePercent = "percent";
+        public static final String scoreFinalScore = "score";
         public static final String scoreGameDuration = "game_duration";
 
         //The countries table index
@@ -112,8 +112,8 @@ public class Contract {
         public static final int indexGameMode = 3;
         public static final int indexQuestionsCount = 4;
         public static final int indexCorrectAnswers = 5;
-        public static final int indexIncorrectAnswers = 6;
-        public static final int indexScorePercent = 7;
+        public static final int indexScorePercent = 6;
+        public static final int indexScoreFinalScore = 7;
         public static final int indexGameDuration = 8;
 
 

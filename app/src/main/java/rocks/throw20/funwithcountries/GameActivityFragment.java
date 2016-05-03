@@ -29,6 +29,7 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -922,8 +923,18 @@ public class GameActivityFragment extends Fragment {
         String scoreDate = df.format(new Date());
         String scoreGameMode = sharedPref.getString("game_mode", "");
         int scoreQuestionsCount = sharedPref.getInt("game_progress_max",0);
-        int scoreCorrectAnswers = sharedPref.getInt("correct_answers", 0);
-        int scoreIncorrectAnswers = sharedPref.getInt("incorrect_answers", 0);
+        int scoreCorrectAnswers = sharedPref.getInt("correct_answers",0);
+
+        // Calculate the score percent
+        double num = (double) scoreCorrectAnswers / scoreQuestionsCount;
+        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
+        defaultFormat.setMinimumFractionDigits(0);
+        String scorePercent = defaultFormat.format(num);
+
+        // Calculate the final score
+        int scoreFinalScore = ( scoreQuestionsCount * 20 ) + ( scoreCorrectAnswers * 5 );
+
+
         String scoreGameDuration = "";
         // Create a content values object
         ContentValues scoreValues = new ContentValues();
@@ -931,7 +942,8 @@ public class GameActivityFragment extends Fragment {
         scoreValues.put(Contract.ScoreEntry.scoreGameMode, scoreGameMode);
         scoreValues.put(Contract.ScoreEntry.scoreQuestionsCount, scoreQuestionsCount);
         scoreValues.put(Contract.ScoreEntry.scoreCorrectAnswers, scoreCorrectAnswers);
-        scoreValues.put(Contract.ScoreEntry.scoreIncorrectAnswers, scoreIncorrectAnswers);
+        scoreValues.put(Contract.ScoreEntry.scoreScorePercent, scorePercent);
+        scoreValues.put(Contract.ScoreEntry.scoreFinalScore, scoreFinalScore);
         scoreValues.put(Contract.ScoreEntry.scoreGameDuration, scoreGameDuration);
         // Insert the score record
         getContext().getContentResolver().insert(

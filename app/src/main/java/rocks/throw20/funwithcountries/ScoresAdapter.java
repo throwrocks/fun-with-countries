@@ -40,6 +40,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
         public final TextView viewScoresGameMode;
         public final TextView viewScoresGameScore;
         public final TextView viewScoresGameScorePercent;
+        public final TextView viewScoresFinalScore;
 
         public ViewHolder(View view) {
             super(view);
@@ -48,6 +49,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
             viewScoresGameMode = (TextView) view.findViewById(R.id.score_game_mode);
             viewScoresGameScore = (TextView) view.findViewById(R.id.score_game_score);
             viewScoresGameScorePercent = (TextView) view.findViewById(R.id.score_game_percent);
+            viewScoresFinalScore = (TextView) view.findViewById(R.id.score_game_final);
 
         }
 
@@ -68,7 +70,9 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
         String scoreDate = mCursor.getString(1);
         String scoreGameMode = mCursor.getString(2);
         String scoreCountQuestions = mCursor.getString(3);
-        String scoreGameScore = mCursor.getString(4);
+        String scoreCorrectAnswers = mCursor.getString(4);
+        String scorePercent = mCursor.getString(5);
+        String scoreFinalScore = mCursor.getString(6);
 
 
         // Convert the gameMode to title case
@@ -78,26 +82,14 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
         scoreGameMode = s1.toString();
 
         // Build the score display
-        String scoreDisplay = scoreGameScore + "/" + scoreCountQuestions;
+        String scoreDisplay = scoreCorrectAnswers + "/" + scoreCountQuestions;
 
-        // Get the score %
-        double num = Double.parseDouble(scoreGameScore) / Double.parseDouble(scoreCountQuestions);
-        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
-        defaultFormat.setMinimumFractionDigits(0);
-        String scorePercent = defaultFormat.format(num);
-
-
-        //Log.e(LOG_TAG, "scoreDate " + scoreDate);
-        //Log.e(LOG_TAG, "scoreGameMode " + scoreGameMode);
-        //Log.e(LOG_TAG, "scoreGameScore " + scoreGameScore);
-        Log.e(LOG_TAG, "num " + Integer.parseInt(scoreGameScore));
-        Log.e(LOG_TAG, "num " + Integer.parseInt(scoreCountQuestions));
-        Log.e(LOG_TAG, "num " + num);
 
         holder.viewScoresDate.setText(scoreDate);
         holder.viewScoresGameMode.setText(scoreGameMode);
         holder.viewScoresGameScore.setText(scoreDisplay);
         holder.viewScoresGameScorePercent.setText(scorePercent);
+        holder.viewScoresFinalScore.setText(scoreFinalScore);
     }
 
 
