@@ -59,6 +59,7 @@ public class GameActivityFragment extends Fragment {
     private TextView answerResultView;
     private TextView nextQuestionTextView;
     private Button nextQuestionButtonView;
+
     private ImageView answerFlag;
 
     private Button viewScoresButtonView;
@@ -683,7 +684,10 @@ public class GameActivityFragment extends Fragment {
         //The game is over !!!! Submit the score
         //------------------------------------------------------------------------------------------
         gameProgress = sharedPref.getInt("game_progress",0);
-        if ( gameProgressMax == gameProgress ){ submitScore(); }
+        if ( gameProgressMax == gameProgress - 1  ){
+            Log.e(LOG_TAG, "submitScore " + true);
+            submitScore();
+        }
 
         //Log.e(LOG_TAG, "question result 1 " + questionResultText);
        //Log.e(LOG_TAG, "question result 2 " + answer);
@@ -799,29 +803,31 @@ public class GameActivityFragment extends Fragment {
         //------------------------------------------------------------------------------------------
         // The game is over, show the "View Score" button instead of the "Next Question" button
         //------------------------------------------------------------------------------------------
-        if (gameProgressMax == gameProgress) {
+        if ( gameProgressMax == gameProgress - 1  ) {
 
-            if (nextQuestionButtonView == null) {
-                nextQuestionButtonView = new Button(getActivity());
+            if (viewScoresButtonView == null) {
+                Log.e(LOG_TAG, "viewScoresButton == null " + true);
+                viewScoresButtonView = new Button(getActivity());
                 LinearLayout.LayoutParams nextQuestionParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
                 nextQuestionParams.gravity = Gravity.CENTER;
-                nextQuestionButtonView.setId(R.id.next_question_button);
-                nextQuestionButtonView.setLayoutParams(nextQuestionParams);
-                nextQuestionButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
+                viewScoresButtonView.setId(R.id.view_scores);
+                viewScoresButtonView.setLayoutParams(nextQuestionParams);
+                viewScoresButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
                 //------------------------------------------------------------------------------------------
                 // viewScoreButtonView: Set on ClickListeners
                 //------------------------------------------------------------------------------------------
-                nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
+                viewScoresButtonView.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
+                        Log.e(LOG_TAG, "endGame " + "lel");
                         endGame();
                     }
                 });
             }
-            if (rootView.findViewById(R.id.next_question_button) == null) {
-                //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + false);
-                gameAnswer.addView(nextQuestionButtonView);
+            if (rootView.findViewById(R.id.view_scores) == null) {
+                Log.e(LOG_TAG, "viewScoresButton on layout " + false);
+                gameAnswer.addView(viewScoresButtonView);
                 //gameContent.addView(nextQuestionButtonView);
-                nextQuestionButtonView.setText(R.string.action_view_scores);
+                viewScoresButtonView.setText(R.string.action_view_scores);
             }
         }
         //------------------------------------------------------------------------------------------
@@ -912,7 +918,7 @@ public class GameActivityFragment extends Fragment {
      */
     private void submitScore(){
         // Get the score data to be stored in the database
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        DateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String scoreDate = df.format(new Date());
         String scoreGameMode = sharedPref.getString("game_mode", "");
         int scoreQuestionsCount = sharedPref.getInt("game_progress_max",0);

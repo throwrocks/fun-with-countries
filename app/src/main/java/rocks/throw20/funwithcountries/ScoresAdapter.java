@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
@@ -38,6 +39,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
         public final TextView viewScoresDate;
         public final TextView viewScoresGameMode;
         public final TextView viewScoresGameScore;
+        public final TextView viewScoresGameScorePercent;
 
         public ViewHolder(View view) {
             super(view);
@@ -45,6 +47,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
             viewScoresDate = (TextView) view.findViewById(R.id.score_date);
             viewScoresGameMode = (TextView) view.findViewById(R.id.score_game_mode);
             viewScoresGameScore = (TextView) view.findViewById(R.id.score_game_score);
+            viewScoresGameScorePercent = (TextView) view.findViewById(R.id.score_game_percent);
 
         }
 
@@ -64,15 +67,37 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
 
         String scoreDate = mCursor.getString(1);
         String scoreGameMode = mCursor.getString(2);
-        String scoreGameScore = mCursor.getString(3);
+        String scoreCountQuestions = mCursor.getString(3);
+        String scoreGameScore = mCursor.getString(4);
 
-        Log.e(LOG_TAG, "scoreDate " + scoreDate);
-        Log.e(LOG_TAG, "scoreGameMode " + scoreGameMode);
-        Log.e(LOG_TAG, "scoreGameScore " + scoreGameScore);
+
+        // Convert the gameMode to title case
+        StringBuilder s1 = new StringBuilder(scoreGameMode);
+        s1.replace(0, s1.length(), s1.toString().toLowerCase());
+        s1.setCharAt(0, Character.toTitleCase(s1.charAt(0)));
+        scoreGameMode = s1.toString();
+
+        // Build the score display
+        String scoreDisplay = scoreGameScore + "/" + scoreCountQuestions;
+
+        // Get the score %
+        double num = Double.parseDouble(scoreGameScore) / Double.parseDouble(scoreCountQuestions);
+        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
+        defaultFormat.setMinimumFractionDigits(0);
+        String scorePercent = defaultFormat.format(num);
+
+
+        //Log.e(LOG_TAG, "scoreDate " + scoreDate);
+        //Log.e(LOG_TAG, "scoreGameMode " + scoreGameMode);
+        //Log.e(LOG_TAG, "scoreGameScore " + scoreGameScore);
+        Log.e(LOG_TAG, "num " + Integer.parseInt(scoreGameScore));
+        Log.e(LOG_TAG, "num " + Integer.parseInt(scoreCountQuestions));
+        Log.e(LOG_TAG, "num " + num);
 
         holder.viewScoresDate.setText(scoreDate);
         holder.viewScoresGameMode.setText(scoreGameMode);
-        holder.viewScoresGameScore.setText(scoreGameScore);
+        holder.viewScoresGameScore.setText(scoreDisplay);
+        holder.viewScoresGameScorePercent.setText(scorePercent);
     }
 
 

@@ -36,5 +36,12 @@
     <item name="next_question_answer_result_text" type="id" />
     <item name="next_question_text" type="id" />
     <item name="next_question_button" type="id" />
-    <string name="title_activity_scores">ScoresActivity</string>
+    <item name="view_scores" type="id" />
+    <!--High Scores-->
+    <string name="title_activity_scores">High Scores</string>
+    <string name="score_date_header">Date</string>
+    <string name="score_game_mode_header">Mode</string>
+    <string name="scores_score_header">Correct</string>
+    <string name="score_percent_header">%</string>
+    <string name="score_final_header">Score</string>
 </resources>

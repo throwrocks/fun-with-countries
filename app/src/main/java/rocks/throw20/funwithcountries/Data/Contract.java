@@ -103,6 +103,7 @@ public class Contract {
         public static final String scoreQuestionsCount = "questions_count";
         public static final String scoreCorrectAnswers = "correct_answers";
         public static final String scoreIncorrectAnswers = "incorrect_answers";
+        public static final String scoreScorePercent = "percent";
         public static final String scoreGameDuration = "game_duration";
 
         //The countries table index
@@ -112,7 +113,9 @@ public class Contract {
         public static final int indexQuestionsCount = 4;
         public static final int indexCorrectAnswers = 5;
         public static final int indexIncorrectAnswers = 6;
-        public static final int indexGameDuration = 7;
+        public static final int indexScorePercent = 7;
+        public static final int indexGameDuration = 8;
+
 
         public static Uri buildScoresUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

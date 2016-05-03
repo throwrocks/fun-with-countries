@@ -8,31 +8,47 @@
 
     <TextView
         android:id="@+id/score_date"
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/text_margin"
-        android:layout_marginRight="@dimen/text_margin"
-
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin_8dp"
+        android:layout_marginEnd="@dimen/text_margin_8dp"
         android:textAppearance="?attr/textAppearanceListItem"
         />
     <TextView
         android:id="@+id/score_game_mode"
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/text_margin"
-        android:layout_marginRight="@dimen/text_margin"
-
+        android:layout_marginRight="@dimen/text_margin_8dp"
+        android:layout_marginEnd="@dimen/text_margin_8dp"
         android:textAppearance="?attr/textAppearanceListItem"
         />
     <TextView
         android:id="@+id/score_game_score"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/text_margin"
-        android:layout_marginRight="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin_8dp"
+        android:layout_marginEnd="@dimen/text_margin_8dp"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+    <TextView
+        android:id="@+id/score_game_percent"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/text_margin_8dp"
+        android:layout_marginEnd="@dimen/text_margin_8dp"
         android:textAppearance="?attr/textAppearanceListItem"
         />
 
+    <TextView
+        android:id="@+id/score_game_final"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/text_margin_8dp"
+        android:layout_marginEnd="@dimen/text_margin_8dp"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
 
 
 </LinearLayout>
