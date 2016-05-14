@@ -142,7 +142,7 @@ public class Utilities {
      * @param sound the name of the sound to play
      */
     public void playSound(String sound){
-        MediaPlayer mediaPlayer;
+        /*MediaPlayer mediaPlayer;
         switch (sound) {
             case "success" :
                 mediaPlayer = MediaPlayer.create(mContext, R.raw.success);
@@ -164,7 +164,7 @@ public class Utilities {
                 mediaPlayer = MediaPlayer.create(mContext, R.raw.tick_normal);
                 mediaPlayer.start();
                 break;
-        }
+        }*/
 
     }
 }

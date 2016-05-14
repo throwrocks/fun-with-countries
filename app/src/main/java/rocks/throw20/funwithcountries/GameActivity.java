@@ -3,12 +3,14 @@ package rocks.throw20.funwithcountries;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -19,7 +21,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        //Log.e(LOG_TAG, "setContentView " + true);
+        Log.e(LOG_TAG, "setContentView " + true);
 
         Bundle args = new Bundle();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -32,7 +34,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
-            //Log.e(LOG_TAG, "SavedInstanceState " + null);
+            Log.e(LOG_TAG, "SavedInstanceState " + null);
             GameActivityFragment gameActivityFragment = new GameActivityFragment();
             gameActivityFragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
@@ -45,7 +47,17 @@ public class GameActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             exitByBackKey();

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -104,7 +105,7 @@ public class GameActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-       //Log.e(LOG_TAG, "onCreate " + true);
+        Log.e(LOG_TAG, "onCreate " + true);
         if (savedInstanceState == null) {
            //Log.e(LOG_TAG, "onCreate " + true);
             getArguments().putString("savedInstanceState", null);
@@ -115,14 +116,17 @@ public class GameActivityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       //Log.e(LOG_TAG, "onCreateView " + true);
+        Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
+
+
+
         return rootView;
     }
 
     @Override
     public void onPause() {
-       //Log.e(LOG_TAG, "onPause " + true);
+       Log.e(LOG_TAG, "onPause " + true);
         // Cancel the timer, it will be recreated and started from where it left off
         questionTimer.cancel();
         super.onPause();
@@ -137,7 +141,7 @@ public class GameActivityFragment extends Fragment {
 
     @Override
     public void onResume() {
-       //Log.e(LOG_TAG, "onResume " + true);
+       Log.e(LOG_TAG, "onResume " + true);
         String sequence = getArguments().getString("sequence");
        //Log.e(LOG_TAG, "sequence " + sequence);
         if (sequence != null) {
@@ -649,7 +653,7 @@ public class GameActivityFragment extends Fragment {
      */
     private void answerQuestion(){
         Utilities util = new Utilities(getContext());
-        util.playSound("select");
+
         String gameMode = sharedPref.getString("game_mode", "");
         getArguments().putString("sequence", "answerQuestion");
        //Log.e(LOG_TAG, "sequence " + getArguments().getString("sequence"));
@@ -671,11 +675,11 @@ public class GameActivityFragment extends Fragment {
         int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers",0);
         CharSequence questionResultText;
         // The answer was correct
-        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; questionResultText = "Correct";}
+        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; questionResultText = "Correct";   util.playSound("success");}
         // The time is up
         else if ( timeUp ){ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Time up!"; }
         // The answer was incorrect
-        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Incorrect";}
+        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Incorrect";   util.playSound("failure");}
         // Save the score
         editor.putInt("correct_answers", gameCorrectAnswers);
         editor.putInt("incorrect_answers", gameIncorrectAnswers);
@@ -772,7 +776,6 @@ public class GameActivityFragment extends Fragment {
             gameAnswer.addView(answerResultView);
             if ( resultText != null  && resultText.equals("Incorrect")) {
                //Log.e(LOG_TAG, "result text " + resultText);
-                util.playSound("failure");
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
             } else if ( resultText != null  && resultText.equals("Time up!") ){
@@ -781,7 +784,6 @@ public class GameActivityFragment extends Fragment {
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
             } else if ( resultText != null && resultText.equals("Correct")) {
                //Log.e(LOG_TAG, "result text " + resultText);
-                util.playSound("success");
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
             }
