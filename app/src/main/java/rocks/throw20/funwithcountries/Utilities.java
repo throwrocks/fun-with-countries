@@ -2,7 +2,11 @@ package rocks.throw20.funwithcountries;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.util.Log;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 
 import junit.framework.Assert;
 
@@ -131,5 +135,36 @@ public class Utilities {
 
         return context.getResources().getIdentifier(name,
                 "drawable", context.getPackageName());
+    }
+
+    /**
+     * playSound
+     * @param sound the name of the sound to play
+     */
+    public void playSound(String sound){
+
+        switch (sound) {
+            case "success" :
+                MediaPlayer success = MediaPlayer.create(mContext, R.raw.success);
+                success.start();
+                break;
+            case "failure" :
+                MediaPlayer failure = MediaPlayer.create(mContext, R.raw.failure);
+                failure.start();
+                break;
+            case "time_up" :
+                MediaPlayer timeUp = MediaPlayer.create(mContext, R.raw.failure);
+                timeUp.start();
+                break;
+            case "select":
+                MediaPlayer select = MediaPlayer.create(mContext, R.raw.select);
+                select.start();
+                break;
+            case "tick_normal":
+                MediaPlayer tick_normal = MediaPlayer.create(mContext, R.raw.tick_normal);
+                tick_normal.start();
+                break;
+        }
+
     }
 }

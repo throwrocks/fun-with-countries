@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.common.Util;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
@@ -244,6 +245,7 @@ public class GameActivityFragment extends Fragment {
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setQuestionViews() {
+        final Utilities util = new Utilities(getContext());
         setLayoutHeader();
        //Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
@@ -368,7 +370,6 @@ public class GameActivityFragment extends Fragment {
             gameContent.setOrientation(GridLayout.HORIZONTAL);
             //gameContent.setWeightSum(6);
 
-            Utilities util = new Utilities(getContext());
             //--------------------------------------------------------------------------------------
             // Flags: Choice 1
             //--------------------------------------------------------------------------------------
@@ -544,6 +545,7 @@ public class GameActivityFragment extends Fragment {
                 getArguments().putBoolean("timer_is_running",true);
                 int progress = (int) (long) ( millisUntilFinished / 1000);
                 if ( progress <= 10 ){
+                    util.playSound("tick_normal");
                     getArguments().putInt("timer_progress",progress);
                    //Log.e(LOG_TAG, "progress " + progress);
                     gameTimerView.setProgress(progress);
@@ -586,6 +588,7 @@ public class GameActivityFragment extends Fragment {
 
      */
     private void selectedAnswerView(){
+        final Utilities util = new Utilities(getContext());
         String gameMode = sharedPref.getString("game_mode","");
         String answer = getArguments().getString("selected_answer");
        //Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
@@ -626,6 +629,7 @@ public class GameActivityFragment extends Fragment {
             //------------------------------------------------------------------------------------------
             confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    util.playSound("select");
                     answerQuestion();
                 }
             });
@@ -733,6 +737,7 @@ public class GameActivityFragment extends Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
+        final Utilities util = new Utilities(getContext());
        //Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");
@@ -761,6 +766,7 @@ public class GameActivityFragment extends Fragment {
             gameAnswer.addView(answerResultView);
             if ( resultText != null  && resultText.equals("Incorrect")) {
                //Log.e(LOG_TAG, "result text " + resultText);
+                util.playSound("failure");
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
             } else if ( resultText != null  && resultText.equals("Time up!") ){
@@ -769,6 +775,7 @@ public class GameActivityFragment extends Fragment {
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
             } else if ( resultText != null && resultText.equals("Correct")) {
                //Log.e(LOG_TAG, "result text " + resultText);
+                util.playSound("success");
                 answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
                 answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
             }
@@ -788,7 +795,7 @@ public class GameActivityFragment extends Fragment {
             if (gameMode.equals("capitals")) {
                 nextQuestionTextView.setText(resultTextDescription);
             } else if (gameMode.equals("flags")) {
-                Utilities util = new Utilities(getContext());
+
                 nextQuestionTextView.setText(resultTextDescription);
                 answerFlag = new ImageView(getActivity());
                 //Log.e(LOG_TAG,"Next/answer " + answer);
