@@ -90,6 +90,7 @@ public class GameActivityFragment extends Fragment {
     private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
     private final int linearLayoutWrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+
     public GameActivityFragment() {
     }
 
@@ -245,7 +246,7 @@ public class GameActivityFragment extends Fragment {
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setQuestionViews() {
-        final Utilities util = new Utilities(getContext());
+        Utilities util = new Utilities(getContext());
         setLayoutHeader();
        //Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
@@ -539,12 +540,14 @@ public class GameActivityFragment extends Fragment {
         questionTimer = new CountDownTimer(startTimer, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
+                Utilities util = new Utilities(getContext());
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 timeUp = false;
                 getArguments().putBoolean("timer_is_running",true);
                 int progress = (int) (long) ( millisUntilFinished / 1000);
                 if ( progress <= 10 ){
+
                     util.playSound("tick_normal");
                     getArguments().putInt("timer_progress",progress);
                    //Log.e(LOG_TAG, "progress " + progress);
@@ -588,7 +591,7 @@ public class GameActivityFragment extends Fragment {
 
      */
     private void selectedAnswerView(){
-        final Utilities util = new Utilities(getContext());
+
         String gameMode = sharedPref.getString("game_mode","");
         String answer = getArguments().getString("selected_answer");
        //Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
@@ -629,7 +632,8 @@ public class GameActivityFragment extends Fragment {
             //------------------------------------------------------------------------------------------
             confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    util.playSound("select");
+
+
                     answerQuestion();
                 }
             });
@@ -644,6 +648,8 @@ public class GameActivityFragment extends Fragment {
      * This method is called when the choice to a question is confirmed
      */
     private void answerQuestion(){
+        Utilities util = new Utilities(getContext());
+        util.playSound("select");
         String gameMode = sharedPref.getString("game_mode", "");
         getArguments().putString("sequence", "answerQuestion");
        //Log.e(LOG_TAG, "sequence " + getArguments().getString("sequence"));
@@ -737,7 +743,7 @@ public class GameActivityFragment extends Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
-        final Utilities util = new Utilities(getContext());
+        Utilities util = new Utilities(getContext());
        //Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");

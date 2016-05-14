@@ -142,27 +142,27 @@ public class Utilities {
      * @param sound the name of the sound to play
      */
     public void playSound(String sound){
-
+        MediaPlayer mediaPlayer;
         switch (sound) {
             case "success" :
-                MediaPlayer success = MediaPlayer.create(mContext, R.raw.success);
-                success.start();
+                mediaPlayer = MediaPlayer.create(mContext, R.raw.success);
+                mediaPlayer.start();
                 break;
             case "failure" :
-                MediaPlayer failure = MediaPlayer.create(mContext, R.raw.failure);
-                failure.start();
+                mediaPlayer = MediaPlayer.create(mContext, R.raw.failure);
+                mediaPlayer.start();
                 break;
             case "time_up" :
-                MediaPlayer timeUp = MediaPlayer.create(mContext, R.raw.failure);
-                timeUp.start();
+                mediaPlayer = MediaPlayer.create(mContext, R.raw.failure);
+                mediaPlayer.start();
                 break;
             case "select":
-                MediaPlayer select = MediaPlayer.create(mContext, R.raw.select);
-                select.start();
+                mediaPlayer = MediaPlayer.create(mContext, R.raw.select);
+                mediaPlayer.start();
                 break;
             case "tick_normal":
-                MediaPlayer tick_normal = MediaPlayer.create(mContext, R.raw.tick_normal);
-                tick_normal.start();
+                mediaPlayer = MediaPlayer.create(mContext, R.raw.tick_normal);
+                mediaPlayer.start();
                 break;
         }
 
