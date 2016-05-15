@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.common.Util;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
@@ -89,6 +91,7 @@ public class GameActivityFragment extends Fragment {
     private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
     private final int linearLayoutWrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+
     public GameActivityFragment() {
     }
 
@@ -102,7 +105,7 @@ public class GameActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-       //Log.e(LOG_TAG, "onCreate " + true);
+        Log.e(LOG_TAG, "onCreate " + true);
         if (savedInstanceState == null) {
            //Log.e(LOG_TAG, "onCreate " + true);
             getArguments().putString("savedInstanceState", null);
@@ -113,14 +116,17 @@ public class GameActivityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       //Log.e(LOG_TAG, "onCreateView " + true);
+        Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
+
+
+
         return rootView;
     }
 
     @Override
     public void onPause() {
-       //Log.e(LOG_TAG, "onPause " + true);
+       Log.e(LOG_TAG, "onPause " + true);
         // Cancel the timer, it will be recreated and started from where it left off
         questionTimer.cancel();
         super.onPause();
@@ -135,7 +141,7 @@ public class GameActivityFragment extends Fragment {
 
     @Override
     public void onResume() {
-       //Log.e(LOG_TAG, "onResume " + true);
+       Log.e(LOG_TAG, "onResume " + true);
         String sequence = getArguments().getString("sequence");
        //Log.e(LOG_TAG, "sequence " + sequence);
         if (sequence != null) {
@@ -244,6 +250,7 @@ public class GameActivityFragment extends Fragment {
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setQuestionViews() {
+        Utilities util = new Utilities(getContext());
         setLayoutHeader();
        //Log.e(LOG_TAG, "setQuestionViews " + true);
         Bundle b = getArguments();
@@ -368,7 +375,6 @@ public class GameActivityFragment extends Fragment {
             gameContent.setOrientation(GridLayout.HORIZONTAL);
             //gameContent.setWeightSum(6);
 
-            Utilities util = new Utilities(getContext());
             //--------------------------------------------------------------------------------------
             // Flags: Choice 1
             //--------------------------------------------------------------------------------------
@@ -538,12 +544,15 @@ public class GameActivityFragment extends Fragment {
         questionTimer = new CountDownTimer(startTimer, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
+                Utilities util = new Utilities(getContext());
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 timeUp = false;
                 getArguments().putBoolean("timer_is_running",true);
                 int progress = (int) (long) ( millisUntilFinished / 1000);
                 if ( progress <= 10 ){
+
+                    util.playSound("tick_normal");
                     getArguments().putInt("timer_progress",progress);
                    //Log.e(LOG_TAG, "progress " + progress);
                     gameTimerView.setProgress(progress);
@@ -586,6 +595,7 @@ public class GameActivityFragment extends Fragment {
 
      */
     private void selectedAnswerView(){
+
         String gameMode = sharedPref.getString("game_mode","");
         String answer = getArguments().getString("selected_answer");
        //Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
@@ -626,6 +636,8 @@ public class GameActivityFragment extends Fragment {
             //------------------------------------------------------------------------------------------
             confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+
+
                     answerQuestion();
                 }
             });
@@ -640,6 +652,8 @@ public class GameActivityFragment extends Fragment {
      * This method is called when the choice to a question is confirmed
      */
     private void answerQuestion(){
+        Utilities util = new Utilities(getContext());
+
         String gameMode = sharedPref.getString("game_mode", "");
         getArguments().putString("sequence", "answerQuestion");
        //Log.e(LOG_TAG, "sequence " + getArguments().getString("sequence"));
@@ -661,11 +675,11 @@ public class GameActivityFragment extends Fragment {
         int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers",0);
         CharSequence questionResultText;
         // The answer was correct
-        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; questionResultText = "Correct";}
+        if ( test ){gameCorrectAnswers = gameCorrectAnswers + 1 ; questionResultText = "Correct";   util.playSound("success");}
         // The time is up
         else if ( timeUp ){ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Time up!"; }
         // The answer was incorrect
-        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Incorrect";}
+        else{ gameIncorrectAnswers = gameIncorrectAnswers + 1 ; questionResultText = "Incorrect";   util.playSound("failure");}
         // Save the score
         editor.putInt("correct_answers", gameCorrectAnswers);
         editor.putInt("incorrect_answers", gameIncorrectAnswers);
@@ -733,6 +747,7 @@ public class GameActivityFragment extends Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
+        Utilities util = new Utilities(getContext());
        //Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
         String resultTextDescription = getArguments().getString("answer_result_display");
@@ -788,7 +803,7 @@ public class GameActivityFragment extends Fragment {
             if (gameMode.equals("capitals")) {
                 nextQuestionTextView.setText(resultTextDescription);
             } else if (gameMode.equals("flags")) {
-                Utilities util = new Utilities(getContext());
+
                 nextQuestionTextView.setText(resultTextDescription);
                 answerFlag = new ImageView(getActivity());
                 //Log.e(LOG_TAG,"Next/answer " + answer);

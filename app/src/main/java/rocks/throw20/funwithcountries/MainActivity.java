@@ -21,16 +21,17 @@ import rocks.throw20.funwithcountries.Data.FetchTask;
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private Cursor mCursor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.);
-        //mediaPlayer.start(); // no need to call prepare(); create() does that for you
+        final Utilities util = new Utilities(this);
+
         // Stetho used for viewing the SQLite database values
         Stetho.initializeWithDefaults(this);
 
         // Create a new util object to check if the countries exist
-        Utilities util = new Utilities(this);
+
         mCursor = util.getAllCountries();
         // If the Cursor is null, or it doesn't contain 247 countries
         // create a DataFetch Async task and execute it
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // Set the GameMode buttons onClickListeners
         buttonGameModeCapitals.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                util.playSound("select");
                 startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 10);
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         });
         buttonGameModeFlags.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                util.playSound("select");
                 startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
                 editor.putInt("game_progress_max", 10);
@@ -86,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         buttonGameScores.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Utilities media = new Utilities(getApplicationContext());
+                media.playSound("select");
                 startActivity(scoresIntent);
             }
         });
