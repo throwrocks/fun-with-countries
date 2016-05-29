@@ -431,7 +431,7 @@ public class GameActivityFragment extends Fragment {
                 choice1ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        choice1ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        //choice1ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                         choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
@@ -466,7 +466,7 @@ public class GameActivityFragment extends Fragment {
                 choice2ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        //choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice2ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                         choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
@@ -502,7 +502,7 @@ public class GameActivityFragment extends Fragment {
                     public void onClick(View v) {
                         choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
-                        choice3ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        //choice3ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                         choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         selectAnswer(choice3);
                     }
@@ -539,7 +539,7 @@ public class GameActivityFragment extends Fragment {
                         choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice2ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
-                        choice4ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        //choice4ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                         selectAnswer(choice4);
                     }
                 });

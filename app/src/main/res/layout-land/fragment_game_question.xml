@@ -67,7 +67,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <GridLayout
-        android:background="@color/correctBackground"
+
         android:id="@+id/game_content"
         android:layout_gravity="center_horizontal"
         android:columnCount="2"
@@ -78,7 +78,7 @@
         >
     </GridLayout>
     <LinearLayout
-        android:background="@color/colorAccent"
+
         android:orientation="vertical"
         android:layout_gravity="bottom"
         android:id="@+id/game_answer_confirmation"
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content">
     </LinearLayout>
     <LinearLayout
-        android:background="@color/colorPrimary"
+
         android:orientation="vertical"
         android:id="@+id/game_answer"
         android:layout_width="match_parent"
