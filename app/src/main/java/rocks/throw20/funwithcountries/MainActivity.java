@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.appinvite.AppInviteInvitationResult;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         final Utilities util = new Utilities(this);
 
         // Stetho used for viewing the SQLite database values
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
 
         // Create a new util object to check if the countries exist
         mCursor = util.getAllCountries();
@@ -82,10 +84,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.e(LOG_TAG,"start game");
+        // Load the ad unit
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
         // Setup the layout
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Set the ad
+        final AdView mAdView = (AdView) findViewById(R.id.adView);
+        mAdView.loadAd(adRequest);
+
         // Get the GameMode buttons
         final Button buttonGameModeCapitals = (Button) findViewById(R.id.button_fun_with_capitals);
         final Button buttonGameModeFlags = (Button) findViewById(R.id.button_fun_with_flags);
@@ -142,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
              onInviteClicked();
             }
         });
+
+
 
     }
 

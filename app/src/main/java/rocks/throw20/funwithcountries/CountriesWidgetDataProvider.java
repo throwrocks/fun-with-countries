@@ -5,7 +5,6 @@ package rocks.throw20.funwithcountries;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
@@ -16,20 +15,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.ArrayList;
 
 import rocks.throw20.funwithcountries.Data.Contract;
 
 /**
- * SoccerScoresWidgetDataProvider
+ * CountriesWidgetDataProvider
  * Implements RemoteViewsFactory to build the home screen widget and populate it with data
  */
 class CountriesWidgetDataProvider implements RemoteViewsService.RemoteViewsFactory  {
-    private static final String LOG_TAG = "WidgetDataProvider";
+    private static final String LOG_TAG = CountriesWidgetDataProvider.class.getSimpleName();
 
     private Context mContext = null;
-    private final JSONArray resultsArray = new JSONArray();
+    private JSONArray resultsArray = new JSONArray();
+
     public CountriesWidgetDataProvider(Context context) {
         mContext = context;
 
@@ -40,10 +39,12 @@ class CountriesWidgetDataProvider implements RemoteViewsService.RemoteViewsFacto
         // Get today's date and convert it to a string to query the database for today's games
         Utilities util = new Utilities(mContext);
         Cursor results = util.getAllCountriesWithCapitals();
-        results.moveToFirst();
-        int resultsCount = results.getCount();
 
-        for (int i = 1; i < resultsCount; i++) {
+        int cursorSize = results.getCount();
+        for (int i = 1; i < 6; i++) {
+            int randomInt = util.getRandomInt(cursorSize, null);
+            results.moveToFirst();
+            results.move(randomInt);
 
             String countryName = results.getString(Contract.CountryEntry.indexCountryName);
             String countryCapital = results.getString(Contract.CountryEntry.indexCountryCapital);
@@ -52,19 +53,16 @@ class CountriesWidgetDataProvider implements RemoteViewsService.RemoteViewsFacto
             // Put results in a JSON object
             JSONObject record = new JSONObject();
             try {
-                Log.e(LOG_TAG,countryName);
+                Log.e(LOG_TAG, countryName);
                 record.put("countryName", countryName);
                 record.put("countryCapital", countryCapital);
                 record.put("countryAlpha2Code", countryAlpha2Code);
                 resultsArray.put(record);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage());
             }
-            catch (JSONException e) {
-                Log.e(LOG_TAG,e.getMessage());
-            }
-
         }
     }
-
 
     /**
      * Called when your factory is first constructed. The same factory may be shared across
@@ -82,6 +80,7 @@ class CountriesWidgetDataProvider implements RemoteViewsService.RemoteViewsFacto
 
     @Override
     public void onDataSetChanged() {
+        resultsArray = new JSONArray(new ArrayList<String>());
         initData();
         Log.e(LOG_TAG, "onDateSetChanged = " + true);
 
@@ -130,9 +129,7 @@ class CountriesWidgetDataProvider implements RemoteViewsService.RemoteViewsFacto
             mView.setTextViewText(android.R.id.text1, countryName + " - " + countryCapital );
             mView.setTextColor(android.R.id.text1, Color.BLACK);
 
-            // Set the list items to launch the soccer scores activity
-            //Intent fillInIntent = new Intent();
-            //mView.setOnClickFillInIntent(android.R.id.text1, fillInIntent);
+
 
         }
         catch (JSONException e) {

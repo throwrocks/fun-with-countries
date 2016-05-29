@@ -58,5 +58,7 @@
     <string name="score_percent_header">%</string>
     <string name="score_final_header">Score</string>
     <!--Widget-->
-    <string name="countries_widget_title">Country of the day</string>
+    <string name="countries_widget_title">Fun with Countries</string>
+    <!--Google Play Services-->
+    <string name="admob_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
