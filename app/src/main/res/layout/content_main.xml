@@ -37,26 +37,12 @@
         android:text="@string/button_game_mode_flags"
         />
 
-    <Button
-        android:id="@+id/button_fun_with_regions"
-        android:layout_below="@+id/button_fun_with_flags"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:text="@string/button_game_mode_subregion"
-        />
 
-    <Button
-        android:id="@+id/button_randomize"
-        android:layout_below="@+id/button_fun_with_regions"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:text="@string/button_game_mode_randomize"
-        />
     <TextView
         android:id="@+id/game_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button_randomize"
+        android:layout_below="@id/button_fun_with_flags"
         android:text="@string/title_select_other_options"
         android:textSize="@dimen/subheading_text"
         />
@@ -87,3 +73,21 @@
     </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>
+
+<!--
+   <Button
+        android:id="@+id/button_fun_with_regions"
+        android:layout_below="@+id/button_fun_with_flags"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_mode_subregion"
+        />
+
+    <Button
+        android:id="@+id/button_randomize"
+        android:layout_below="@+id/button_fun_with_regions"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_mode_randomize"
+        />
+-->
