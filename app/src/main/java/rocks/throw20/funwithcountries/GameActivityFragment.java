@@ -776,7 +776,7 @@ public class GameActivityFragment extends Fragment {
     }
 
     /**
-     * selectedAnwswerView
+     * selectedAnswerView
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
