@@ -57,6 +57,7 @@
     <string name="scores_score_header">Correct</string>
     <string name="score_percent_header">%</string>
     <string name="score_final_header">Score</string>
+    <string name="score_fab_description">Share your high scores</string>
     <!--Widget-->
     <string name="countries_widget_title">Fun with Countries</string>
     <!--Google Play Services-->
