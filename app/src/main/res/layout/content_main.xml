@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -36,7 +37,45 @@
         android:text="@string/button_game_mode_flags"
         />
 
+
+    <TextView
+        android:id="@+id/game_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_fun_with_flags"
+        android:text="@string/title_select_other_options"
+        android:textSize="@dimen/subheading_text"
+        />
     <Button
+        android:id="@+id/button_scores"
+        android:layout_below="@+id/game_options"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/button_game_scores"
+        />
+
+    <Button
+        android:id="@+id/button_share"
+        android:layout_below="@+id/button_scores"
+        android:layout_height="wrap_content"
+        android:layout_width="520dp"
+        android:text="@string/buton_share_this_app"
+        />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/admob_id">
+    </com.google.android.gms.ads.AdView>
+
+</RelativeLayout>
+
+<!--
+   <Button
         android:id="@+id/button_fun_with_regions"
         android:layout_below="@+id/button_fun_with_flags"
         android:layout_height="wrap_content"
@@ -51,21 +90,4 @@
         android:layout_width="520dp"
         android:text="@string/button_game_mode_randomize"
         />
-    <Button
-        android:id="@+id/button_scores"
-        android:layout_below="@+id/button_randomize"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:text="@string/button_game_scores"
-        />
-
-    <Button
-        android:id="@+id/button_share"
-        android:layout_below="@+id/button_scores"
-        android:layout_height="wrap_content"
-        android:layout_width="520dp"
-        android:text="@string/buton_share_this_app"
-        />
-
-
-</RelativeLayout>
+-->

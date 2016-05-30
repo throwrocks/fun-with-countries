@@ -1,11 +1,13 @@
 package rocks.throw20.funwithcountries;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -13,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +55,7 @@ public class GameActivityFragment extends Fragment {
     private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
     private boolean timeUp;
+    private LinearLayout gameHeader;
     private GridLayout gameContent;
     private LinearLayout gameAnswerConfirmation;
     private LinearLayout gameAnswer;
@@ -91,6 +95,12 @@ public class GameActivityFragment extends Fragment {
     private final int linearLayoutMatchParent = LinearLayout.LayoutParams.MATCH_PARENT;
     private final int linearLayoutWrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+    private int orientation;
+
+    int screenWidth;
+    int screenHeight;
+    int viewWidth;
+
 
     public GameActivityFragment() {
     }
@@ -104,8 +114,17 @@ public class GameActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        orientation = getActivity().getResources().getConfiguration().orientation;
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
 
         Log.e(LOG_TAG, "onCreate " + true);
+        Log.e(LOG_TAG, "orientation " + orientation);
         if (savedInstanceState == null) {
            //Log.e(LOG_TAG, "onCreate " + true);
             getArguments().putString("savedInstanceState", null);
@@ -118,9 +137,6 @@ public class GameActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
-
-
-
         return rootView;
     }
 
@@ -222,6 +238,11 @@ public class GameActivityFragment extends Fragment {
      * Set the top views that display the answer, the timer, and the score
      */
     private void setLayoutHeader() {
+        gameHeader = (LinearLayout) rootView.findViewById(R.id.game_header);
+        if (orientation == 2) {
+            LinearLayout.LayoutParams gameHeaderParams = new LinearLayout.LayoutParams(screenWidth / 2 - 75, screenHeight);
+            gameHeader.setLayoutParams(gameHeaderParams);
+        }
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
         int correctAnswers = sharedPref.getInt("correct_answers", 0);
@@ -256,6 +277,15 @@ public class GameActivityFragment extends Fragment {
         Bundle b = getArguments();
         String gameMode = sharedPref.getString("game_mode", "");
         gameContent = (GridLayout) rootView.findViewById(R.id.game_content);
+        if (orientation == 2) {
+            LinearLayout.LayoutParams gameContentParams = new LinearLayout.LayoutParams(screenWidth / 2 - 75, linearLayoutWrapContent);
+            gameContent.setLayoutParams(gameContentParams);
+            gameContent.setRowCount(4);
+            gameContent.setColumnCount(1);
+        } else if (orientation == 1){
+            gameContent.setColumnCount(1);
+            gameContent.setOrientation(GridLayout.VERTICAL);
+        }
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
@@ -269,12 +299,13 @@ public class GameActivityFragment extends Fragment {
         int questionTimerProgress = b.getInt("timer_progress");
 
         // Set the choices based on the Game Mode
+
+
         //------------------------------------------------------------------------------------------
         // Game Mode: Capitals
         //------------------------------------------------------------------------------------------
         if (gameMode.equals("capitals")) {
-            gameContent.setColumnCount(1);
-            gameContent.setOrientation(GridLayout.VERTICAL);
+
             //--------------------------------------------------------------------------------------
             // Capitals: Choice 1
             //--------------------------------------------------------------------------------------
@@ -284,6 +315,7 @@ public class GameActivityFragment extends Fragment {
                         new LinearLayout.LayoutParams(linearLayoutMatchParent, linearLayoutWrapContent);
                 choice1View.setId(R.id.choice1);
                 choice1View.setLayoutParams(choiceView1params);
+
             }
             if (rootView.findViewById(R.id.choice1) == null) {
                 choice1View.setText(choice1);
@@ -434,7 +466,7 @@ public class GameActivityFragment extends Fragment {
                 choice2ImageButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
+                        //choice1ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice2ImageButtonView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                         choice3ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
                         choice4ImageButtonView.setBackgroundColor(Color.TRANSPARENT);
@@ -601,6 +633,7 @@ public class GameActivityFragment extends Fragment {
        //Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
 
         gameAnswerConfirmation = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation);
+
         //------------------------------------------------------------------------------------------
         if ( confirmAnswerTextView == null ) {
            //Log.e(LOG_TAG, "confirmAnswerTextView " + true);
@@ -743,10 +776,14 @@ public class GameActivityFragment extends Fragment {
     }
 
     /**
-     * selectedAnwswerView
+     * selectedAnswerView
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void answerQuestionView(){
+
+        gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
+
+
         Utilities util = new Utilities(getContext());
        //Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
@@ -757,7 +794,7 @@ public class GameActivityFragment extends Fragment {
         int gameProgressMax = sharedPref.getInt("game_progress_max",0);
         Log.e(LOG_TAG,"game progress " + gameProgress);
         Log.e(LOG_TAG,"game max " + gameProgressMax);
-        gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
+
         //Log.e(LOG_TAG, "answerResultView " + answerResultView);
         //------------------------------------------------------------------------------------------
         // answerResultView

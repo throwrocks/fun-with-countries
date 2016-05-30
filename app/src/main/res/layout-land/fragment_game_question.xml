@@ -61,25 +61,36 @@
         android:layout_gravity="center"
         />
 </LinearLayout>
+<LinearLayout
+    android:orientation="vertical"
+    android:id="@+id/game_body"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <GridLayout
-        android:background="@color/correctBackground"
+
         android:id="@+id/game_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:paddingBottom="@dimen/margin_0dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
     </GridLayout>
     <LinearLayout
-        android:background="@color/colorAccent"
+
         android:orientation="vertical"
+        android:layout_gravity="bottom"
         android:id="@+id/game_answer_confirmation"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </LinearLayout>
     <LinearLayout
-        android:background="@color/colorPrimary"
+
         android:orientation="vertical"
         android:id="@+id/game_answer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </LinearLayout>
+</LinearLayout>
 </LinearLayout>
