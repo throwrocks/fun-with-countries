@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,8 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.github.lzyzsd.circleprogress.DonutProgress;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -24,7 +30,18 @@ public class GameActivityFragment extends Fragment {
     private static final String LOG_TAG = GameActivityFragment.class.getSimpleName();
     private View rootView;
     private SharedPreferences sharedPref;
+
+    private static CountDownTimer questionTimer;
+    private boolean questionTimerIsRunning = false;
+    private boolean timeUp;
     private LinearLayout gameHeader;
+    private GridLayout gameContent;
+    private LinearLayout gameAnswerConfirmation;
+    private LinearLayout gameAnswer;
+
+    private TextView confirmAnswerTextView;
+    private Button confirmAnswerButtonView;
+
 
     private String countryName;
     private String countryCapital;
@@ -85,8 +102,8 @@ public class GameActivityFragment extends Fragment {
 
         String gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
         String gameScoreText = "Score: " + correctAnswers;
-        //question = getArguments().getString("question");
-        //countryName = getArguments().getString("country_name");
+        question = getArguments().getString("question");
+        countryName = getArguments().getString("country_name");
         //------------------------------------------------------------------------------------------
         // Set the header views
         //------------------------------------------------------------------------------------------
@@ -96,14 +113,15 @@ public class GameActivityFragment extends Fragment {
         TextView gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
 
         gameProgressView.setText(gameProgressText);
-        //questionView.setText(question);
+        questionView.setText(question);
         gameScoreView.setText(gameScoreText);
-        //String countryNameDisplay = countryName + "?";
-        //questionCountryView.setText(countryNameDisplay);
+        String countryNameDisplay = countryName + "?";
+        questionCountryView.setText(countryNameDisplay);
     }
 
     /**
      * getQuestion
+     *
      * @param isnew wether the question is new, or it's being restored from savedInstanceState
      */
     private void getQuestion(Boolean isnew) {
@@ -138,9 +156,9 @@ public class GameActivityFragment extends Fragment {
             // Store them in the bundle
             b.putString("country_name", countryName);
             b.putString("country_capital", countryCapital);
-            if ( gameMode.equals("capitals")){
+            if (gameMode.equals("capitals")) {
                 b.putString("current_answer", countryCapital);
-            }else if ( gameMode.equals("flags")){
+            } else if (gameMode.equals("flags")) {
                 b.putString("current_answer", countryAlpha2Code);
             }
             b.putString("question", question);
@@ -159,20 +177,21 @@ public class GameActivityFragment extends Fragment {
      * newQuestion
      * This method creates a new Question object and returns the ContentValues from it
      * It also creates a CountDownTimer to drive the timer and its display on the question
+     *
      * @return a ContentValues Object with the question, answer, and choices.
      */
-    private ContentValues newQuestion(String gameMode){
+    private ContentValues newQuestion(String gameMode) {
         String usedCountries = sharedPref.getString("used_countries", "");
         Question questionObj = new Question(this.getContext());
         //Log.e(LOG_TAG,"gameMode: " + gameMode);
-        ContentValues contentValues = questionObj.getQuestion(gameMode,new String[]{usedCountries});
+        ContentValues contentValues = questionObj.getQuestion(gameMode, new String[]{usedCountries});
         // If a new question is requested and there is a timer running, cancel it first
-        /*if ( questionTimerIsRunning ) {
+        if (questionTimerIsRunning) {
             questionTimer.cancel();
-            questionTimerIsRunning= false;
-            getArguments().putBoolean("timer_is_running",false);
-        }*/
-        return  contentValues;
+            questionTimerIsRunning = false;
+            getArguments().putBoolean("timer_is_running", false);
+        }
+        return contentValues;
     }
 
     /**
@@ -192,7 +211,7 @@ public class GameActivityFragment extends Fragment {
         choice2 = b.getString("choice2");
         choice3 = b.getString("choice3");
         choice4 = b.getString("choice4");
-        //questionTimerIsRunning = b.getBoolean("timer_is_running");
+        questionTimerIsRunning = b.getBoolean("timer_is_running");
         int questionTimerProgress = b.getInt("timer_progress");
 
         if (gameMode.equals("capitals")) {
@@ -201,7 +220,7 @@ public class GameActivityFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence countryCapital = choice3View.getText();
-                    //selectAnswer(countryCapital.toString());
+                    selectAnswer(countryCapital.toString());
                 }
             });
             choice2View.setText(choice2);
@@ -209,7 +228,7 @@ public class GameActivityFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence countryCapital = choice3View.getText();
-                    //selectAnswer(countryCapital.toString());
+                    selectAnswer(countryCapital.toString());
                 }
             });
             choice3View.setText(choice3);
@@ -217,7 +236,7 @@ public class GameActivityFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence countryCapital = choice3View.getText();
-                    //selectAnswer(countryCapital.toString());
+                    selectAnswer(countryCapital.toString());
                 }
             });
             choice4View.setText(choice4);
@@ -225,10 +244,100 @@ public class GameActivityFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     CharSequence countryCapital = choice4View.getText();
-                    //selectAnswer(countryCapital.toString());
+                    selectAnswer(countryCapital.toString());
                 }
             });
         }
+        final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
+        //------------------------------------------------------------------------------------------
+        // Create a new timer for this question
+        //------------------------------------------------------------------------------------------
+        //Log.e(LOG_TAG, "timer is running " + questionTimerIsRunning);
+        int startTimer = 11000;
+        // If a timer is running, resume it
+        if (questionTimerIsRunning) {
+            startTimer = questionTimerProgress * 1000;
+        }
+        //Log.e(LOG_TAG, "create new timer " + true);
+
+       /* questionTimer = new CountDownTimer(startTimer, 1000) {
+            // Count down the timer on every tick
+            public void onTick(long millisUntilFinished) {
+                Utilities util = new Utilities(getContext());
+                gameTimerView.setInnerBottomText("");
+                questionTimerIsRunning = true;
+                timeUp = false;
+                getArguments().putBoolean("timer_is_running",true);
+                int progress = (int) (long) ( millisUntilFinished / 1000);
+                if ( progress <= 10 ){
+
+                    util.playSound("tick_normal");
+                    getArguments().putInt("timer_progress",progress);
+                    //Log.e(LOG_TAG, "progress " + progress);
+                    gameTimerView.setProgress(progress);
+                }
+            }
+            // When the timer finishes, mark the question as wrong and end the question
+            public void onFinish() {
+                //Log.e(LOG_TAG, "onFinish " + true);
+                questionTimerIsRunning = false;
+                timeUp = true;
+                getArguments().putBoolean("timer_is_running", false);
+                getArguments().putInt("timer_progress", 0);
+                gameTimerView.setProgress(0);
+                gameTimerView.setInnerBottomTextSize(36);
+                //gameTimerView.setInnerBottomText("Time up!");
+                // Time is up, clear any selected answers and answer the question (incorrect)
+                getArguments().putString("selected_answer","");
+                // Select and answer
+                selectAnswer("");
+                //answerQuestion();
+            }
+        }.start();*/
+
+
+    }
+
+    /**
+     * selectAnswer
+     * This method is called when clicking on a choice button
+     * It sets the views that confirm your answer and allow you to submit
+     *
+     * @param answer the answer text
+     */
+    private void selectAnswer(String answer) {
+        //Log.e(LOG_TAG, "selectAnswer answer: " + answer);
+        getArguments().putString("selected_answer", answer);
+        getArguments().putString("sequence", "selectAnswer");
+        selectedAnswerView();
+    }
+
+    /**
+     * selectedAnwswerView
+     * This method builds the confirmation answer text, and button to submit the asnwer
+     */
+    private void selectedAnswerView() {
+
+        String gameMode = sharedPref.getString("game_mode", "");
+        String answer = getArguments().getString("selected_answer");
+        //Log.e(LOG_TAG, "confirmAnswerTextView " + confirmAnswerTextView);
+
+        confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_text);
+        confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
+        String answerDisplay;
+        if (gameMode.equals("capitals")) {
+            answerDisplay = "The capital is " + answer;
+            confirmAnswerTextView.setText(answerDisplay);
+        }
+
+
+        confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+
+                //answerQuestion();
+            }
+        });
     }
 
 }

@@ -102,21 +102,26 @@
 
     </LinearLayout>
 
-    <GridLayout
-
-        android:id="@+id/game_content_images"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center">
-
-    </GridLayout>
 
     <LinearLayout
 
         android:id="@+id/game_answer_confirmation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/game_answer_confirmation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirmation"/>
+        <Button
+            android:text="@string/action_submit"
+            android:id="@+id/game_answer_confirmation_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
