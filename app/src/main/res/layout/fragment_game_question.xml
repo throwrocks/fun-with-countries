@@ -58,24 +58,74 @@
             android:textSize="@dimen/h1_text" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/game_content_text"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#D1C4E9"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+        <Button
+            android:text="Choice 1"
+            android:id="@+id/game_button_text1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Choice 1"
+            android:id="@+id/game_button_text2"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Choice 1"
+            android:id="@+id/game_button_text3"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Choice 1"
+            android:id="@+id/game_button_text4"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
     <GridLayout
 
-        android:id="@+id/game_content"
+        android:id="@+id/game_content_images"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"></GridLayout>
+        android:layout_gravity="center">
+
+    </GridLayout>
 
     <LinearLayout
 
         android:id="@+id/game_answer_confirmation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+
+    </LinearLayout>
 
     <LinearLayout
 
         android:id="@+id/game_answer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+
+    </LinearLayout>
 </LinearLayout>

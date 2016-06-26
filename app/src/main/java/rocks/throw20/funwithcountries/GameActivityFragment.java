@@ -11,6 +11,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,7 +34,10 @@ public class GameActivityFragment extends Fragment {
     private String choice2;
     private String choice3;
     private String choice4;
-
+    private Button choice1View;
+    private Button choice2View;
+    private Button choice3View;
+    private Button choice4View;
 
     public GameActivityFragment() {
     }
@@ -59,7 +63,12 @@ public class GameActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
+        choice1View = (Button) rootView.findViewById(R.id.game_button_text1);
+        choice2View = (Button) rootView.findViewById(R.id.game_button_text2);
+        choice3View = (Button) rootView.findViewById(R.id.game_button_text3);
+        choice4View = (Button) rootView.findViewById(R.id.game_button_text4);
         setLayoutHeader();
+        setQuestionViews();
         return rootView;
     }
 
@@ -164,6 +173,62 @@ public class GameActivityFragment extends Fragment {
             getArguments().putBoolean("timer_is_running",false);
         }*/
         return  contentValues;
+    }
+
+    /**
+     * setQuestionVies
+     * This method sets the Views when starting the game and when getting new questions
+     */
+    private void setQuestionViews() {
+        Utilities util = new Utilities(getContext());
+        setLayoutHeader();
+        Bundle b = getArguments();
+        String gameMode = sharedPref.getString("game_mode", "");
+        //------------------------------------------------------------------------------------------
+        // Get all the variables from the shared prefs and from the bundle
+        countryCapital = b.getString("country_capital");
+        answer = b.getString("answer");
+        choice1 = b.getString("choice1");
+        choice2 = b.getString("choice2");
+        choice3 = b.getString("choice3");
+        choice4 = b.getString("choice4");
+        //questionTimerIsRunning = b.getBoolean("timer_is_running");
+        int questionTimerProgress = b.getInt("timer_progress");
+
+        if (gameMode.equals("capitals")) {
+            choice1View.setText(choice1);
+            choice1View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CharSequence countryCapital = choice3View.getText();
+                    //selectAnswer(countryCapital.toString());
+                }
+            });
+            choice2View.setText(choice2);
+            choice2View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CharSequence countryCapital = choice3View.getText();
+                    //selectAnswer(countryCapital.toString());
+                }
+            });
+            choice3View.setText(choice3);
+            choice3View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CharSequence countryCapital = choice3View.getText();
+                    //selectAnswer(countryCapital.toString());
+                }
+            });
+            choice4View.setText(choice4);
+            choice4View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CharSequence countryCapital = choice4View.getText();
+                    //selectAnswer(countryCapital.toString());
+                }
+            });
+        }
     }
 
 }
