@@ -57,49 +57,48 @@
             android:layout_gravity="center"
             android:textSize="@dimen/h1_text" />
     </LinearLayout>
-
+    <!--Game buttons for text answers -->
     <LinearLayout
         android:id="@+id/game_content_text"
-        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#D1C4E9"
-        android:orientation="vertical"
-        android:weightSum="4">
-
-        <Button
-            android:text="Choice 1"
-            android:id="@+id/game_button_text1"
-            style="?android:attr/buttonBarButtonStyle"
+        android:orientation="vertical">
+        <!--Button group 1-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:text="Choice 1"
-            android:id="@+id/game_button_text2"
-            style="?android:attr/buttonBarButtonStyle"
+            android:weightSum="2"
+            android:orientation="horizontal">
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/game_button_text1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/game_button_text2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <!--Button group 2-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:weightSum="2"
+            android:orientation="horizontal">
 
-        <Button
-            android:text="Choice 1"
-            android:id="@+id/game_button_text3"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/game_button_text3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:text="Choice 1"
-            android:id="@+id/game_button_text4"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/game_button_text4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -108,20 +107,21 @@
         android:id="@+id/game_answer_confirmation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/game_answer_confirmation_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirmation"/>
+            android:text="Confirmation" />
+
         <Button
-            android:text="@string/action_submit"
             android:id="@+id/game_answer_confirmation_submit"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/action_submit" />
 
     </LinearLayout>
 
