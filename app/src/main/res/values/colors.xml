@@ -14,4 +14,6 @@
     <color name="timerUnfinishedColor">#01579B</color>
     <color name="timerFinishedColor">#9E9E9E</color>
 
+    <color name="Grey300">#E0E0E0</color>
+
 </resources>

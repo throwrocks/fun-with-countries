@@ -41,16 +41,18 @@ import rocks.throw20.funwithcountries.Data.Contract;
  */
 public class GameActivityFragment extends Fragment {
     private static final String LOG_TAG = GameActivityFragment.class.getSimpleName();
+    private static CountDownTimer questionTimer;
     private View rootView;
     private SharedPreferences sharedPref;
-
-    private static CountDownTimer questionTimer;
     private boolean questionTimerIsRunning = false;
     private boolean timeUp;
-    private LinearLayout gameHeader;
-    private GridLayout gameContent;
-    private LinearLayout gameAnswerConfirmation;
-    private LinearLayout gameAnswer;
+
+
+    private TextView questionView;
+    private TextView gameScoreView;
+    private TextView questionCountryView;
+    private TextView gameProgressView;
+
 
     private TextView confirmAnswerTextView;
     private Button confirmAnswerButtonView;
@@ -96,10 +98,32 @@ public class GameActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
+
+        // Header views
+        questionView = (TextView) rootView.findViewById(R.id.question);
+        gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
+        questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
+        gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
+
+        // Game button views
         choice1View = (Button) rootView.findViewById(R.id.game_button_text1);
         choice2View = (Button) rootView.findViewById(R.id.game_button_text2);
         choice3View = (Button) rootView.findViewById(R.id.game_button_text3);
         choice4View = (Button) rootView.findViewById(R.id.game_button_text4);
+
+        // Answer selection confirmation views
+        confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_text);
+        confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
+
+        // Answer views (correct or incorrect)
+        answerResultView = (TextView) rootView.findViewById(R.id.game_answer_display);
+
+        // Next question views
+        nextQuestionTextView = (TextView) rootView.findViewById(R.id.game_next_question);
+        nextQuestionButtonView = (Button)  rootView.findViewById(R.id.game_next_question_button);
+
+
+
         setLayoutHeader();
         setQuestionViews();
         return rootView;
@@ -110,12 +134,16 @@ public class GameActivityFragment extends Fragment {
      * Set the top views that display the answer, the timer, and the score
      */
     private void setLayoutHeader() {
-        gameHeader = (LinearLayout) rootView.findViewById(R.id.game_header);
 
+        //------------------------------------------------------------------------------------------
+        // Get header data from the shared preferences
+        //------------------------------------------------------------------------------------------
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
         int correctAnswers = sharedPref.getInt("correct_answers", 0);
-
+        //------------------------------------------------------------------------------------------
+        // Build the header data
+        //------------------------------------------------------------------------------------------
         String gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
         String gameScoreText = "Score: " + correctAnswers;
         question = getArguments().getString("question");
@@ -123,11 +151,6 @@ public class GameActivityFragment extends Fragment {
         //------------------------------------------------------------------------------------------
         // Set the header views
         //------------------------------------------------------------------------------------------
-        TextView questionView = (TextView) rootView.findViewById(R.id.question);
-        TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
-        TextView questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
-        TextView gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
-
         gameProgressView.setText(gameProgressText);
         questionView.setText(question);
         gameScoreView.setText(gameScoreText);
@@ -235,7 +258,7 @@ public class GameActivityFragment extends Fragment {
             choice1View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CharSequence countryCapital = choice3View.getText();
+                    CharSequence countryCapital = choice1View.getText();
                     selectAnswer(countryCapital.toString());
                 }
             });
@@ -243,7 +266,7 @@ public class GameActivityFragment extends Fragment {
             choice2View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CharSequence countryCapital = choice3View.getText();
+                    CharSequence countryCapital = choice2View.getText();
                     selectAnswer(countryCapital.toString());
                 }
             });
@@ -264,6 +287,22 @@ public class GameActivityFragment extends Fragment {
                 }
             });
         }
+
+        choice1View.setEnabled(true);
+        choice2View.setEnabled(true);
+        choice3View.setEnabled(true);
+        choice4View.setEnabled(true);
+
+        confirmAnswerTextView.setVisibility(View.GONE);
+        confirmAnswerButtonView.setVisibility(View.GONE);
+
+        // Answer views (correct or incorrect)
+        answerResultView.setVisibility(View.GONE);
+
+        // Next question views
+        nextQuestionTextView.setVisibility(View.GONE);
+        nextQuestionButtonView.setVisibility(View.GONE);
+
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
@@ -276,7 +315,7 @@ public class GameActivityFragment extends Fragment {
         }
         //Log.e(LOG_TAG, "create new timer " + true);
 
-       /* questionTimer = new CountDownTimer(startTimer, 1000) {
+       questionTimer = new CountDownTimer(startTimer, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
                 Utilities util = new Utilities(getContext());
@@ -309,7 +348,7 @@ public class GameActivityFragment extends Fragment {
                 selectAnswer("");
                 //answerQuestion();
             }
-        }.start();*/
+        }.start();
 
 
     }
@@ -338,16 +377,18 @@ public class GameActivityFragment extends Fragment {
         String gameMode = sharedPref.getString("game_mode", "");
         String answer = getArguments().getString("selected_answer");
 
-        confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_text);
-        confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
+        // Display the confirmation button
+        confirmAnswerTextView.setVisibility(View.VISIBLE);
+        confirmAnswerButtonView.setVisibility(View.VISIBLE);
+
+
         // Display the confirmation text
         String answerDisplay;
         if (gameMode.equals("capitals")) {
-            answerDisplay = "The capital is " + answer;
+            answerDisplay = "The capital " + countryName + " is " + answer + "?";
             confirmAnswerTextView.setText(answerDisplay);
         }
-        // Display the confirmation button
-        confirmAnswerButtonView.setVisibility(View.VISIBLE);
+
 
         confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -429,10 +470,7 @@ public class GameActivityFragment extends Fragment {
         //Log.e(LOG_TAG, "gameMode " + gameMode);
         // Disable, slide out and remove the choice buttons
         if (gameMode.equals("capitals")) {
-            choice1View = (Button) rootView.findViewById(R.id.game_button_text1);
-            choice2View = (Button) rootView.findViewById(R.id.game_button_text2);
-            choice3View = (Button) rootView.findViewById(R.id.game_button_text3);
-            choice4View = (Button) rootView.findViewById(R.id.game_button_text4);
+
             choice1View.setEnabled(false);
             choice2View.setEnabled(false);
             choice3View.setEnabled(false);
@@ -503,10 +541,16 @@ public class GameActivityFragment extends Fragment {
      */
     private void answerQuestionView(){
 
-        gameAnswer = (LinearLayout) rootView.findViewById(R.id.game_answer);
-        answerResultView = (TextView) rootView.findViewById(R.id.game_answer_display);
-        nextQuestionTextView = (TextView) rootView.findViewById(R.id.game_next_question);
-        nextQuestionButtonView = (Button)  rootView.findViewById(R.id.game_next_question_button);
+        // Remove the confirmation text and the confirmation button
+        confirmAnswerTextView.setVisibility(View.GONE);
+        confirmAnswerButtonView.setVisibility(View.GONE);
+        // Show the answer's result (correct or incorrect)
+        answerResultView.setVisibility(View.VISIBLE);
+        // Show the next question views
+        nextQuestionTextView.setVisibility(View.VISIBLE);
+        nextQuestionButtonView.setVisibility(View.VISIBLE);
+
+
         Utilities util = new Utilities(getContext());
         //Log.e(LOG_TAG, "answerQuestionView " + true);
         String resultText = getArguments().getString("answer_result");
@@ -593,7 +637,9 @@ public class GameActivityFragment extends Fragment {
             //------------------------------------------------------------------------------------------
                 // nextQuestionButtonView: Set on ClickListeners
                 //------------------------------------------------------------------------------------------
-                nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
+
+
+        nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         nextButtonOnClickListener();
                     }
@@ -607,15 +653,15 @@ public class GameActivityFragment extends Fragment {
         // Display the Score
         int correctAnswers = sharedPref.getInt("correct_answers", 0);
         String gameScoreText = "Score: " + correctAnswers;
-        TextView gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
+
         gameScoreView.setText(gameScoreText);
     }
 
     private void nextButtonOnClickListener(){
         String gameMode = sharedPref.getString("game_mode","");
-        answerResultView = (TextView) rootView.findViewById(R.id.next_question_answer_result_text);
-        nextQuestionTextView = (TextView) rootView.findViewById(R.id.next_question_text);
-        nextQuestionButtonView = (Button) rootView.findViewById(R.id.next_question_button);
+
+        answerResultView.setVisibility(View.GONE);
+        nextQuestionButtonView.setVisibility(View.GONE);
         //Log.e(LOG_TAG, "answerResultView on layout " + answerResultView);
         //Log.e(LOG_TAG, "nextQuestionTextView on layout " + nextQuestionTextView);
         //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + nextQuestionButtonView);
