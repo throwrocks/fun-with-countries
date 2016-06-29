@@ -1,85 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/game_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="rocks.throw20.funwithcountries.GameActivity"
-    tools:showIn="@layout/activity_game"
-    android:orientation="vertical"
-    >
-<LinearLayout
-    android:orientation="vertical"
-    android:id="@+id/game_header"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/game_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/h1_text"
-        android:layout_gravity="center"
-        />
+    tools:showIn="@layout/activity_game">
 
-    <TextView
-        android:id="@+id/game_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/body_text"
-        android:layout_gravity="center"
-        />
-
-    <com.github.lzyzsd.circleprogress.DonutProgress
-        android:id="@+id/game_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:donut_progress="1000"
-        app:donut_prefix_text=""
-        app:donut_suffix_text=""
-        app:donut_max="10"
-        android:layout_gravity="center"
-        />
-
-    <TextView
-        android:id="@+id/question"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/subheading_text"
-        android:layout_gravity="center"
-        />
-    <TextView
-        android:id="@+id/question_country"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/h1_text"
-        android:layout_gravity="center"
-        />
-</LinearLayout>
-    <GridLayout
-
-        android:id="@+id/game_content"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </GridLayout>
     <LinearLayout
+        android:id="@+id/game_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        android:orientation="vertical"
+        <TextView
+            android:id="@+id/game_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/h1_text" />
+
+        <TextView
+            android:id="@+id/game_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/body_text" />
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/game_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:donut_max="10"
+            app:donut_prefix_text=""
+            app:donut_progress="1000"
+            app:donut_suffix_text="" />
+
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/subheading_text" />
+
+        <TextView
+            android:id="@+id/question_country"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/h1_text" />
+    </LinearLayout>
+    <!--Game buttons for text answers -->
+    <LinearLayout
+        android:id="@+id/game_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!--Button group 1-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/game_button_text1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/game_button_text2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <!--Button group 2-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/game_button_text3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/game_button_text4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+    <!-- Answer confirmation to display the user selection before they confirm and show the confirm button -->
+    <LinearLayout
         android:id="@+id/game_answer_confirmation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </LinearLayout>
-    <LinearLayout
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        android:orientation="vertical"
+        <TextView
+            android:id="@+id/game_answer_confirmation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/game_answer_confirmation_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/action_submit"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/game_answer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/game_answer_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/game_next_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/game_next_question_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/action_submit"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
 </LinearLayout>

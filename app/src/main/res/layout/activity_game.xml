@@ -28,22 +28,9 @@
         android:id="@+id/game_frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
-
-
-    <!--<fragment
-        android:id="@+id/game_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="game_header"
-        android:name="rocks.throw20.funwithcountries.GameActivityFragment"
-        tools:layout="@layout/fragment_game"
-        >
-    </fragment>
-    -->
