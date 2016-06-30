@@ -2,29 +2,20 @@ package rocks.throw20.funwithcountries;
 
 import android.content.ContentValues;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -53,15 +44,22 @@ public class GameActivityFragment extends Fragment {
     private TextView questionCountryView;
     private TextView gameProgressView;
 
-
+    private LinearLayout confirmAnswerView;
     private TextView confirmAnswerTextView;
     private Button confirmAnswerButtonView;
-    private TextView answerResultView;
-    private TextView nextQuestionTextView;
+
+    private LinearLayout answerResultView;
+    private TextView answerResultDisplay;
+    private TextView answerResultCorrectAnswer;
+
+
+    private LinearLayout nextQuestionView;
     private Button nextQuestionButtonView;
+
 
     private String countryName;
     private String countryCapital;
+    private String countryAlpha2Code;
     private String question;
     private String answer;
     private String choice1;
@@ -88,7 +86,6 @@ public class GameActivityFragment extends Fragment {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Log.e(LOG_TAG, "onCreate " + true);
         if (savedInstanceState == null) {
-            //Log.e(LOG_TAG, "onCreate " + true);
             getArguments().putString("savedInstanceState", null);
             getQuestion(true);
         }
@@ -112,17 +109,18 @@ public class GameActivityFragment extends Fragment {
         choice4View = (Button) rootView.findViewById(R.id.game_button_text4);
 
         // Answer selection confirmation views
+        confirmAnswerView = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation_view);
         confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_text);
         confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
 
-        // Answer views (correct or incorrect)
-        answerResultView = (TextView) rootView.findViewById(R.id.game_answer_display);
+        // Answer result views (correct or incorrect)
+        answerResultView = (LinearLayout) rootView.findViewById(R.id.game_answer_result_view);
+        answerResultDisplay = (TextView) rootView.findViewById(R.id.game_answer_result_display);
+        answerResultCorrectAnswer = (TextView) rootView.findViewById(R.id.game_answer_result_correct_answer);
 
-        // Next question views
-        nextQuestionTextView = (TextView) rootView.findViewById(R.id.game_next_question);
-        nextQuestionButtonView = (Button)  rootView.findViewById(R.id.game_next_question_button);
-
-
+        // Next question view
+        nextQuestionView = (LinearLayout) rootView.findViewById(R.id.game_next_question_view);
+        nextQuestionButtonView = (Button) rootView.findViewById(R.id.game_next_question_button);
 
         setLayoutHeader();
         setQuestionViews();
@@ -173,8 +171,7 @@ public class GameActivityFragment extends Fragment {
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
-            String countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
-            //Log.e(LOG_TAG,"alphaCode " + countryAlpha2Code);
+            countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
             question = contentValues.getAsString("question");
             answer = contentValues.getAsString("answer");
             choice1 = contentValues.getAsString("choice1");
@@ -184,7 +181,6 @@ public class GameActivityFragment extends Fragment {
 
             // Keep track of countries used during the game session
             String usedCountries = sharedPref.getString("used_countries", "");
-            //Log.e(LOG_TAG, "usedCountries: " + usedCountries);
             String usedCountriesSelection;
             if (usedCountries.isEmpty()) {
                 usedCountriesSelection = "'" + countryName + "'";
@@ -240,6 +236,7 @@ public class GameActivityFragment extends Fragment {
     private void setQuestionViews() {
         Utilities util = new Utilities(getContext());
         setLayoutHeader();
+
         Bundle b = getArguments();
         String gameMode = sharedPref.getString("game_mode", "");
         //------------------------------------------------------------------------------------------
@@ -288,68 +285,63 @@ public class GameActivityFragment extends Fragment {
             });
         }
 
+        // Enable the buttons
         choice1View.setEnabled(true);
         choice2View.setEnabled(true);
         choice3View.setEnabled(true);
         choice4View.setEnabled(true);
 
-        confirmAnswerTextView.setVisibility(View.GONE);
-        confirmAnswerButtonView.setVisibility(View.GONE);
+        // Confirm answer view
+        confirmAnswerView.setVisibility(View.GONE);
 
         // Answer views (correct or incorrect)
         answerResultView.setVisibility(View.GONE);
 
-        // Next question views
-        nextQuestionTextView.setVisibility(View.GONE);
-        nextQuestionButtonView.setVisibility(View.GONE);
+        // Next question view
+        nextQuestionView.setVisibility(View.GONE);
 
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
         //------------------------------------------------------------------------------------------
-        //Log.e(LOG_TAG, "timer is running " + questionTimerIsRunning);
         int startTimer = 11000;
         // If a timer is running, resume it
         if (questionTimerIsRunning) {
             startTimer = questionTimerProgress * 1000;
         }
-        //Log.e(LOG_TAG, "create new timer " + true);
-
-       questionTimer = new CountDownTimer(startTimer, 1000) {
+        questionTimer = new CountDownTimer(startTimer, 1000) {
             // Count down the timer on every tick
             public void onTick(long millisUntilFinished) {
                 Utilities util = new Utilities(getContext());
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 timeUp = false;
-                getArguments().putBoolean("timer_is_running",true);
-                int progress = (int) (long) ( millisUntilFinished / 1000);
-                if ( progress <= 10 ){
+                getArguments().putBoolean("timer_is_running", true);
+                int progress = (int) (long) (millisUntilFinished / 1000);
+                if (progress <= 10) {
 
                     util.playSound("tick_normal");
-                    getArguments().putInt("timer_progress",progress);
+                    getArguments().putInt("timer_progress", progress);
                     //Log.e(LOG_TAG, "progress " + progress);
                     gameTimerView.setProgress(progress);
                 }
             }
+
             // When the timer finishes, mark the question as wrong and end the question
             public void onFinish() {
-                //Log.e(LOG_TAG, "onFinish " + true);
                 questionTimerIsRunning = false;
                 timeUp = true;
                 getArguments().putBoolean("timer_is_running", false);
                 getArguments().putInt("timer_progress", 0);
                 gameTimerView.setProgress(0);
                 gameTimerView.setInnerBottomTextSize(36);
-                //gameTimerView.setInnerBottomText("Time up!");
                 // Time is up, clear any selected answers and answer the question (incorrect)
-                getArguments().putString("selected_answer","");
+                getArguments().putString("selected_answer", "");
                 // Select and answer
                 selectAnswer("");
-                //answerQuestion();
+                answerQuestion();
             }
         }.start();
-
 
     }
 
@@ -361,8 +353,6 @@ public class GameActivityFragment extends Fragment {
      * @param answer the answer text
      */
     private void selectAnswer(String answer) {
-        //Log.e(LOG_TAG, "selectAnswer answer: " + answer);
-
         getArguments().putString("selected_answer", answer);
         getArguments().putString("sequence", "selectAnswer");
         selectedAnswerView();
@@ -377,18 +367,14 @@ public class GameActivityFragment extends Fragment {
         String gameMode = sharedPref.getString("game_mode", "");
         String answer = getArguments().getString("selected_answer");
 
-        // Display the confirmation button
-        confirmAnswerTextView.setVisibility(View.VISIBLE);
-        confirmAnswerButtonView.setVisibility(View.VISIBLE);
-
-
         // Display the confirmation text
+        confirmAnswerView.setVisibility(View.VISIBLE);
+
         String answerDisplay;
         if (gameMode.equals("capitals")) {
-            answerDisplay = "The capital " + countryName + " is " + answer + "?";
+            answerDisplay = "The capital of " + countryName + " is " + answer + "?";
             confirmAnswerTextView.setText(answerDisplay);
         }
-
 
         confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -404,12 +390,13 @@ public class GameActivityFragment extends Fragment {
     private void answerQuestion() {
         Utilities util = new Utilities(getContext());
 
+
+
         String gameMode = sharedPref.getString("game_mode", "");
         getArguments().putString("sequence", "answerQuestion");
-        //Log.e(LOG_TAG, "sequence " + getArguments().getString("sequence"));
         SharedPreferences.Editor editor = sharedPref.edit();
         // Cancel the timer
-        //questionTimer.cancel();
+        questionTimer.cancel();
         questionTimerIsRunning = false;
         getArguments().putBoolean("timer_is_running", false);
         // Get the current and selected answers to see if they match (evaluated answer)
@@ -418,8 +405,6 @@ public class GameActivityFragment extends Fragment {
         // Evaluate the answer
         Boolean test = selectedAnswer.equals(currentAnswer);
         getArguments().putBoolean("evaluated_answer", test);
-        //Log.e(LOG_TAG, "answerQuestions selectedAnswer: " + selectedAnswer);
-        //Log.e(LOG_TAG, "answerQuestions currentAnswer: " + currentAnswer);
         // Evaluated answer text for keeping track of the score and displaying the result
         int gameCorrectAnswers = sharedPref.getInt("correct_answers", 0);
         int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers", 0);
@@ -539,16 +524,14 @@ public class GameActivityFragment extends Fragment {
      * selectedAnswerView
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
-    private void answerQuestionView(){
+    private void answerQuestionView() {
 
         // Remove the confirmation text and the confirmation button
-        confirmAnswerTextView.setVisibility(View.GONE);
-        confirmAnswerButtonView.setVisibility(View.GONE);
+        confirmAnswerView.setVisibility(View.GONE);
         // Show the answer's result (correct or incorrect)
         answerResultView.setVisibility(View.VISIBLE);
         // Show the next question views
-        nextQuestionTextView.setVisibility(View.VISIBLE);
-        nextQuestionButtonView.setVisibility(View.VISIBLE);
+        nextQuestionView.setVisibility(View.VISIBLE);
 
 
         Utilities util = new Utilities(getContext());
@@ -557,36 +540,36 @@ public class GameActivityFragment extends Fragment {
         String resultTextDescription = getArguments().getString("answer_result_display");
         String currentAnswer = getArguments().getString("current_answer", "");
         String gameMode = sharedPref.getString("game_mode", "");
-        int gameProgress = sharedPref.getInt("game_progress",0);
-        int gameProgressMax = sharedPref.getInt("game_progress_max",0);
-        Log.e(LOG_TAG,"game progress " + gameProgress);
-        Log.e(LOG_TAG,"game max " + gameProgressMax);
+        int gameProgress = sharedPref.getInt("game_progress", 0);
+        int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
+        Log.e(LOG_TAG, "game progress " + gameProgress);
+        Log.e(LOG_TAG, "game max " + gameProgressMax);
 
         //Log.e(LOG_TAG, "answerResultView " + answerResultView);
         //------------------------------------------------------------------------------------------
         // answerResultView
         //------------------------------------------------------------------------------------------
-            if ( resultText != null  && resultText.equals("Incorrect")) {
-                //Log.e(LOG_TAG, "result text " + resultText);
-                answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
-                answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
-            } else if ( resultText != null  && resultText.equals("Time up!") ){
-                //Log.e(LOG_TAG, "result text " + resultText);
-                answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.timeUpBackground));
-                answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
-            } else if ( resultText != null && resultText.equals("Correct")) {
-                //Log.e(LOG_TAG, "result text " + resultText);
-                answerResultView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
-                answerResultView.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
-            }
-            answerResultView.setText(resultText);
+        if (resultText != null && resultText.equals("Incorrect")) {
+            //Log.e(LOG_TAG, "result text " + resultText);
+            answerResultDisplay.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
+            answerResultDisplay.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
+        } else if (resultText != null && resultText.equals("Time up!")) {
+            //Log.e(LOG_TAG, "result text " + resultText);
+            answerResultDisplay.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.timeUpBackground));
+            answerResultDisplay.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
+        } else if (resultText != null && resultText.equals("Correct")) {
+            //Log.e(LOG_TAG, "result text " + resultText);
+            answerResultDisplay.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
+            answerResultDisplay.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
+        }
+        answerResultDisplay.setText(resultText);
         //------------------------------------------------------------------------------------------
         // nextQuestionTextView
         //------------------------------------------------------------------------------------------
 
-           if (gameMode.equals("capitals")) {
-                nextQuestionTextView.setText(resultTextDescription);
-            } /* else if (gameMode.equals("flags")) {
+        if (gameMode.equals("capitals")) {
+            answerResultCorrectAnswer.setText(resultTextDescription);
+        } /* else if (gameMode.equals("flags")) {
 
                 nextQuestionTextView.setText(resultTextDescription);
                 answerFlag = new ImageView(getActivity());
@@ -603,69 +586,34 @@ public class GameActivityFragment extends Fragment {
         //------------------------------------------------------------------------------------------
         // The game is over, show the "View Score" button instead of the "Next Question" button
         //------------------------------------------------------------------------------------------
-        /*if ( gameProgressMax == gameProgress - 1  ) {
+        if (gameProgressMax == gameProgress - 1) {
 
-            if (viewScoresButtonView == null) {
-                Log.e(LOG_TAG, "viewScoresButton == null " + true);
-                viewScoresButtonView = new Button(getActivity());
-                LinearLayout.LayoutParams nextQuestionParams = new LinearLayout.LayoutParams(linearLayoutWrapContent, linearLayoutWrapContent);
-                nextQuestionParams.gravity = Gravity.CENTER;
-                viewScoresButtonView.setId(R.id.view_scores);
-                viewScoresButtonView.setLayoutParams(nextQuestionParams);
-                viewScoresButtonView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_right_black_24dp, 0);
-                //------------------------------------------------------------------------------------------
-                // viewScoreButtonView: Set on ClickListeners
-                //------------------------------------------------------------------------------------------
-                viewScoresButtonView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Log.e(LOG_TAG, "endGame " + "lel");
-                        endGame();
-                    }
-                });
-            }
-            if (rootView.findViewById(R.id.view_scores) == null) {
-                Log.e(LOG_TAG, "viewScoresButton on layout " + false);
-                gameAnswer.addView(viewScoresButtonView);
-                //gameContent.addView(nextQuestionButtonView);
-                viewScoresButtonView.setText(R.string.action_view_scores);
-            }
+        }
 
         //------------------------------------------------------------------------------------------
         // Game in progress, show the "Next Question" button
         //------------------------------------------------------------------------------------------
-        else{*/
+        else {
             //------------------------------------------------------------------------------------------
-                // nextQuestionButtonView: Set on ClickListeners
-                //------------------------------------------------------------------------------------------
-
-
-        nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        nextButtonOnClickListener();
-                    }
-                });
-
-
-                nextQuestionButtonView.setText(R.string.action_next_question);
-
-
-
-        // Display the Score
-        int correctAnswers = sharedPref.getInt("correct_answers", 0);
-        String gameScoreText = "Score: " + correctAnswers;
-
-        gameScoreView.setText(gameScoreText);
+            // nextQuestionButtonView: Set on ClickListeners
+            //------------------------------------------------------------------------------------------
+            nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    nextButtonOnClickListener();
+                }
+            });
+            nextQuestionButtonView.setText(R.string.action_next_question);
+            // Display the Score
+            int correctAnswers = sharedPref.getInt("correct_answers", 0);
+            String gameScoreText = "Score: " + correctAnswers;
+            gameScoreView.setText(gameScoreText);
+        }
     }
 
-    private void nextButtonOnClickListener(){
-        String gameMode = sharedPref.getString("game_mode","");
-
+    private void nextButtonOnClickListener() {
+        String gameMode = sharedPref.getString("game_mode", "");
         answerResultView.setVisibility(View.GONE);
-        nextQuestionButtonView.setVisibility(View.GONE);
-        //Log.e(LOG_TAG, "answerResultView on layout " + answerResultView);
-        //Log.e(LOG_TAG, "nextQuestionTextView on layout " + nextQuestionTextView);
-        //Log.e(LOG_TAG, "nextQuestionButtonView on layout " + nextQuestionButtonView);
-
+        nextQuestionView.setVisibility(View.GONE);
         getArguments().clear();
         getQuestion(true);
         // Set the question views
