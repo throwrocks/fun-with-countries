@@ -1,6 +1,7 @@
 package rocks.throw20.funwithcountries;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -55,6 +56,9 @@ public class GameActivityFragment extends Fragment {
 
     private LinearLayout nextQuestionView;
     private Button nextQuestionButtonView;
+
+    private LinearLayout viewScoresView;
+    private Button viewScoresButtonView;
 
 
     private String countryName;
@@ -122,10 +126,16 @@ public class GameActivityFragment extends Fragment {
         nextQuestionView = (LinearLayout) rootView.findViewById(R.id.game_next_question_view);
         nextQuestionButtonView = (Button) rootView.findViewById(R.id.game_next_question_button);
 
+        viewScoresView = (LinearLayout) rootView.findViewById(R.id.game_view_scores_view);
+        viewScoresButtonView = (Button) rootView.findViewById(R.id.game_view_scores_button);
+
+        viewScoresView.setVisibility(View.GONE);
+
         setLayoutHeader();
         setQuestionViews();
         return rootView;
     }
+
 
     /**
      * setLayoutHeader
@@ -241,6 +251,7 @@ public class GameActivityFragment extends Fragment {
         String gameMode = sharedPref.getString("game_mode", "");
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
+        //------------------------------------------------------------------------------------------
         countryCapital = b.getString("country_capital");
         answer = b.getString("answer");
         choice1 = b.getString("choice1");
@@ -480,45 +491,7 @@ public class GameActivityFragment extends Fragment {
         answerQuestionView();
     }
 
-    /**
-     * submitScore
-     * This method stores the score to the database
-     * It's called when the game ends
-     */
-    private void submitScore() {
-        // Get the score data to be stored in the database
-        DateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
-        String scoreDate = df.format(new Date());
-        String scoreGameMode = sharedPref.getString("game_mode", "");
-        int scoreQuestionsCount = sharedPref.getInt("game_progress_max", 0);
-        int scoreCorrectAnswers = sharedPref.getInt("correct_answers", 0);
 
-        // Calculate the score percent
-        double num = (double) scoreCorrectAnswers / scoreQuestionsCount;
-        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
-        defaultFormat.setMinimumFractionDigits(0);
-        String scorePercent = defaultFormat.format(num);
-
-        // Calculate the final score
-        int scoreFinalScore = (scoreQuestionsCount * 20) + (scoreCorrectAnswers * 5);
-
-
-        String scoreGameDuration = "";
-        // Create a content values object
-        ContentValues scoreValues = new ContentValues();
-        scoreValues.put(Contract.ScoreEntry.scoreDate, scoreDate);
-        scoreValues.put(Contract.ScoreEntry.scoreGameMode, scoreGameMode);
-        scoreValues.put(Contract.ScoreEntry.scoreQuestionsCount, scoreQuestionsCount);
-        scoreValues.put(Contract.ScoreEntry.scoreCorrectAnswers, scoreCorrectAnswers);
-        scoreValues.put(Contract.ScoreEntry.scoreScorePercent, scorePercent);
-        scoreValues.put(Contract.ScoreEntry.scoreFinalScore, scoreFinalScore);
-        scoreValues.put(Contract.ScoreEntry.scoreGameDuration, scoreGameDuration);
-        // Insert the score record
-        getContext().getContentResolver().insert(
-                Contract.ScoreEntry.CONTENT_URI,
-                scoreValues
-        );
-    }
 
     /**
      * selectedAnswerView
@@ -587,7 +560,14 @@ public class GameActivityFragment extends Fragment {
         // The game is over, show the "View Score" button instead of the "Next Question" button
         //------------------------------------------------------------------------------------------
         if (gameProgressMax == gameProgress - 1) {
-
+            nextQuestionView.setVisibility(View.GONE);
+            viewScoresView.setVisibility(View.VISIBLE);
+            viewScoresButtonView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Log.e(LOG_TAG, "endGame " + "lel");
+                    endGame();
+                }
+            });
         }
 
         //------------------------------------------------------------------------------------------
@@ -618,6 +598,58 @@ public class GameActivityFragment extends Fragment {
         getQuestion(true);
         // Set the question views
         setQuestionViews();
+    }
+
+    /**
+     * submitScore
+     * This method stores the score to the database
+     * It's called when the game ends
+     */
+    private void submitScore() {
+        // Get the score data to be stored in the database
+        DateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
+        String scoreDate = df.format(new Date());
+        String scoreGameMode = sharedPref.getString("game_mode", "");
+        int scoreQuestionsCount = sharedPref.getInt("game_progress_max", 0);
+        int scoreCorrectAnswers = sharedPref.getInt("correct_answers", 0);
+
+        // Calculate the score percent
+        double num = (double) scoreCorrectAnswers / scoreQuestionsCount;
+        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
+        defaultFormat.setMinimumFractionDigits(0);
+        String scorePercent = defaultFormat.format(num);
+
+        // Calculate the final score
+        int scoreFinalScore = (scoreQuestionsCount * 20) + (scoreCorrectAnswers * 5);
+
+
+        String scoreGameDuration = "";
+        // Create a content values object
+        ContentValues scoreValues = new ContentValues();
+        scoreValues.put(Contract.ScoreEntry.scoreDate, scoreDate);
+        scoreValues.put(Contract.ScoreEntry.scoreGameMode, scoreGameMode);
+        scoreValues.put(Contract.ScoreEntry.scoreQuestionsCount, scoreQuestionsCount);
+        scoreValues.put(Contract.ScoreEntry.scoreCorrectAnswers, scoreCorrectAnswers);
+        scoreValues.put(Contract.ScoreEntry.scoreScorePercent, scorePercent);
+        scoreValues.put(Contract.ScoreEntry.scoreFinalScore, scoreFinalScore);
+        scoreValues.put(Contract.ScoreEntry.scoreGameDuration, scoreGameDuration);
+        // Insert the score record
+        getContext().getContentResolver().insert(
+                Contract.ScoreEntry.CONTENT_URI,
+                scoreValues
+        );
+    }
+
+    /**
+     * endGame
+     * Method to end the game, submit the scores, and start the scores activity
+     */
+    private void endGame(){
+        // Launch the ScoresActivity and end the GameActivity
+        final Intent intent = new Intent(getContext(), ScoresActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        getActivity().finish();
     }
 
 }

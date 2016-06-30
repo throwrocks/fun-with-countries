@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 util.playSound("select");
                 startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
-                editor.putInt("game_progress_max", 10);
+                editor.putInt("game_progress_max", 3);
                 editor.putInt("correct_answers", 0);
                 editor.putInt("incorrect_answers", 0);
                 editor.putString("used_countries", "");
