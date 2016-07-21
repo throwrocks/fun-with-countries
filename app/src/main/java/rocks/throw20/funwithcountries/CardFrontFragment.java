@@ -26,12 +26,13 @@ import java.util.Locale;
 
 import rocks.throw20.funwithcountries.Data.Contract;
 
-
 /**
- * GameActivityFragment
- * Where the game runs under the various modes
+ * Created by joselopez on 7/21/16.
  */
-public class GameActivityFragment extends Fragment {
+public class CardFrontFragment extends Fragment {
+    public CardFrontFragment() {
+    }
+
     private static final String LOG_TAG = GameActivityFragment.class.getSimpleName();
     private static CountDownTimer questionTimer;
     private View rootView;
@@ -74,8 +75,6 @@ public class GameActivityFragment extends Fragment {
     private Button choice4View;
 
 
-    public GameActivityFragment() {
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -96,7 +95,7 @@ public class GameActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "onCreateView " + true);
-        rootView = inflater.inflate(R.layout.fragment_game_question, container, false);
+        rootView = inflater.inflate(R.layout.fragment_card_front, container, false);
 
         // Header views
         questionView = (TextView) rootView.findViewById(R.id.question);
@@ -649,5 +648,8 @@ public class GameActivityFragment extends Fragment {
         startActivity(intent);
         getActivity().finish();
     }
+
+
+
 
 }
