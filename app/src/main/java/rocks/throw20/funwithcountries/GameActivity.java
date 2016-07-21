@@ -2,6 +2,7 @@ package rocks.throw20.funwithcountries;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,6 +18,9 @@ import android.widget.Toast;
 
 
 public class GameActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+
+    CardBackFragment cardBackFragment;
+    CardFrontFragment cardFrontFragment;
     /**
      * A handler object, used for deferring UI operations.
      */
@@ -44,22 +48,17 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
         toolbar.setTitle(gameTitle);
         setSupportActionBar(toolbar);
 
-
-
-
         if (savedInstanceState == null) {
             Log.e(LOG_TAG, "SavedInstanceState " + null);
             CardFrontFragment gameActivityFragment = new CardFrontFragment();
             gameActivityFragment.setArguments(args);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.game_frame, gameActivityFragment, "gameFragment")
                     .commit();
         }
         else {
-            CardFrontFragment gameActivityFragment = (CardFrontFragment) getSupportFragmentManager().findFragmentByTag("gameFragment");
+            CardFrontFragment gameActivityFragment = (CardFrontFragment) getFragmentManager().findFragmentByTag("gameFragment");
         }
-
-
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -88,12 +87,39 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
                     }
                 })
                 .show();
-
     }
 
-    public void flipCard(View v) {
+    public void flipCard(Bundle args) {
         if (mShowingBack) {
-            getFragmentManager().popBackStack();
+
+            getFragmentManager().beginTransaction().remove(cardBackFragment)
+            .commit();
+            // Create and commit a new fragment transaction that adds the fragment for the back of
+            // the card, uses custom animations, and is part of the fragment manager's back stack.
+            cardFrontFragment = new CardFrontFragment();
+            getFragmentManager()
+                    .beginTransaction()
+
+                    // Replace the default fragment animations with animator resources representing
+                    // rotations when switching to the back of the card, as well as animator
+                    // resources representing rotations when flipping back to the front (e.g. when
+                    // the system Back button is pressed).
+                    .setCustomAnimations(
+                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+
+                    // Replace any fragments currently in the container view with a fragment
+                    // representing the next page (indicated by the just-incremented currentPage
+                    // variable).
+                    .replace(R.id.game_frame, cardFrontFragment)
+
+                    // Add this transaction to the back stack, allowing users to press Back
+                    // to get to the front of the card.
+                    //.addToBackStack(null)
+
+                    // Commit the transaction.
+                    .commit();
+
             return;
         }
 
@@ -103,7 +129,7 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
 
         // Create and commit a new fragment transaction that adds the fragment for the back of
         // the card, uses custom animations, and is part of the fragment manager's back stack.
-
+        cardBackFragment = new CardBackFragment();
         getFragmentManager()
                 .beginTransaction()
 
@@ -118,11 +144,11 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
                 // Replace any fragments currently in the container view with a fragment
                 // representing the next page (indicated by the just-incremented currentPage
                 // variable).
-                .replace(R.id.game_frame, new CardBackFragment() )
+                .replace(R.id.game_frame, cardBackFragment)
 
                 // Add this transaction to the back stack, allowing users to press Back
                 // to get to the front of the card.
-                .addToBackStack(null)
+                //.addToBackStack(null)
 
                 // Commit the transaction.
                 .commit();
@@ -142,10 +168,8 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     public void onBackStackChanged() {
         mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
-
         // When the back stack changes, invalidate the options menu (action bar).
         invalidateOptionsMenu();
     }
-
 
 }

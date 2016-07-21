@@ -29,11 +29,11 @@ import rocks.throw20.funwithcountries.Data.Contract;
 /**
  * Created by joselopez on 7/21/16.
  */
-public class CardFrontFragment extends Fragment {
+public class CardFrontFragment extends android.app.Fragment {
     public CardFrontFragment() {
     }
 
-    private static final String LOG_TAG = GameActivityFragment.class.getSimpleName();
+    private static final String LOG_TAG = CardFrontFragment.class.getSimpleName();
     private static CountDownTimer questionTimer;
     private View rootView;
     private SharedPreferences sharedPref;
@@ -82,6 +82,12 @@ public class CardFrontFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(LOG_TAG, "onResume " + true);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -126,7 +132,7 @@ public class CardFrontFragment extends Fragment {
         viewScoresView = (LinearLayout) rootView.findViewById(R.id.game_view_scores_view);
         viewScoresButtonView = (Button) rootView.findViewById(R.id.game_view_scores_button);
 
-        viewScoresView.setVisibility(View.GONE);
+        //viewScoresView.setVisibility(View.GONE);
 
         setLayoutHeader();
         setQuestionViews();
@@ -293,20 +299,14 @@ public class CardFrontFragment extends Fragment {
             });
         }
 
-        // Enable the buttons
-        choice1View.setEnabled(true);
-        choice2View.setEnabled(true);
-        choice3View.setEnabled(true);
-        choice4View.setEnabled(true);
-
         // Confirm answer view
         confirmAnswerView.setVisibility(View.GONE);
 
         // Answer views (correct or incorrect)
-        answerResultView.setVisibility(View.GONE);
+        //answerResultView.setVisibility(View.GONE);
 
         // Next question view
-        nextQuestionView.setVisibility(View.GONE);
+        //nextQuestionView.setVisibility(View.GONE);
 
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
@@ -398,9 +398,6 @@ public class CardFrontFragment extends Fragment {
     private void answerQuestion() {
         Utilities util = new Utilities(getContext());
 
-
-
-        String gameMode = sharedPref.getString("game_mode", "");
         getArguments().putString("sequence", "answerQuestion");
         SharedPreferences.Editor editor = sharedPref.edit();
         // Cancel the timer
@@ -458,134 +455,9 @@ public class CardFrontFragment extends Fragment {
             submitScore();
         }
 
-        //Log.e(LOG_TAG, "question result 1 " + questionResultText);
-        //Log.e(LOG_TAG, "question result 2 " + answer);
-        //Log.e(LOG_TAG, "gameMode " + gameMode);
-        // Disable, slide out and remove the choice buttons
-        if (gameMode.equals("capitals")) {
-
-            choice1View.setEnabled(false);
-            choice2View.setEnabled(false);
-            choice3View.setEnabled(false);
-            choice4View.setEnabled(false);
-
-        }/*else if ( gameMode.equals("flags")){
-            choice1ImageButtonView = (ImageButton) rootView.findViewById(R.id.choice1);
-            choice2ImageButtonView = (ImageButton) rootView.findViewById(R.id.choice2);
-            choice3ImageButtonView = (ImageButton) rootView.findViewById(R.id.choice3);
-            choice4ImageButtonView = (ImageButton) rootView.findViewById(R.id.choice4);
-            choice1ImageButtonView.setEnabled(false);
-            choice2ImageButtonView.setEnabled(false);
-            choice3ImageButtonView.setEnabled(false);
-            choice4ImageButtonView.setEnabled(false);
-            slideOutView("gameContent", choice1ImageButtonView, 360);
-            slideOutView("gameContent", choice2ImageButtonView, 340);
-            slideOutView("gameContent", choice3ImageButtonView, 320);
-            slideOutView("gameContent", choice4ImageButtonView, 300);
-        }*/
-
-
-        answerQuestionView();
+        ((GameActivity)getActivity()).flipCard(getArguments());
     }
 
-
-
-    /**
-     * selectedAnswerView
-     * This method builds the confirmation answer text, and button to submit the asnwer
-     */
-    private void answerQuestionView() {
-
-        // Remove the confirmation text and the confirmation button
-        confirmAnswerView.setVisibility(View.GONE);
-        // Show the answer's result (correct or incorrect)
-        answerResultView.setVisibility(View.VISIBLE);
-        // Show the next question views
-        nextQuestionView.setVisibility(View.VISIBLE);
-
-
-        Utilities util = new Utilities(getContext());
-        //Log.e(LOG_TAG, "answerQuestionView " + true);
-        String resultText = getArguments().getString("answer_result");
-        String resultTextDescription = getArguments().getString("answer_result_display");
-        String currentAnswer = getArguments().getString("current_answer", "");
-        String gameMode = sharedPref.getString("game_mode", "");
-        int gameProgress = sharedPref.getInt("game_progress", 0);
-        int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
-        Log.e(LOG_TAG, "game progress " + gameProgress);
-        Log.e(LOG_TAG, "game max " + gameProgressMax);
-
-        //Log.e(LOG_TAG, "answerResultView " + answerResultView);
-        //------------------------------------------------------------------------------------------
-        // answerResultView
-        //------------------------------------------------------------------------------------------
-        if (resultText != null && resultText.equals("Incorrect")) {
-            //Log.e(LOG_TAG, "result text " + resultText);
-            answerResultDisplay.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.incorrectBackground));
-            answerResultDisplay.setTextColor(ContextCompat.getColor(getActivity(), R.color.incorrectText));
-        } else if (resultText != null && resultText.equals("Time up!")) {
-            //Log.e(LOG_TAG, "result text " + resultText);
-            answerResultDisplay.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.timeUpBackground));
-            answerResultDisplay.setTextColor(ContextCompat.getColor(getActivity(), R.color.timeUpText));
-        } else if (resultText != null && resultText.equals("Correct")) {
-            //Log.e(LOG_TAG, "result text " + resultText);
-            answerResultDisplay.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.correctBackground));
-            answerResultDisplay.setTextColor(ContextCompat.getColor(getActivity(), R.color.correctText));
-        }
-        answerResultDisplay.setText(resultText);
-        //------------------------------------------------------------------------------------------
-        // nextQuestionTextView
-        //------------------------------------------------------------------------------------------
-
-        if (gameMode.equals("capitals")) {
-            answerResultCorrectAnswer.setText(resultTextDescription);
-        } /* else if (gameMode.equals("flags")) {
-
-                nextQuestionTextView.setText(resultTextDescription);
-                answerFlag = new ImageView(getActivity());
-                //Log.e(LOG_TAG,"Next/answer " + answer);
-                // Display the correct flag
-                int flagDrawable = util.getDrawable(getContext(), "flag_" + currentAnswer.toLowerCase());
-                Picasso.with(getContext()).load(flagDrawable)
-                        .resize(220, 140)
-                        .onlyScaleDown()
-                        .into(answerFlag);
-                gameAnswer.addView(answerFlag);
-            }
-        }*/
-        //------------------------------------------------------------------------------------------
-        // The game is over, show the "View Score" button instead of the "Next Question" button
-        //------------------------------------------------------------------------------------------
-        if (gameProgressMax == gameProgress - 1) {
-            nextQuestionView.setVisibility(View.GONE);
-            viewScoresView.setVisibility(View.VISIBLE);
-            viewScoresButtonView.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Log.e(LOG_TAG, "endGame " + "lel");
-                    endGame();
-                }
-            });
-        }
-
-        //------------------------------------------------------------------------------------------
-        // Game in progress, show the "Next Question" button
-        //------------------------------------------------------------------------------------------
-        else {
-            //------------------------------------------------------------------------------------------
-            // nextQuestionButtonView: Set on ClickListeners
-            //------------------------------------------------------------------------------------------
-            nextQuestionButtonView.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    nextButtonOnClickListener();
-                }
-            });
-            nextQuestionButtonView.setText(R.string.action_next_question);
-            // Display the Score
-            int correctAnswers = sharedPref.getInt("correct_answers", 0);
-            String gameScoreText = "Score: " + correctAnswers;
-            gameScoreView.setText(gameScoreText);
-        }
-    }
 
     private void nextButtonOnClickListener() {
         String gameMode = sharedPref.getString("game_mode", "");
@@ -619,7 +491,6 @@ public class CardFrontFragment extends Fragment {
         // Calculate the final score
         int scoreFinalScore = (scoreQuestionsCount * 20) + (scoreCorrectAnswers * 5);
 
-
         String scoreGameDuration = "";
         // Create a content values object
         ContentValues scoreValues = new ContentValues();
@@ -648,8 +519,5 @@ public class CardFrontFragment extends Fragment {
         startActivity(intent);
         getActivity().finish();
     }
-
-
-
 
 }
