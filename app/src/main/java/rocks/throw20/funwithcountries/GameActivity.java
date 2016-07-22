@@ -55,8 +55,7 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
             getFragmentManager().beginTransaction()
                     .add(R.id.game_frame, gameActivityFragment, "gameFragment")
                     .commit();
-        }
-        else {
+        } else {
             CardFrontFragment gameActivityFragment = (CardFrontFragment) getFragmentManager().findFragmentByTag("gameFragment");
         }
     }
@@ -91,79 +90,40 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
 
     public void flipCard(Bundle args) {
         if (mShowingBack) {
-
-            getFragmentManager().beginTransaction().remove(cardBackFragment)
-            .commit();
-            // Create and commit a new fragment transaction that adds the fragment for the back of
-            // the card, uses custom animations, and is part of the fragment manager's back stack.
+            mShowingBack = false;
+            getFragmentManager().beginTransaction().remove(cardBackFragment).commit();
             cardFrontFragment = new CardFrontFragment();
+            cardFrontFragment.setArguments(args);
             getFragmentManager()
                     .beginTransaction()
-
-                    // Replace the default fragment animations with animator resources representing
-                    // rotations when switching to the back of the card, as well as animator
-                    // resources representing rotations when flipping back to the front (e.g. when
-                    // the system Back button is pressed).
                     .setCustomAnimations(
                             R.animator.card_flip_right_in, R.animator.card_flip_right_out,
                             R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-
-                    // Replace any fragments currently in the container view with a fragment
-                    // representing the next page (indicated by the just-incremented currentPage
-                    // variable).
                     .replace(R.id.game_frame, cardFrontFragment)
-
-                    // Add this transaction to the back stack, allowing users to press Back
-                    // to get to the front of the card.
-                    //.addToBackStack(null)
-
-                    // Commit the transaction.
+                    .commit();
+        } else {
+            mShowingBack = true;
+            cardBackFragment = new CardBackFragment();
+            cardBackFragment.setArguments(args);
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                    .replace(R.id.game_frame, cardBackFragment)
                     .commit();
 
-            return;
+            // Defer an invalidation of the options menu (on modern devices, the action bar). This
+            // can't be done immediately because the transaction may not yet be committed. Commits
+            // are asynchronous in that they are posted to the main thread's message loop.
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    invalidateOptionsMenu();
+                }
+            });
         }
-
-        // Flip to the back.
-
-        mShowingBack = true;
-
-        // Create and commit a new fragment transaction that adds the fragment for the back of
-        // the card, uses custom animations, and is part of the fragment manager's back stack.
-        cardBackFragment = new CardBackFragment();
-        getFragmentManager()
-                .beginTransaction()
-
-                // Replace the default fragment animations with animator resources representing
-                // rotations when switching to the back of the card, as well as animator
-                // resources representing rotations when flipping back to the front (e.g. when
-                // the system Back button is pressed).
-                .setCustomAnimations(
-                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-
-                // Replace any fragments currently in the container view with a fragment
-                // representing the next page (indicated by the just-incremented currentPage
-                // variable).
-                .replace(R.id.game_frame, cardBackFragment)
-
-                // Add this transaction to the back stack, allowing users to press Back
-                // to get to the front of the card.
-                //.addToBackStack(null)
-
-                // Commit the transaction.
-                .commit();
-
-        // Defer an invalidation of the options menu (on modern devices, the action bar). This
-        // can't be done immediately because the transaction may not yet be committed. Commits
-        // are asynchronous in that they are posted to the main thread's message loop.
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                invalidateOptionsMenu();
-            }
-        });
     }
-
 
     @Override
     public void onBackStackChanged() {

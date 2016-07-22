@@ -75,9 +75,14 @@ public class CardBackFragment extends android.app.Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Log.e(LOG_TAG, "onCreate " + true);
         Log.e(LOG_TAG, "onCreate " + true);
         if (savedInstanceState == null) {
             getArguments().putString("savedInstanceState", null);

@@ -92,6 +92,7 @@ public class CardFrontFragment extends android.app.Fragment {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Log.e(LOG_TAG, "onCreate " + true);
+        Log.e(LOG_TAG, "onCreate " + getArguments());
         if (savedInstanceState == null) {
             getArguments().putString("savedInstanceState", null);
             getQuestion(true);
@@ -301,13 +302,10 @@ public class CardFrontFragment extends android.app.Fragment {
 
         // Confirm answer view
         confirmAnswerView.setVisibility(View.GONE);
-
         // Answer views (correct or incorrect)
         //answerResultView.setVisibility(View.GONE);
-
         // Next question view
         //nextQuestionView.setVisibility(View.GONE);
-
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
@@ -371,19 +369,15 @@ public class CardFrontFragment extends android.app.Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void selectedAnswerView() {
-
         String gameMode = sharedPref.getString("game_mode", "");
         String answer = getArguments().getString("selected_answer");
-
         // Display the confirmation text
         confirmAnswerView.setVisibility(View.VISIBLE);
-
         String answerDisplay;
         if (gameMode.equals("capitals")) {
             answerDisplay = "The capital of " + countryName + " is " + answer + "?";
             confirmAnswerTextView.setText(answerDisplay);
         }
-
         confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 answerQuestion();
@@ -456,17 +450,6 @@ public class CardFrontFragment extends android.app.Fragment {
         }
 
         ((GameActivity)getActivity()).flipCard(getArguments());
-    }
-
-
-    private void nextButtonOnClickListener() {
-        String gameMode = sharedPref.getString("game_mode", "");
-        answerResultView.setVisibility(View.GONE);
-        nextQuestionView.setVisibility(View.GONE);
-        getArguments().clear();
-        getQuestion(true);
-        // Set the question views
-        setQuestionViews();
     }
 
     /**
