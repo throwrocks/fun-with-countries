@@ -16,10 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+           >
             <!--====================================================================================
 
             Game Header - Includes the Game Progress (Question # of #) and the Progress Circle
@@ -36,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/h1_text" />
+                    android:textSize="14sp" />
 
                 <com.github.lzyzsd.circleprogress.DonutProgress
                     android:id="@+id/game_timer"
@@ -74,7 +75,7 @@
                 android:id="@+id/game_content_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical">
                 <!--Button group 1-->
                 <LinearLayout
@@ -85,14 +86,15 @@
 
                     <ImageButton
                         android:id="@+id/game_button_image1"
-                        style="@style/button"
+                        style="@style/buttonImage"
                         android:layout_width="0dp"
+                        android:layout_marginEnd="4dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
 
                     <ImageButton
                         android:id="@+id/game_button_image2"
-                        style="@style/button"
+                        style="@style/buttonImage"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
@@ -106,14 +108,15 @@
 
                     <ImageButton
                         android:id="@+id/game_button_image3"
-                        style="@style/button"
+                        style="@style/buttonImage"
                         android:layout_width="0dp"
+                        android:layout_marginEnd="4dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
 
                     <ImageButton
                         android:id="@+id/game_button_image4"
-                        style="@style/button"
+                        style="@style/buttonImage"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
@@ -140,14 +143,14 @@
 
                     <Button
                         android:id="@+id/game_button_text1"
-                        style="@style/button"
+                        style="@style/buttonText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/game_button_text2"
-                        style="@style/button"
+                        style="@style/buttonText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
@@ -161,14 +164,14 @@
 
                     <Button
                         android:id="@+id/game_button_text3"
-                        style="@style/button"
+                        style="@style/buttonText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/game_button_text4"
-                        style="@style/button"
+                        style="@style/buttonText"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />

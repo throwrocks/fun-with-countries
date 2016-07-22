@@ -17,7 +17,7 @@
     <string name="send_failed">Sending invitations failed</string>
     <string name="invite_dialog_title">You got an invitation!</string>
     <!--Game Mode Button Labels-->
-    <string name="title_select_game_mode">Select your Game Mode</string>
+    <string name="title_select_game_mode">Game Mode</string>
     <string name="button_game_mode_capitals">Learn the Capitals</string>
     <string name="button_game_mode_flags">Guess the Flags</string>
     <string name="button_game_mode_subregion">Discover the Subregions</string>

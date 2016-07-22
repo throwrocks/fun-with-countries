@@ -1,5 +1,6 @@
 package rocks.throw20.funwithcountries;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
 
     private String countryName;
     private String countryCapital;
+    private String countryAlpha2Code;
     private String question;
     private String answer;
     private String choice1;
@@ -78,11 +80,6 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e(LOG_TAG, "onResume " + true);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,9 +93,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e(LOG_TAG, "onCreateView " + true);
         rootView = inflater.inflate(R.layout.fragment_card_front, container, false);
-
         // Header views
         questionView = (TextView) rootView.findViewById(R.id.question);
         questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
@@ -124,7 +119,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_country);
         confirmAnswerImageView = (ImageView) rootView.findViewById(R.id.game_answer_confirmation_flag);
         confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
-
+        // Set the header and the questions
         setLayoutHeader();
         setQuestionViews();
         return rootView;
@@ -141,12 +136,10 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         //------------------------------------------------------------------------------------------
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
-        int correctAnswers = sharedPref.getInt("correct_answers", 0);
         //------------------------------------------------------------------------------------------
         // Build the header data
         //------------------------------------------------------------------------------------------
         String gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
-        String gameScoreText = "Score: " + correctAnswers;
         question = getArguments().getString("question");
         countryName = getArguments().getString("country_name");
         //------------------------------------------------------------------------------------------
@@ -173,7 +166,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
-            String countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
+            countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
             question = contentValues.getAsString("question");
             answer = contentValues.getAsString("answer");
             choice1 = contentValues.getAsString("choice1");
@@ -194,7 +187,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             if (gameMode.equals("capitals")) {
                 b.putString("current_answer", countryCapital);
             } else if (gameMode.equals("flags")) {
-                b.putString("current_answer", countryAlpha2Code);
+                b.putString("current_answer", countryAlpha2Code.toLowerCase());
             }
             b.putString("question", question);
             b.putString("answer", answer);
@@ -289,8 +282,8 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             //--------------------------------------------------------------------------------------
             // Flags: Choice 1
             //--------------------------------------------------------------------------------------
-            alpha2Code = choice1.toLowerCase();
-            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            final String choice1alpha2Code = choice1.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + choice1alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
                     .resize(275, 165)
                     .onlyScaleDown()
@@ -302,14 +295,14 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                     choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
                     choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
                     choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
-                    selectAnswer(choice1);
+                    selectAnswer(choice1alpha2Code);
                 }
             });
             //--------------------------------------------------------------------------------------
             // Flags: Choice 2
             //--------------------------------------------------------------------------------------
-            alpha2Code = choice2.toLowerCase();
-            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            final String choice2alpha2Code = choice2.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + choice2alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
                     .resize(275, 165)
                     .onlyScaleDown()
@@ -321,14 +314,14 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                     choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
                     choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
                     choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
-                    selectAnswer(choice2);
+                    selectAnswer(choice2alpha2Code);
                 }
             });
             //--------------------------------------------------------------------------------------
             // Flags: Choice 3
             //--------------------------------------------------------------------------------------
-            alpha2Code = choice3.toLowerCase();
-            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            final String choice3alpha2Code = choice3.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + choice3alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
                     .resize(275, 165)
                     .onlyScaleDown()
@@ -340,14 +333,14 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                     choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
                     choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
                     choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
-                    selectAnswer(choice3);
+                    selectAnswer(choice3alpha2Code);
                 }
             });
             //--------------------------------------------------------------------------------------
             // Flags: Choice 4
             //--------------------------------------------------------------------------------------
-            alpha2Code = choice4.toLowerCase();
-            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            final String choice4alpha2Code = choice4.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + choice4alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
                     .resize(275, 165)
                     .onlyScaleDown()
@@ -359,7 +352,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                     choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
                     choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
                     choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
-                    selectAnswer(choice4);
+                    selectAnswer(choice4alpha2Code);
                 }
             });
         }
@@ -417,6 +410,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
      * @param answer the answer text
      */
     private void selectAnswer(String answer) {
+        Log.i("answer", answer);
         getArguments().putString("selected_answer", answer);
         getArguments().putString("sequence", "selectAnswer");
         selectedAnswerView();
@@ -522,7 +516,12 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             submitScore();
         }
 
-        ((GameActivity) getActivity()).flipCard(getArguments());
+        Activity act = getActivity();
+        if (act instanceof GameActivity) {
+            ((GameActivity) act).flipCard(getArguments());
+        }
+
+
     }
 
     /**
