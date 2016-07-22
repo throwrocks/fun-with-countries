@@ -13,7 +13,6 @@ import rocks.throw20.funwithcountries.Data.Contract;
 public class Question {
     private static final String LOG_TAG = Question.class.getSimpleName();
     private final Context mContext;
-    private Cursor mCursor;
     private ContentValues contentValues = new ContentValues();
 
     public Question(Context context){
@@ -49,6 +48,7 @@ public class Question {
         Utilities util = new Utilities(mContext);
         // Get all the countries in a cursor
         //Log.e(LOG_TAG, "usedCountries " + usedCountries[0]);
+        Cursor mCursor;
         if ( usedCountries[0] == null ){
             mCursor = util.getAllCountriesWithCapitals();
         } else {

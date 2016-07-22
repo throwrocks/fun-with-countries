@@ -27,7 +27,6 @@ import rocks.throw20.funwithcountries.Data.FetchTask;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private Cursor mCursor;
     private static final int REQUEST_INVITE = 0;
     private GoogleApiClient mGoogleApiClient;
 
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         //Stetho.initializeWithDefaults(this);
 
         // Create a new util object to check if the countries exist
-        mCursor = util.getAllCountries();
+        Cursor mCursor = util.getAllCountries();
         // If the Cursor is null, or it doesn't contain 247 countries
         // create a DataFetch Async task and execute it
         if ( mCursor == null || mCursor.getCount() < 247) {
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 util.playSound("select");
                 startActivity(gameIntent);
                 editor.putInt("game_progress", 1);
-                editor.putInt("game_progress_max", 3);
+                editor.putInt("game_progress_max", 10);
                 editor.putInt("correct_answers", 0);
                 editor.putInt("incorrect_answers", 0);
                 editor.putString("used_countries", "");

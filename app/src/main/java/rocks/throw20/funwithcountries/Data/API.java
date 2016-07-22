@@ -18,13 +18,11 @@ class API {
 
     private static final String LOG_TAG = API.class.getSimpleName();
 
-    private final Context mContext;
-
     private static final String apiURI = "https://restcountries.eu/rest/v1/all";
 
     // Constructor
     public API(Context context){
-        this.mContext = context;
+        Context mContext = context;
 
     }
 

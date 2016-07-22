@@ -1,111 +1,120 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    tools:context="rocks.throw20.funwithcountries.GameActivity"
-    tools:showIn="@layout/activity_game">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/game_fragment"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:layout_margin="16dp"
+        tools:context="rocks.throw20.funwithcountries.GameActivity"
+        tools:showIn="@layout/activity_game">
 
         <LinearLayout
-            android:id="@+id/game_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/game_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="@dimen/h1_text" />
-
-            <TextView
-                android:id="@+id/game_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="@dimen/body_text" />
-        </LinearLayout>
-
-
-        <!-- Game answer result shows "Correct/Incorrect/Time Up" with the correct result next to it-->
-        <LinearLayout
-            android:id="@+id/game_answer_result_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/Grey300"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:visibility="gone"
-            android:weightSum="3">
-
-            <TextView
-                android:id="@+id/game_answer_result_display"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/game_answer_result_correct_answer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-
-            android:id="@+id/game_next_question_view"
-            style="?android:attr/buttonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/game_next_question_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/action_submit" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/game_view_scores_view"
-            style="?android:attr/buttonBarStyle"
+            android:id="@+id/game_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-            <Button
-                android:id="@+id/game_view_scores_button"
-                style="?android:attr/buttonBarButtonStyle"
+            <LinearLayout
+                android:id="@+id/game_answer_result_view"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/action_view_scores" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
 
+                <TextView
+                    android:id="@+id/game_answer_result_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/correctText"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/game_answer_result_question_part1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/game_answer_result_question_country"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/primaryText"
+                    android:textSize="28sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="is"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/game_answer_result_correct_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/primaryText"
+                    android:textSize="28sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:id="@+id/game_next_question_view"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/game_next_question_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/action_submit"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/game_view_scores_view"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/game_view_scores_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/action_view_scores" />
+            </LinearLayout>
         </LinearLayout>
-
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

@@ -17,13 +17,11 @@ class JSONParser {
 
     ContentValues[] mContentValues;
 
-    private final Context mContext;
-
 
     // Constructor
     public JSONParser(Context context){
 
-        this.mContext = context;
+        Context mContext = context;
 
     }
 

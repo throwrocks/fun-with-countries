@@ -32,13 +32,9 @@
         <attr name="donut_background_color" format="color" />
     </declare-styleable>
 
-    <style name="button" parent="@android:style/Widget.Button">
+    <style name="button" parent="@android:style/Widget.Holo.ActionButton.TextButton">
         <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:textSize">16sp</item>
-
-
     </style>
-
-
 
 </resources>

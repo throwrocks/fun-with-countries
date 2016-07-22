@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,22 +45,12 @@ public class CardFrontFragment extends android.app.Fragment {
     private TextView gameProgressView;
 
     private LinearLayout confirmAnswerView;
+    private TextView confirmAnswerQuestionTextView;
     private TextView confirmAnswerTextView;
     private Button confirmAnswerButtonView;
 
-    private LinearLayout answerResultView;
-    private TextView answerResultDisplay;
-    private TextView answerResultCorrectAnswer;
-
-    private LinearLayout nextQuestionView;
-    private Button nextQuestionButtonView;
-
-    private LinearLayout viewScoresView;
-    private Button viewScoresButtonView;
-
     private String countryName;
     private String countryCapital;
-    private String countryAlpha2Code;
     private String question;
     private String answer;
     private String choice1;
@@ -73,8 +61,6 @@ public class CardFrontFragment extends android.app.Fragment {
     private Button choice2View;
     private Button choice3View;
     private Button choice4View;
-
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -91,8 +77,6 @@ public class CardFrontFragment extends android.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Log.e(LOG_TAG, "onCreate " + true);
-        Log.e(LOG_TAG, "onCreate " + getArguments());
         if (savedInstanceState == null) {
             getArguments().putString("savedInstanceState", null);
             getQuestion(true);
@@ -109,31 +93,16 @@ public class CardFrontFragment extends android.app.Fragment {
         gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
         gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
-
         // Game button views
         choice1View = (Button) rootView.findViewById(R.id.game_button_text1);
         choice2View = (Button) rootView.findViewById(R.id.game_button_text2);
         choice3View = (Button) rootView.findViewById(R.id.game_button_text3);
         choice4View = (Button) rootView.findViewById(R.id.game_button_text4);
-
         // Answer selection confirmation views
         confirmAnswerView = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation_view);
-        confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_text);
+        confirmAnswerQuestionTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_question);
+        confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_country);
         confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
-
-        // Answer result views (correct or incorrect)
-        answerResultView = (LinearLayout) rootView.findViewById(R.id.game_answer_result_view);
-        answerResultDisplay = (TextView) rootView.findViewById(R.id.game_answer_result_display);
-        answerResultCorrectAnswer = (TextView) rootView.findViewById(R.id.game_answer_result_correct_answer);
-
-        // Next question view
-        nextQuestionView = (LinearLayout) rootView.findViewById(R.id.game_next_question_view);
-        nextQuestionButtonView = (Button) rootView.findViewById(R.id.game_next_question_button);
-
-        viewScoresView = (LinearLayout) rootView.findViewById(R.id.game_view_scores_view);
-        viewScoresButtonView = (Button) rootView.findViewById(R.id.game_view_scores_button);
-
-        //viewScoresView.setVisibility(View.GONE);
 
         setLayoutHeader();
         setQuestionViews();
@@ -146,7 +115,6 @@ public class CardFrontFragment extends android.app.Fragment {
      * Set the top views that display the answer, the timer, and the score
      */
     private void setLayoutHeader() {
-
         //------------------------------------------------------------------------------------------
         // Get header data from the shared preferences
         //------------------------------------------------------------------------------------------
@@ -185,14 +153,13 @@ public class CardFrontFragment extends android.app.Fragment {
             // Set the question variables
             countryName = contentValues.getAsString("country_name");
             countryCapital = contentValues.getAsString("country_capital");
-            countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
+            String countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
             question = contentValues.getAsString("question");
             answer = contentValues.getAsString("answer");
             choice1 = contentValues.getAsString("choice1");
             choice2 = contentValues.getAsString("choice2");
             choice3 = contentValues.getAsString("choice3");
             choice4 = contentValues.getAsString("choice4");
-
             // Keep track of countries used during the game session
             String usedCountries = sharedPref.getString("used_countries", "");
             String usedCountriesSelection;
@@ -201,7 +168,6 @@ public class CardFrontFragment extends android.app.Fragment {
             } else {
                 usedCountriesSelection = usedCountries + " OR '" + countryName + "'";
             }
-
             // Store them in the bundle
             b.putString("country_name", countryName);
             b.putString("country_capital", countryCapital);
@@ -232,7 +198,6 @@ public class CardFrontFragment extends android.app.Fragment {
     private ContentValues newQuestion(String gameMode) {
         String usedCountries = sharedPref.getString("used_countries", "");
         Question questionObj = new Question(this.getContext());
-        //Log.e(LOG_TAG,"gameMode: " + gameMode);
         ContentValues contentValues = questionObj.getQuestion(gameMode, new String[]{usedCountries});
         // If a new question is requested and there is a timer running, cancel it first
         if (questionTimerIsRunning) {
@@ -248,9 +213,7 @@ public class CardFrontFragment extends android.app.Fragment {
      * This method sets the Views when starting the game and when getting new questions
      */
     private void setQuestionViews() {
-        Utilities util = new Utilities(getContext());
         setLayoutHeader();
-
         Bundle b = getArguments();
         String gameMode = sharedPref.getString("game_mode", "");
         //------------------------------------------------------------------------------------------
@@ -299,13 +262,8 @@ public class CardFrontFragment extends android.app.Fragment {
                 }
             });
         }
-
         // Confirm answer view
         confirmAnswerView.setVisibility(View.GONE);
-        // Answer views (correct or incorrect)
-        //answerResultView.setVisibility(View.GONE);
-        // Next question view
-        //nextQuestionView.setVisibility(View.GONE);
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
@@ -370,13 +328,14 @@ public class CardFrontFragment extends android.app.Fragment {
      */
     private void selectedAnswerView() {
         String gameMode = sharedPref.getString("game_mode", "");
+        String answerQuestion;
         String answer = getArguments().getString("selected_answer");
         // Display the confirmation text
         confirmAnswerView.setVisibility(View.VISIBLE);
-        String answerDisplay;
         if (gameMode.equals("capitals")) {
-            answerDisplay = "The capital of " + countryName + " is " + answer + "?";
-            confirmAnswerTextView.setText(answerDisplay);
+            answerQuestion = "The capital is";
+            confirmAnswerQuestionTextView.setText(answerQuestion);
+            confirmAnswerTextView.setText(answer);
         }
         confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -433,7 +392,6 @@ public class CardFrontFragment extends android.app.Fragment {
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressCalc = gameProgress + 1;
 
-
         editor.putInt("game_progress", gameProgressCalc);
         editor.apply();
 
@@ -464,13 +422,11 @@ public class CardFrontFragment extends android.app.Fragment {
         String scoreGameMode = sharedPref.getString("game_mode", "");
         int scoreQuestionsCount = sharedPref.getInt("game_progress_max", 0);
         int scoreCorrectAnswers = sharedPref.getInt("correct_answers", 0);
-
         // Calculate the score percent
         double num = (double) scoreCorrectAnswers / scoreQuestionsCount;
         NumberFormat defaultFormat = NumberFormat.getPercentInstance();
         defaultFormat.setMinimumFractionDigits(0);
         String scorePercent = defaultFormat.format(num);
-
         // Calculate the final score
         int scoreFinalScore = (scoreQuestionsCount * 20) + (scoreCorrectAnswers * 5);
 
@@ -490,17 +446,4 @@ public class CardFrontFragment extends android.app.Fragment {
                 scoreValues
         );
     }
-
-    /**
-     * endGame
-     * Method to end the game, submit the scores, and start the scores activity
-     */
-    private void endGame(){
-        // Launch the ScoresActivity and end the GameActivity
-        final Intent intent = new Intent(getContext(), ScoresActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        getActivity().finish();
-    }
-
 }

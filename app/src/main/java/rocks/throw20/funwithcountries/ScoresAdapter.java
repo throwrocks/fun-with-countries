@@ -20,12 +20,11 @@ import java.util.List;
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder> {
     private final String LOG_TAG = ScoresAdapter.class.getSimpleName();
 
-    private final Context mContext;
     private Cursor mCursor;
 
     //The Adapter Constructor
     public ScoresAdapter(Context context, Cursor scoresCursor) {
-        mContext = context;
+        Context mContext = context;
         mCursor = scoresCursor;
         Log.e(LOG_TAG, "Constructor -> " + true);
     }
