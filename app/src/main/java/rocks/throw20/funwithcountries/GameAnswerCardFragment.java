@@ -13,8 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -27,9 +30,9 @@ import rocks.throw20.funwithcountries.Data.Contract;
 /**
  * Created by joselopez on 7/21/16.
  */
-public class CardBackFragment extends android.app.Fragment {
+public class GameAnswerCardFragment extends android.app.Fragment {
 
-    private static final String LOG_TAG = CardFrontFragment.class.getSimpleName();
+    private static final String LOG_TAG = GameAnswerCardFragment.class.getSimpleName();
     private SharedPreferences sharedPref;
 
     private TextView answerResultDisplay;
@@ -43,7 +46,7 @@ public class CardBackFragment extends android.app.Fragment {
     private LinearLayout viewScoresView;
     private Button viewScoresButtonView;
 
-    public CardBackFragment() {
+    public GameAnswerCardFragment() {
     }
 
     @Override
@@ -88,6 +91,7 @@ public class CardBackFragment extends android.app.Fragment {
         String resultText = getArguments().getString("answer_result");
         String countryName = getArguments().getString("country_name");
         String countryCapital = getArguments().getString("country_capital");
+        String answer = getArguments().getString("selected_answer");
         String gameMode = sharedPref.getString("game_mode", "");
         int gameProgress = sharedPref.getInt("game_progress", 0);
         int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
@@ -111,20 +115,17 @@ public class CardBackFragment extends android.app.Fragment {
             answerResultQuestion.setText("The capital of");
             answerResultCountry.setText(countryName);
             answerResultCorrectAnswer.setText(countryCapital);
-        } /* else if (gameMode.equals("flags")) {
-
+        }  /*else if (gameMode.equals("flags")) {
                 nextQuestionTextView.setText(resultTextDescription);
-                answerFlag = new ImageView(getActivity());
                 //Log.e(LOG_TAG,"Next/answer " + answer);
                 // Display the correct flag
-                int flagDrawable = util.getDrawable(getContext(), "flag_" + currentAnswer.toLowerCase());
+                int flagDrawable = util.getDrawable(getContext(), "flag_" + answer.toLowerCase());
                 Picasso.with(getContext()).load(flagDrawable)
                         .resize(220, 140)
                         .onlyScaleDown()
                         .into(answerFlag);
                 gameAnswer.addView(answerFlag);
-            }
-        }*/
+            }*/
         //------------------------------------------------------------------------------------------
         // The game is over, show the "View Score" button instead of the "Next Question" button
         //------------------------------------------------------------------------------------------

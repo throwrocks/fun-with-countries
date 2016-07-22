@@ -2,10 +2,8 @@ package rocks.throw20.funwithcountries;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -13,14 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Toast;
 
 
 public class GameActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
-    CardBackFragment cardBackFragment;
-    CardFrontFragment cardFrontFragment;
+    GameAnswerCardFragment gameAnswerCardFragment;
+    GameQuestionCardFragment gameQuestionCardFragment;
     /**
      * A handler object, used for deferring UI operations.
      */
@@ -50,72 +46,72 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
 
         if (savedInstanceState == null) {
             Log.e(LOG_TAG, "SavedInstanceState " + null);
-            CardFrontFragment gameActivityFragment = new CardFrontFragment();
+            GameQuestionCardFragment gameActivityFragment = new GameQuestionCardFragment();
             gameActivityFragment.setArguments(args);
             getFragmentManager().beginTransaction()
                     .add(R.id.game_frame, gameActivityFragment, "gameFragment")
                     .commit();
         } else {
-            CardFrontFragment gameActivityFragment = (CardFrontFragment) getFragmentManager().findFragmentByTag("gameFragment");
+            GameQuestionCardFragment gameActivityFragment = (GameQuestionCardFragment) getFragmentManager().findFragmentByTag("gameFragment");
         }
     }
+
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             exitByBackKey();
-            //moveTaskToBack(false);
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * exitByBackKey
+     * This prompts the user to exit the game
+     */
     protected void exitByBackKey() {
-        AlertDialog alertbox = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setMessage("Do you want to exit this game?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    // do something when the button is clicked
                     public void onClick(DialogInterface arg0, int arg1) {
-
                         finish();
-                        //close();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    // do something when the button is clicked
                     public void onClick(DialogInterface arg0, int arg1) {
                     }
-                })
-                .show();
+                }).show();
     }
+
+    /**
+     * flipCard
+     * This method is called to flip the card from question to answer and vice versa
+     * @param args the bundle used to store the game's state
+     */
 
     public void flipCard(Bundle args) {
         if (mShowingBack) {
             mShowingBack = false;
-            //getFragmentManager().beginTransaction().remove(cardBackFragment).commit();
-            cardFrontFragment = new CardFrontFragment();
-            cardFrontFragment.setArguments(args);
+            gameQuestionCardFragment = new GameQuestionCardFragment();
+            gameQuestionCardFragment.setArguments(args);
             getFragmentManager().popBackStack();
                     getFragmentManager().beginTransaction()
                     .setCustomAnimations(
                             R.animator.card_flip_left_in, R.animator.card_flip_left_out,
                             R.animator.card_flip_right_in, R.animator.card_flip_right_out)
-                    .replace(R.id.game_frame, cardFrontFragment)
+                    .replace(R.id.game_frame, gameQuestionCardFragment)
                     .commit();
         } else {
             mShowingBack = true;
-            cardBackFragment = new CardBackFragment();
-            cardBackFragment.setArguments(args);
+            gameAnswerCardFragment = new GameAnswerCardFragment();
+            gameAnswerCardFragment.setArguments(args);
             getFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
                             R.animator.card_flip_right_in, R.animator.card_flip_right_out,
                             R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                    .replace(R.id.game_frame, cardBackFragment)
+                    .replace(R.id.game_frame, gameAnswerCardFragment)
                     .commit();
-
-            // Defer an invalidation of the options menu (on modern devices, the action bar). This
-            // can't be done immediately because the transaction may not yet be committed. Commits
-            // are asynchronous in that they are posted to the main thread's message loop.
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -128,7 +124,6 @@ public class GameActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     public void onBackStackChanged() {
         mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
-        // When the back stack changes, invalidate the options menu (action bar).
         invalidateOptionsMenu();
     }
 

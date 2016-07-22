@@ -1,20 +1,23 @@
 package rocks.throw20.funwithcountries;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -27,11 +30,11 @@ import rocks.throw20.funwithcountries.Data.Contract;
 /**
  * Created by joselopez on 7/21/16.
  */
-public class CardFrontFragment extends android.app.Fragment {
-    public CardFrontFragment() {
+public class GameQuestionCardFragment extends android.app.Fragment {
+    public GameQuestionCardFragment() {
     }
 
-    private static final String LOG_TAG = CardFrontFragment.class.getSimpleName();
+    private static final String LOG_TAG = GameQuestionCardFragment.class.getSimpleName();
     private static CountDownTimer questionTimer;
     private View rootView;
     private SharedPreferences sharedPref;
@@ -40,13 +43,15 @@ public class CardFrontFragment extends android.app.Fragment {
 
 
     private TextView questionView;
-    private TextView gameScoreView;
     private TextView questionCountryView;
     private TextView gameProgressView;
 
-    private LinearLayout confirmAnswerView;
-    private TextView confirmAnswerQuestionTextView;
+    private LinearLayout confirmTextAnswerView;
+    private LinearLayout confirmImageAnswerView;
+    private TextView confirmAnswerTextQuestionTextView;
+    private TextView confirmAnswerImageQuestionTextView;
     private TextView confirmAnswerTextView;
+    private ImageView confirmAnswerImageView;
     private Button confirmAnswerButtonView;
 
     private String countryName;
@@ -57,10 +62,16 @@ public class CardFrontFragment extends android.app.Fragment {
     private String choice2;
     private String choice3;
     private String choice4;
+    private LinearLayout gameContentText;
     private Button choice1View;
     private Button choice2View;
     private Button choice3View;
     private Button choice4View;
+    private LinearLayout gameContentImage;
+    private ImageButton choice1ImageButtonView;
+    private ImageButton choice2ImageButtonView;
+    private ImageButton choice3ImageButtonView;
+    private ImageButton choice4ImageButtonView;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -90,18 +101,28 @@ public class CardFrontFragment extends android.app.Fragment {
 
         // Header views
         questionView = (TextView) rootView.findViewById(R.id.question);
-        gameScoreView = (TextView) rootView.findViewById(R.id.game_score);
         questionCountryView = (TextView) rootView.findViewById(R.id.question_country);
         gameProgressView = (TextView) rootView.findViewById(R.id.game_progress);
         // Game button views
+        // for text answers (CAPITALS)
+        gameContentText = (LinearLayout) rootView.findViewById(R.id.game_content_text);
         choice1View = (Button) rootView.findViewById(R.id.game_button_text1);
         choice2View = (Button) rootView.findViewById(R.id.game_button_text2);
         choice3View = (Button) rootView.findViewById(R.id.game_button_text3);
         choice4View = (Button) rootView.findViewById(R.id.game_button_text4);
+        // for image answers (FLAGS)
+        gameContentImage = (LinearLayout) rootView.findViewById(R.id.game_content_image);
+        choice1ImageButtonView = (ImageButton) rootView.findViewById(R.id.game_button_image1);
+        choice2ImageButtonView = (ImageButton) rootView.findViewById(R.id.game_button_image2);
+        choice3ImageButtonView = (ImageButton) rootView.findViewById(R.id.game_button_image3);
+        choice4ImageButtonView = (ImageButton) rootView.findViewById(R.id.game_button_image4);
         // Answer selection confirmation views
-        confirmAnswerView = (LinearLayout) rootView.findViewById(R.id.game_answer_confirmation_view);
-        confirmAnswerQuestionTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_question);
+        confirmTextAnswerView = (LinearLayout) rootView.findViewById(R.id.game_answer_text_confirmation_view);
+        confirmImageAnswerView = (LinearLayout) rootView.findViewById(R.id.game_answer_image_confirmation_view);
+        confirmAnswerTextQuestionTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_question_text);
+        confirmAnswerImageQuestionTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_question_flag);
         confirmAnswerTextView = (TextView) rootView.findViewById(R.id.game_answer_confirmation_country);
+        confirmAnswerImageView = (ImageView) rootView.findViewById(R.id.game_answer_confirmation_flag);
         confirmAnswerButtonView = (Button) rootView.findViewById(R.id.game_answer_confirmation_submit);
 
         setLayoutHeader();
@@ -133,7 +154,6 @@ public class CardFrontFragment extends android.app.Fragment {
         //------------------------------------------------------------------------------------------
         gameProgressView.setText(gameProgressText);
         questionView.setText(question);
-        gameScoreView.setText(gameScoreText);
         String countryNameDisplay = countryName + "?";
         questionCountryView.setText(countryNameDisplay);
     }
@@ -227,8 +247,8 @@ public class CardFrontFragment extends android.app.Fragment {
         choice4 = b.getString("choice4");
         questionTimerIsRunning = b.getBoolean("timer_is_running");
         int questionTimerProgress = b.getInt("timer_progress");
-
         if (gameMode.equals("capitals")) {
+            gameContentText.setVisibility(View.VISIBLE);
             choice1View.setText(choice1);
             choice1View.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -261,9 +281,89 @@ public class CardFrontFragment extends android.app.Fragment {
                     selectAnswer(countryCapital.toString());
                 }
             });
+        } else if (gameMode.equals("flags")) {
+            gameContentImage.setVisibility(View.VISIBLE);
+            String alpha2Code;
+            int flagDrawable;
+            Utilities util = new Utilities(getContext());
+            //--------------------------------------------------------------------------------------
+            // Flags: Choice 1
+            //--------------------------------------------------------------------------------------
+            alpha2Code = choice1.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            Picasso.with(getContext()).load(flagDrawable)
+                    .resize(275, 165)
+                    .onlyScaleDown()
+                    .into(choice1ImageButtonView);
+            choice1ImageButtonView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choice1ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
+                    choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    selectAnswer(choice1);
+                }
+            });
+            //--------------------------------------------------------------------------------------
+            // Flags: Choice 2
+            //--------------------------------------------------------------------------------------
+            alpha2Code = choice2.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            Picasso.with(getContext()).load(flagDrawable)
+                    .resize(275, 165)
+                    .onlyScaleDown()
+                    .into(choice2ImageButtonView);
+            choice2ImageButtonView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choice1ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
+                    choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    selectAnswer(choice2);
+                }
+            });
+            //--------------------------------------------------------------------------------------
+            // Flags: Choice 3
+            //--------------------------------------------------------------------------------------
+            alpha2Code = choice3.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            Picasso.with(getContext()).load(flagDrawable)
+                    .resize(275, 165)
+                    .onlyScaleDown()
+                    .into(choice3ImageButtonView);
+            choice3ImageButtonView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choice1ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
+                    choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    selectAnswer(choice3);
+                }
+            });
+            //--------------------------------------------------------------------------------------
+            // Flags: Choice 4
+            //--------------------------------------------------------------------------------------
+            alpha2Code = choice4.toLowerCase();
+            flagDrawable = util.getDrawable(getContext(), "flag_" + alpha2Code);
+            Picasso.with(getContext()).load(flagDrawable)
+                    .resize(275, 165)
+                    .onlyScaleDown()
+                    .into(choice4ImageButtonView);
+            choice4ImageButtonView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choice1ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice2ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice3ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.buttonTint));
+                    choice4ImageButtonView.getBackground().setTint(ContextCompat.getColor(getContext(), R.color.bright_green));
+                    selectAnswer(choice4);
+                }
+            });
         }
-        // Confirm answer view
-        confirmAnswerView.setVisibility(View.GONE);
+
         final DonutProgress gameTimerView = (DonutProgress) rootView.findViewById(R.id.game_timer);
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
@@ -330,18 +430,33 @@ public class CardFrontFragment extends android.app.Fragment {
         String gameMode = sharedPref.getString("game_mode", "");
         String answerQuestion;
         String answer = getArguments().getString("selected_answer");
+        confirmAnswerButtonView.setVisibility(View.VISIBLE);
         // Display the confirmation text
-        confirmAnswerView.setVisibility(View.VISIBLE);
-        if (gameMode.equals("capitals")) {
-            answerQuestion = "The capital is";
-            confirmAnswerQuestionTextView.setText(answerQuestion);
-            confirmAnswerTextView.setText(answer);
-        }
-        confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                answerQuestion();
+        if (answer != null && !answer.equals("")) {
+
+            if (gameMode.equals("capitals")) {
+                confirmTextAnswerView.setVisibility(View.VISIBLE);
+                answerQuestion = "The capital is";
+                confirmAnswerTextQuestionTextView.setText(answerQuestion);
+                confirmAnswerTextView.setText(answer);
+            } else if (gameMode.equals("flags")) {
+                Utilities util = new Utilities(getContext());
+                confirmImageAnswerView.setVisibility(View.VISIBLE);
+                answerQuestion = "The flag is";
+                confirmAnswerImageQuestionTextView.setText(answerQuestion);
+                int flagDrawable;
+                flagDrawable = util.getDrawable(getContext(), "flag_" + answer.toLowerCase());
+                Picasso.with(getContext()).load(flagDrawable)
+                        .resize(91, 55)
+                        .onlyScaleDown()
+                        .into(confirmAnswerImageView);
             }
-        });
+            confirmAnswerButtonView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    answerQuestion();
+                }
+            });
+        }
     }
 
     /**
@@ -407,7 +522,7 @@ public class CardFrontFragment extends android.app.Fragment {
             submitScore();
         }
 
-        ((GameActivity)getActivity()).flipCard(getArguments());
+        ((GameActivity) getActivity()).flipCard(getArguments());
     }
 
     /**
