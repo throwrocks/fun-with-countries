@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="button_image_layout_width">0dp</dimen>
+    <dimen name="button_image_layout_height">66dp</dimen>
+</resources>
