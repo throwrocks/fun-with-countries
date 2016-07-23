@@ -42,7 +42,6 @@ public class GameQuestionCardFragment extends android.app.Fragment {
     private boolean questionTimerIsRunning = false;
     private boolean timeUp;
 
-
     private TextView questionView;
     private TextView questionCountryView;
     private TextView gameProgressView;
@@ -74,6 +73,33 @@ public class GameQuestionCardFragment extends android.app.Fragment {
     private ImageButton choice2ImageButtonView;
     private ImageButton choice3ImageButtonView;
     private ImageButton choice4ImageButtonView;
+    // Constants for Shared Preferences
+    private String PREF_GAME_PROGRESS = "game_progress";
+    private String PREF_GAME_PROGRESS_MAX = "game_progress_max";
+    private String PREF_USED_COUNTRIES = "used_countries";
+    private String PREF_GAME_MODE = "game_mode";
+    private String PREF_GAME_MODE_CAPITALS = "capitals";
+    private String PREF_GAME_MODE_FLAGS = "flags";
+    private String PREF_CORRECT_ANSWERS = "correct_answers";
+    private String PREF_INCORRECT_ANSWERS = "incorrect_answers";
+    // Constants for Bundle
+    private String FIELD_COUNTRY_NAME = "country_name";
+    private String FIELD_COUNTRY_CAPITAL = "country_capital";
+    private String FIELD_COUNTRY_ALPHA2CODE = "country_alpha2Code";
+    private String FIELD_QUESTION = "question";
+    private String FIELD_ANSWER = "answer";
+    private String FIELD_CHOICE1 = "choice1";
+    private String FIELD_CHOICE2 = "choice2";
+    private String FIELD_CHOICE3 = "choice3";
+    private String FIELD_CHOICE4 = "choice4";
+    private String FIELD_USED_COUNTRIES = "used_countries";
+    private String FIELD_CURRENT_ANSWER = "current_answer";
+    private String FIELD_EVALUATED_ANSWER = "evaluated_answer";
+    private String FIELD_SELECTED_ANSWER = "selected_answer";
+    private String FIELD_TIMER_IS_RUNNING = "timer_is_running";
+    private String FIELD_TIMER_PROGRESS = "timer_progress";
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -134,14 +160,14 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         //------------------------------------------------------------------------------------------
         // Get header data from the shared preferences
         //------------------------------------------------------------------------------------------
-        int gameProgress = sharedPref.getInt("game_progress", 0);
-        int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
+        int gameProgress = sharedPref.getInt(PREF_GAME_PROGRESS, 0);
+        int gameProgressMax = sharedPref.getInt(PREF_GAME_PROGRESS_MAX, 0);
         //------------------------------------------------------------------------------------------
         // Build the header data
         //------------------------------------------------------------------------------------------
         String gameProgressText = "Question " + gameProgress + " of " + gameProgressMax;
-        question = getArguments().getString("question");
-        countryName = getArguments().getString("country_name");
+        question = getArguments().getString(FIELD_QUESTION);
+        countryName = getArguments().getString(FIELD_COUNTRY_NAME);
         //------------------------------------------------------------------------------------------
         // Set the header views
         //------------------------------------------------------------------------------------------
@@ -159,22 +185,22 @@ public class GameQuestionCardFragment extends android.app.Fragment {
     private void getQuestion(Boolean isnew) {
         Bundle b = getArguments();
         b.putString("sequence", "getQuestion");
-        String gameMode = sharedPref.getString("game_mode", "");
+        String gameMode = sharedPref.getString(PREF_GAME_MODE, "");
         if (isnew) {
             SharedPreferences.Editor editor = sharedPref.edit();
             ContentValues contentValues = newQuestion(gameMode);
             // Set the question variables
-            countryName = contentValues.getAsString("country_name");
-            countryCapital = contentValues.getAsString("country_capital");
-            countryAlpha2Code = contentValues.getAsString("country_alpha2Code");
-            question = contentValues.getAsString("question");
-            answer = contentValues.getAsString("answer");
-            choice1 = contentValues.getAsString("choice1");
-            choice2 = contentValues.getAsString("choice2");
-            choice3 = contentValues.getAsString("choice3");
-            choice4 = contentValues.getAsString("choice4");
+            countryName = contentValues.getAsString(FIELD_COUNTRY_NAME);
+            countryCapital = contentValues.getAsString(FIELD_COUNTRY_CAPITAL);
+            countryAlpha2Code = contentValues.getAsString(FIELD_COUNTRY_ALPHA2CODE);
+            question = contentValues.getAsString(FIELD_QUESTION);
+            answer = contentValues.getAsString(FIELD_ANSWER);
+            choice1 = contentValues.getAsString(FIELD_CHOICE1);
+            choice2 = contentValues.getAsString(FIELD_CHOICE2);
+            choice3 = contentValues.getAsString(FIELD_CHOICE3);
+            choice4 = contentValues.getAsString(FIELD_CHOICE4);
             // Keep track of countries used during the game session
-            String usedCountries = sharedPref.getString("used_countries", "");
+            String usedCountries = sharedPref.getString(PREF_USED_COUNTRIES, "");
             String usedCountriesSelection;
             if (usedCountries.isEmpty()) {
                 usedCountriesSelection = "'" + countryName + "'";
@@ -182,22 +208,21 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                 usedCountriesSelection = usedCountries + " OR '" + countryName + "'";
             }
             // Store them in the bundle
-            b.putString("country_name", countryName);
-            b.putString("country_capital", countryCapital);
-            if (gameMode.equals("capitals")) {
-                b.putString("current_answer", countryCapital);
-            } else if (gameMode.equals("flags")) {
-                b.putString("current_answer", countryAlpha2Code.toLowerCase());
+            b.putString(FIELD_COUNTRY_NAME, countryName);
+            b.putString(FIELD_COUNTRY_CAPITAL, countryCapital);
+            if (gameMode.equals(PREF_GAME_MODE_CAPITALS)) {
+                b.putString(FIELD_CURRENT_ANSWER, countryCapital);
+            } else if (gameMode.equals(PREF_GAME_MODE_FLAGS)) {
+                b.putString(FIELD_CURRENT_ANSWER, countryAlpha2Code.toLowerCase());
             }
-            b.putString("question", question);
-            b.putString("answer", answer);
-            b.putString("choice1", choice1);
-            b.putString("choice2", choice2);
-            b.putString("choice3", choice3);
-            b.putString("choice4", choice4);
-            editor.putString("used_countries", usedCountriesSelection);
-            editor.apply();
-            //Log.e(LOG_TAG, "used_countries: " + usedCountriesSelection);
+            b.putString(FIELD_QUESTION, question);
+            b.putString(FIELD_ANSWER, answer);
+            b.putString(FIELD_CHOICE1, choice1);
+            b.putString(FIELD_CHOICE2, choice2);
+            b.putString(FIELD_CHOICE3, choice3);
+            b.putString(FIELD_CHOICE4, choice4);
+            editor.putString(FIELD_USED_COUNTRIES, usedCountriesSelection);
+            editor.apply();;
         }
     }
 
@@ -209,14 +234,14 @@ public class GameQuestionCardFragment extends android.app.Fragment {
      * @return a ContentValues Object with the question, answer, and choices.
      */
     private ContentValues newQuestion(String gameMode) {
-        String usedCountries = sharedPref.getString("used_countries", "");
+        String usedCountries = sharedPref.getString(FIELD_USED_COUNTRIES, "");
         Question questionObj = new Question(this.getContext());
         ContentValues contentValues = questionObj.getQuestion(gameMode, new String[]{usedCountries});
         // If a new question is requested and there is a timer running, cancel it first
         if (questionTimerIsRunning) {
             questionTimer.cancel();
             questionTimerIsRunning = false;
-            getArguments().putBoolean("timer_is_running", false);
+            getArguments().putBoolean(FIELD_TIMER_IS_RUNNING, false);
         }
         return contentValues;
     }
@@ -228,19 +253,19 @@ public class GameQuestionCardFragment extends android.app.Fragment {
     private void setQuestionViews() {
         setLayoutHeader();
         Bundle b = getArguments();
-        String gameMode = sharedPref.getString("game_mode", "");
+        String gameMode = sharedPref.getString(PREF_GAME_MODE, "");
         //------------------------------------------------------------------------------------------
         // Get all the variables from the shared prefs and from the bundle
         //------------------------------------------------------------------------------------------
-        countryCapital = b.getString("country_capital");
-        answer = b.getString("answer");
-        choice1 = b.getString("choice1");
-        choice2 = b.getString("choice2");
-        choice3 = b.getString("choice3");
-        choice4 = b.getString("choice4");
-        questionTimerIsRunning = b.getBoolean("timer_is_running");
-        int questionTimerProgress = b.getInt("timer_progress");
-        if (gameMode.equals("capitals")) {
+        countryCapital = b.getString(FIELD_COUNTRY_CAPITAL);
+        answer = b.getString(FIELD_ANSWER);
+        choice1 = b.getString(FIELD_CHOICE1);
+        choice2 = b.getString(FIELD_CHOICE2);
+        choice3 = b.getString(FIELD_CHOICE3);
+        choice4 = b.getString(FIELD_CHOICE4);
+        questionTimerIsRunning = b.getBoolean(FIELD_TIMER_IS_RUNNING);
+        int questionTimerProgress = b.getInt(FIELD_TIMER_PROGRESS);
+        if (gameMode.equals(PREF_GAME_MODE_CAPITALS)) {
             gameContentText.setVisibility(View.VISIBLE);
             choice1View.setText(choice1);
             choice1View.setOnClickListener(new View.OnClickListener() {
@@ -274,7 +299,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                     selectAnswer(countryCapital.toString());
                 }
             });
-        } else if (gameMode.equals("flags")) {
+        } else if (gameMode.equals(PREF_GAME_MODE_FLAGS)) {
             gameContentImage.setVisibility(View.VISIBLE);
             int flagDrawable;
             int flagWidth = getContext().getResources().getInteger(R.integer.button_flag_width);
@@ -362,8 +387,8 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
         //------------------------------------------------------------------------------------------
-        int startTimer = 1111111000;
-        //int startTimer = 11000;
+        //int startTimer = 1111111000;
+        int startTimer = 11000;
         // If a timer is running, resume it
         if (questionTimerIsRunning) {
             startTimer = questionTimerProgress * 1000;
@@ -375,12 +400,11 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                 gameTimerView.setInnerBottomText("");
                 questionTimerIsRunning = true;
                 timeUp = false;
-                getArguments().putBoolean("timer_is_running", true);
+                getArguments().putBoolean(FIELD_TIMER_IS_RUNNING, true);
                 int progress = (int) (long) (millisUntilFinished / 1000);
                 if (progress <= 10) {
-
                     util.playSound("tick_normal");
-                    getArguments().putInt("timer_progress", progress);
+                    getArguments().putInt(FIELD_TIMER_PROGRESS, progress);
                     //Log.e(LOG_TAG, "progress " + progress);
                     gameTimerView.setProgress(progress);
                 }
@@ -390,12 +414,12 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             public void onFinish() {
                 questionTimerIsRunning = false;
                 timeUp = true;
-                getArguments().putBoolean("timer_is_running", false);
-                getArguments().putInt("timer_progress", 0);
+                getArguments().putBoolean(FIELD_TIMER_IS_RUNNING, false);
+                getArguments().putInt(FIELD_TIMER_PROGRESS, 0);
                 gameTimerView.setProgress(0);
                 gameTimerView.setInnerBottomTextSize(36);
                 // Time is up, clear any selected answers and answer the question (incorrect)
-                getArguments().putString("selected_answer", "");
+                getArguments().putString(FIELD_SELECTED_ANSWER, "");
                 // Select and answer
                 selectAnswer("");
                 answerQuestion();
@@ -412,8 +436,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
      * @param answer the answer text
      */
     private void selectAnswer(String answer) {
-        Log.i("answer", answer);
-        getArguments().putString("selected_answer", answer);
+        getArguments().putString(FIELD_SELECTED_ANSWER, answer);
         getArguments().putString("sequence", "selectAnswer");
         selectedAnswerView();
     }
@@ -423,18 +446,18 @@ public class GameQuestionCardFragment extends android.app.Fragment {
      * This method builds the confirmation answer text, and button to submit the asnwer
      */
     private void selectedAnswerView() {
-        String gameMode = sharedPref.getString("game_mode", "");
+        String gameMode = sharedPref.getString(PREF_GAME_MODE, "");
         String answerQuestion;
-        String answer = getArguments().getString("selected_answer");
+        String answer = getArguments().getString(FIELD_SELECTED_ANSWER);
         confirmAnswerButtonView.setVisibility(View.VISIBLE);
         // Display the confirmation text
         if (answer != null && !answer.equals("")) {
-            if (gameMode.equals("capitals")) {
+            if (gameMode.equals(PREF_GAME_MODE_CAPITALS)) {
                 confirmTextAnswerView.setVisibility(View.VISIBLE);
                 answerQuestion = "The capital is";
                 confirmAnswerTextQuestionTextView.setText(answerQuestion);
                 confirmAnswerTextView.setText(answer);
-            } else if (gameMode.equals("flags")) {
+            } else if (gameMode.equals(PREF_GAME_MODE_FLAGS)) {
                 Utilities util = new Utilities(getContext());
                 int flagWidth = getContext().getResources().getInteger(R.integer.confirmation_flag_width);
                 int flagHeight = getContext().getResources().getInteger(R.integer.confirmation_flag_height);
@@ -468,16 +491,16 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         // Cancel the timer
         questionTimer.cancel();
         questionTimerIsRunning = false;
-        getArguments().putBoolean("timer_is_running", false);
+        getArguments().putBoolean(FIELD_TIMER_IS_RUNNING, false);
         // Get the current and selected answers to see if they match (evaluated answer)
-        String selectedAnswer = getArguments().getString("selected_answer", "");
-        String currentAnswer = getArguments().getString("current_answer", "");
+        String selectedAnswer = getArguments().getString(FIELD_SELECTED_ANSWER, "");
+        String currentAnswer = getArguments().getString(FIELD_CURRENT_ANSWER, "");
         // Evaluate the answer
         Boolean test = selectedAnswer.equals(currentAnswer);
-        getArguments().putBoolean("evaluated_answer", test);
+        getArguments().putBoolean(FIELD_EVALUATED_ANSWER, test);
         // Evaluated answer text for keeping track of the score and displaying the result
-        int gameCorrectAnswers = sharedPref.getInt("correct_answers", 0);
-        int gameIncorrectAnswers = sharedPref.getInt("incorrect_answers", 0);
+        int gameCorrectAnswers = sharedPref.getInt(PREF_CORRECT_ANSWERS, 0);
+        int gameIncorrectAnswers = sharedPref.getInt(PREF_INCORRECT_ANSWERS, 0);
         CharSequence questionResultText;
         // The answer was correct
         if (test) {
@@ -497,14 +520,14 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             util.playSound("failure");
         }
         // Save the score
-        editor.putInt("correct_answers", gameCorrectAnswers);
-        editor.putInt("incorrect_answers", gameIncorrectAnswers);
+        editor.putInt(PREF_CORRECT_ANSWERS, gameCorrectAnswers);
+        editor.putInt(PREF_INCORRECT_ANSWERS, gameIncorrectAnswers);
         // Save the game's progress
-        int gameProgressMax = sharedPref.getInt("game_progress_max", 0);
-        int gameProgress = sharedPref.getInt("game_progress", 0);
+        int gameProgressMax = sharedPref.getInt(PREF_GAME_PROGRESS_MAX, 0);
+        int gameProgress = sharedPref.getInt(PREF_GAME_PROGRESS, 0);
         int gameProgressCalc = gameProgress + 1;
 
-        editor.putInt("game_progress", gameProgressCalc);
+        editor.putInt(PREF_GAME_PROGRESS, gameProgressCalc);
         editor.apply();
 
         getArguments().putString("answer_result", questionResultText.toString());
@@ -513,9 +536,8 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         //------------------------------------------------------------------------------------------
         //The game is over !!!! Submit the score
         //------------------------------------------------------------------------------------------
-        gameProgress = sharedPref.getInt("game_progress", 0);
+        gameProgress = sharedPref.getInt(PREF_GAME_PROGRESS, 0);
         if (gameProgressMax == gameProgress - 1) {
-            Log.e(LOG_TAG, "submitScore " + true);
             submitScore();
         }
 
@@ -536,9 +558,9 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         // Get the score data to be stored in the database
         DateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String scoreDate = df.format(new Date());
-        String scoreGameMode = sharedPref.getString("game_mode", "");
-        int scoreQuestionsCount = sharedPref.getInt("game_progress_max", 0);
-        int scoreCorrectAnswers = sharedPref.getInt("correct_answers", 0);
+        String scoreGameMode = sharedPref.getString(PREF_GAME_MODE, "");
+        int scoreQuestionsCount = sharedPref.getInt(PREF_GAME_PROGRESS_MAX, 0);
+        int scoreCorrectAnswers = sharedPref.getInt(PREF_CORRECT_ANSWERS, 0);
         // Calculate the score percent
         double num = (double) scoreCorrectAnswers / scoreQuestionsCount;
         NumberFormat defaultFormat = NumberFormat.getPercentInstance();

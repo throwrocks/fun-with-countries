@@ -1,0 +1,6 @@
+<resources>
+    <integer name="button_flag_height">222</integer>
+    <integer name="button_flag_width">364</integer>
+    <integer name="confirmation_flag_height">56</integer>
+    <integer name="confirmation_flag_width">92</integer>
+</resources>

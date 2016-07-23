@@ -16,7 +16,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+    <!-- Donut progress attributes-->
     <declare-styleable name="DonutProgress">
         <attr name="donut_progress" format="integer" />
         <attr name="donut_max" format="integer" />
@@ -31,19 +31,24 @@
         <attr name="donut_suffix_text" format="string" />
         <attr name="donut_background_color" format="color" />
     </declare-styleable>
-
+    <!-- Donut progress bar -->
+    <style name="donutProgress">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <!-- Button text style -->
     <style name="buttonText" parent="@android:style/Widget.Holo.ActionButton.TextButton">
         <item name="android:backgroundTint">@color/buttonTint</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:textSize">16sp</item>
     </style>
-
+    <!-- Button image style -->
     <style name="buttonImage" parent="@android:style/Widget.Holo.ActionButton.TextButton">
         <item name="android:backgroundTint">@color/buttonTint</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:padding">16dp</item>
     </style>
-
+    <!-- Button for main menu style -->
     <style name="buttonMain" parent="@android:style/Widget.Holo.ActionButton.TextButton">
         <item name="android:textSize">18sp</item>
         <item name="android:backgroundTint">@color/buttonTint</item>
