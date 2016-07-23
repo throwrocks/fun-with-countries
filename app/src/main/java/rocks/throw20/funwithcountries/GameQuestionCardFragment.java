@@ -276,8 +276,9 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             });
         } else if (gameMode.equals("flags")) {
             gameContentImage.setVisibility(View.VISIBLE);
-            String alpha2Code;
             int flagDrawable;
+            int flagWidth = getContext().getResources().getInteger(R.integer.button_flag_width);
+            int flagHeight = getContext().getResources().getInteger(R.integer.button_flag_height);
             Utilities util = new Utilities(getContext());
             //--------------------------------------------------------------------------------------
             // Flags: Choice 1
@@ -285,7 +286,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             final String choice1alpha2Code = choice1.toLowerCase();
             flagDrawable = util.getDrawable(getContext(), "flag_" + choice1alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
-                    .resize(275, 165)
+                    .resize(flagWidth, flagHeight)
                     .onlyScaleDown()
                     .into(choice1ImageButtonView);
             choice1ImageButtonView.setOnClickListener(new View.OnClickListener() {
@@ -304,7 +305,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             final String choice2alpha2Code = choice2.toLowerCase();
             flagDrawable = util.getDrawable(getContext(), "flag_" + choice2alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
-                    .resize(275, 165)
+                    .resize(flagWidth, flagHeight)
                     .onlyScaleDown()
                     .into(choice2ImageButtonView);
             choice2ImageButtonView.setOnClickListener(new View.OnClickListener() {
@@ -323,7 +324,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             final String choice3alpha2Code = choice3.toLowerCase();
             flagDrawable = util.getDrawable(getContext(), "flag_" + choice3alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
-                    .resize(275, 165)
+                    .resize(flagWidth, flagHeight)
                     .onlyScaleDown()
                     .into(choice3ImageButtonView);
             choice3ImageButtonView.setOnClickListener(new View.OnClickListener() {
@@ -342,7 +343,7 @@ public class GameQuestionCardFragment extends android.app.Fragment {
             final String choice4alpha2Code = choice4.toLowerCase();
             flagDrawable = util.getDrawable(getContext(), "flag_" + choice4alpha2Code);
             Picasso.with(getContext()).load(flagDrawable)
-                    .resize(275, 165)
+                    .resize(flagWidth, flagHeight)
                     .onlyScaleDown()
                     .into(choice4ImageButtonView);
             choice4ImageButtonView.setOnClickListener(new View.OnClickListener() {
@@ -361,7 +362,8 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         //------------------------------------------------------------------------------------------
         // Create a new timer for this question
         //------------------------------------------------------------------------------------------
-        int startTimer = 11000;
+        int startTimer = 1111111000;
+        //int startTimer = 11000;
         // If a timer is running, resume it
         if (questionTimerIsRunning) {
             startTimer = questionTimerProgress * 1000;
@@ -427,7 +429,6 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         confirmAnswerButtonView.setVisibility(View.VISIBLE);
         // Display the confirmation text
         if (answer != null && !answer.equals("")) {
-
             if (gameMode.equals("capitals")) {
                 confirmTextAnswerView.setVisibility(View.VISIBLE);
                 answerQuestion = "The capital is";
@@ -435,13 +436,15 @@ public class GameQuestionCardFragment extends android.app.Fragment {
                 confirmAnswerTextView.setText(answer);
             } else if (gameMode.equals("flags")) {
                 Utilities util = new Utilities(getContext());
+                int flagWidth = getContext().getResources().getInteger(R.integer.confirmation_flag_width);
+                int flagHeight = getContext().getResources().getInteger(R.integer.confirmation_flag_height);
                 confirmImageAnswerView.setVisibility(View.VISIBLE);
                 answerQuestion = "The flag is";
                 confirmAnswerImageQuestionTextView.setText(answerQuestion);
                 int flagDrawable;
                 flagDrawable = util.getDrawable(getContext(), "flag_" + answer.toLowerCase());
                 Picasso.with(getContext()).load(flagDrawable)
-                        .resize(91, 55)
+                        .resize(flagWidth, flagHeight)
                         .onlyScaleDown()
                         .into(confirmAnswerImageView);
             }

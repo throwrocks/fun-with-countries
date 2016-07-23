@@ -19,8 +19,7 @@
             android:paddingBottom="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="8dp"
-           >
+            android:paddingTop="8dp">
             <!--====================================================================================
 
             Game Header - Includes the Game Progress (Question # of #) and the Progress Circle
@@ -41,8 +40,7 @@
 
                 <com.github.lzyzsd.circleprogress.DonutProgress
                     android:id="@+id/game_timer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/donutProgress"
                     android:layout_gravity="center"
                     app:donut_max="10"
                     app:donut_prefix_text=""
@@ -71,12 +69,12 @@
 
             =====================================================================================-->
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/game_content_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <!--Button group 1-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -87,16 +85,16 @@
                     <ImageButton
                         android:id="@+id/game_button_image1"
                         style="@style/buttonImage"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/button_image_layout_width"
+                        android:layout_height="@dimen/button_image_layout_height"
                         android:layout_marginEnd="4dp"
-                        android:layout_height="match_parent"
                         android:layout_weight="1" />
 
                     <ImageButton
                         android:id="@+id/game_button_image2"
                         style="@style/buttonImage"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/button_image_layout_width"
+                        android:layout_height="@dimen/button_image_layout_height"
                         android:layout_weight="1" />
                 </LinearLayout>
                 <!--Button group 2-->
@@ -109,16 +107,16 @@
                     <ImageButton
                         android:id="@+id/game_button_image3"
                         style="@style/buttonImage"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/button_image_layout_width"
+                        android:layout_height="@dimen/button_image_layout_height"
                         android:layout_marginEnd="4dp"
-                        android:layout_height="match_parent"
                         android:layout_weight="1" />
 
                     <ImageButton
                         android:id="@+id/game_button_image4"
                         style="@style/buttonImage"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/button_image_layout_width"
+                        android:layout_height="@dimen/button_image_layout_height"
                         android:layout_weight="1" />
                 </LinearLayout>
             </LinearLayout>
@@ -128,12 +126,12 @@
 
             =====================================================================================-->
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/game_content_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <!--Button group 1-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -216,8 +214,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
                 android:gravity="center"
+                android:orientation="horizontal"
                 android:visibility="gone">
 
                 <TextView
@@ -227,24 +225,26 @@
                     android:gravity="center"
                     android:textColor="@color/secondarytext"
                     android:textSize="18sp" />
+
                 <ImageView
-                    android:padding="4dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@color/buttonTint"
                     android:id="@+id/game_answer_confirmation_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center" />
+                    android:layout_marginStart="12dp"
+                    android:background="@color/buttonTint"
+                    android:gravity="center"
+                    android:padding="4dp" />
 
             </LinearLayout>
+
             <Button
-                android:visibility="gone"
                 android:id="@+id/game_answer_confirmation_submit"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/action_submit"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </FrameLayout>
