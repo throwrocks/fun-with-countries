@@ -23,16 +23,17 @@ public class Utilities {
     private static final String LOG_TAG = Utilities.class.getSimpleName();
     private Context mContext;
 
-    public Utilities(Context context){
+    public Utilities(Context context) {
         this.mContext = context;
     }
 
     /**
      * getAllCountries
      * A simple method to get all countries from the database
+     *
      * @return
      */
-    public Cursor getAllCountries(){
+    public Cursor getAllCountries() {
         Cursor mCursor;
         // Get all the countries in a cursor
         mCursor = mContext.getContentResolver().query(
@@ -45,7 +46,7 @@ public class Utilities {
     }
 
 
-    public Cursor getAllCountriesWithCapitals(){
+    public Cursor getAllCountriesWithCapitals() {
         Cursor mCursor;
         // Get all the countries in a cursor
         mCursor = mContext.getContentResolver().query(
@@ -57,7 +58,7 @@ public class Utilities {
         return mCursor;
     }
 
-    public Cursor getAllCountriesWithCapitalsExcept(String[] selectArgs){
+    public Cursor getAllCountriesWithCapitalsExcept(String[] selectArgs) {
         Cursor mCursor;
         // Get all the countries in a cursor
         // Except for countries with no capital,
@@ -71,10 +72,10 @@ public class Utilities {
         return mCursor;
     }
 
-
     /**
      * getRandomInt
-     * @param max the max int
+     *
+     * @param max     the max int
      * @param exclude an array of ints to exclude so to avoid repetitions
      * @return the random int
      */
@@ -83,19 +84,21 @@ public class Utilities {
 
         int n = rand.nextInt(max);
         // If the int = max substract 1 so it doesn't go out of bounds
-        if ( n == max ){ n = n - 1;}
+        if (n == max) {
+            n = n - 1;
+        }
 
-        if ( exclude != null ){
+        if (exclude != null) {
             //Log.e(LOG_TAG, "exclude length " + exclude.length);
             for (int i = 0; i < exclude.length; i++) {
                 int e = exclude[i];
                 boolean test = e == n;
                 //Log.e(LOG_TAG, "test " + test);
-                if ( test ){
+                if (test) {
                     getRandomInt(max, exclude);
                 }
             }
-    }
+        }
         return n;
     }
 
@@ -103,15 +106,14 @@ public class Utilities {
     /**
      * shuffleArray
      * Method to shuffle the Strings in an array
+     *
      * @param ar the array to be suffled
      */
     // Implementing Fisher–Yates shuffle
     // http://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
-    public String[] shuffleArray(String[] ar)
-    {
+    public String[] shuffleArray(String[] ar) {
         Random rand = new Random();
-        for (int i = ar.length - 1; i > 0; i--)
-        {
+        for (int i = ar.length - 1; i > 0; i--) {
             int index = rand.nextInt(i + 1);
             // Simple swap
             String a = ar[index];
@@ -124,12 +126,12 @@ public class Utilities {
     /**
      * getDrawable
      * http://stackoverflow.com/questions/7948059/dynamic-loading-of-images-r-drawable-using-variable
+     *
      * @param context the context
-     * @param name the name of the drawable
+     * @param name    the name of the drawable
      * @return the int of the drawable
      */
-    public int getDrawable(Context context, String name)
-    {
+    public int getDrawable(Context context, String name) {
         Assert.assertNotNull(context);
         Assert.assertNotNull(name);
 
@@ -139,9 +141,10 @@ public class Utilities {
 
     /**
      * playSound
+     *
      * @param sound the name of the sound to play
      */
-    public void playSound(String sound){
+    public void playSound(String sound) {
        /* MediaPlayer mediaPlayer;
         switch (sound) {
             case "success" :

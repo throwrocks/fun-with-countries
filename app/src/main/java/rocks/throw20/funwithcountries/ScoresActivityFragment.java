@@ -31,7 +31,6 @@ public class ScoresActivityFragment extends Fragment implements LoaderManager.Lo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         scoresAdapter = new ScoresAdapter(getContext(), mCursor);
-
         Log.e(LOG_TAG, "onCreateView -> " + true);
         View rootView = inflater.inflate(R.layout.fragment_scores_list, container, false);
         View recyclerView = rootView.findViewById(R.id.scores_list);
@@ -46,7 +45,6 @@ public class ScoresActivityFragment extends Fragment implements LoaderManager.Lo
         getLoaderManager().initLoader(0, null, this);
         Log.e(LOG_TAG, "onActivityCreated -> " + true);
     }
-
 
     /**
      * setupRecyclerView
@@ -70,7 +68,6 @@ public class ScoresActivityFragment extends Fragment implements LoaderManager.Lo
                 null,
                 null,
                 Contract.ScoreEntry.scoreFinalScore + " DESC LIMIT 50");
-
         Log.e(LOG_TAG, "onCreateLoader -> " + true);
         return cursorLoader;
     }
@@ -78,15 +75,11 @@ public class ScoresActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //Log.e(LOG_TAG, "onLoadFinished -> " + true);
-
         scoresAdapter.changeCursor(data);
         scoresAdapter.notifyDataSetChanged();
-
-
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

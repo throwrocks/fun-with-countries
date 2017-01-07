@@ -153,16 +153,12 @@ public class MainActivity extends AppCompatActivity {
              onInviteClicked();
             }
         });
-
-
-
     }
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         return super.onCreateView(parent, name, context, attrs);
     }
-
 
     private void onInviteClicked() {
         Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
@@ -178,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e(LOG_TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
-
         if (requestCode == REQUEST_INVITE) {
             if (resultCode == RESULT_OK) {
                 // Check how many invitations were sent and log a message

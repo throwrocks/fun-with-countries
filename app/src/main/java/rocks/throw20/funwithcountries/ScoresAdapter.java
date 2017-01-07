@@ -65,32 +65,25 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         Log.e(LOG_TAG, "bind " + mCursor);
-
         String scoreDate = mCursor.getString(1);
         String scoreGameMode = mCursor.getString(2);
         String scoreCountQuestions = mCursor.getString(3);
         String scoreCorrectAnswers = mCursor.getString(4);
         String scorePercent = mCursor.getString(5);
         String scoreFinalScore = mCursor.getString(6);
-
-
         // Convert the gameMode to title case
         StringBuilder s1 = new StringBuilder(scoreGameMode);
         s1.replace(0, s1.length(), s1.toString().toLowerCase());
         s1.setCharAt(0, Character.toTitleCase(s1.charAt(0)));
         scoreGameMode = s1.toString();
-
         // Build the score display
         String scoreDisplay = scoreCorrectAnswers + "/" + scoreCountQuestions;
-
-
         holder.viewScoresDate.setText(scoreDate);
         holder.viewScoresGameMode.setText(scoreGameMode);
         holder.viewScoresGameScore.setText(scoreDisplay);
         holder.viewScoresGameScorePercent.setText(scorePercent);
         holder.viewScoresFinalScore.setText(scoreFinalScore);
     }
-
 
     @Override
     public int getItemCount() {

@@ -545,8 +545,6 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         if (act instanceof GameActivity) {
             ((GameActivity) act).flipCard(getArguments());
         }
-
-
     }
 
     /**
@@ -568,7 +566,6 @@ public class GameQuestionCardFragment extends android.app.Fragment {
         String scorePercent = defaultFormat.format(num);
         // Calculate the final score
         int scoreFinalScore = (scoreQuestionsCount * 20) + (scoreCorrectAnswers * 5);
-
         String scoreGameDuration = "";
         // Create a content values object
         ContentValues scoreValues = new ContentValues();
